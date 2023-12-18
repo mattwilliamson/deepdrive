@@ -1,6 +1,7 @@
 https://github.com/ros-planning/navigation2_tutorials
 https://github.com/ros-planning/navigation2_tutorials/tree/master/sam_bot_description
 https://navigation.ros.org/
+https://robofoundry.medium.com/modifying-stl-files-to-work-with-urdf-686cb15a4488
 https://github.com/ros-mobile-robots/diffbot
 
 ## TODO:
