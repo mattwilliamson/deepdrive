@@ -54,25 +54,17 @@ EXPOSE 8080
 
 # ----------------------------------------------------------------------------
 
-ENV ROS2_WS=/ros_ws
+ENV ROS2_WS=/ros_ws \
+    ROS_PACKAGE=deepdrive \
+    DISPLAY_WIDTH=1600 \
+    DISPLAY_HEIGHT=900
 
 WORKDIR $ROS_ROOT
 # ADD *.repos ./
 ADD install_deps.sh ./
 RUN bash install_deps.sh
 
-ENV DISPLAY_WIDTH=1600 \
-    DISPLAY_HEIGHT=900
 
-ENV PACKAGE=deepdrive
-RUN mkdir -p $ROS2_WS/src
-WORKDIR $ROS2_WS
-
-# RUN bash -c "colcon build --symlink-install --merge-install"
-RUN bash -c "colcon build --symlink-install"
-RUN echo echo SOURCING ROS /ros_ws/install/setup.bash >> ~/.bashrc && \
-    echo source /ros_ws/install/setup.bash >> ~/.bashrc
-# RUN bash 
 
 # source /ros_ws/install/setup.bash
 

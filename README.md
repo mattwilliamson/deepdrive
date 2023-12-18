@@ -65,8 +65,15 @@ docker run -it --rm -p 8080:8080 -e DISPLAY_WIDTH=1600 -e DISPLAY_HEIGHT=900 dee
 
 
 ```sh
+rosinstall_generator --deps --rosdistro ${ROS_DISTRO} \
+	robot_localization \
+> ros2.${ROS_DISTRO}.${ROS_PACKAGE}.rosinstall
+cat ros2.${ROS_DISTRO}.${ROS_PACKAGE}.rosinstall
+vcs import src < ros2.${ROS_DISTRO}.${ROS_PACKAGE}.rosinstall
+apt-get update && rosdep update
 rosdep install -i --from-path ./ --ignore-src -r -y --rosdistro $ROS_DISTRO
-colcon build --symlink-install
+colcon build --symlink-install 
+
 ros2 launch deepdrive_description display.launch.py
 
 ```

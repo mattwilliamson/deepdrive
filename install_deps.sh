@@ -22,8 +22,9 @@ colcon build --symlink-install --merge-install
 
 rm -rf /var/lib/apt/lists/
 
-# echo echo SOURCING ROS /ros_ws/install/setup.bash >> ~/.bashrc
-# echo source /ros_ws/install/setup.bash >> ~/.bashrc
+echo echo SOURCING ROS /ros_ws/install/setup.bash >> ~/.bashrc
+echo source /ros_ws/install/setup.bash >> ~/.bashrc
 
-# cd $ROS2_WS
-# colcon build --symlink-install
+cd $ROS2_WS
+mkdir src
+colcon build --symlink-install
