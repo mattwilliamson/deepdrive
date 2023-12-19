@@ -91,11 +91,11 @@ ENV ROS2_WS=/ros_ws \
 WORKDIR $ROS_ROOT
 # ADD *.repos ./
 ADD setup_ws.sh ./
-# RUN bash setup_ws.sh \
-#         xacro \
-# 	    gazebo_ros \
-# 	    robot_localization \
-#         gazebo_plugins
+RUN bash setup_ws.sh \
+        xacro \
+	    gazebo_ros \
+	    robot_localization \
+        gazebo_plugins
 
         
 
