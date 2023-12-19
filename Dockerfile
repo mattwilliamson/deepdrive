@@ -91,18 +91,18 @@ ENV ROS2_WS=/ros_ws \
 WORKDIR $ROS_ROOT
 # ADD *.repos ./
 ADD setup_ws.sh ./
-RUN bash setup_ws.sh \
-        xacro \
-	    gazebo_ros \
-	    robot_localization \
-        gazebo_plugins
+# RUN bash setup_ws.sh \
+#         xacro \
+# 	    gazebo_ros \
+# 	    robot_localization \
+#         gazebo_plugins
 
         
 
 
-WORKDIR $ROS2_WS
-COPY src $ROS2_WS/src/deepdrive
-RUN bash -c "source install/setup.bash && colcon build --symlink-install"
+# WORKDIR $ROS2_WS
+# COPY src $ROS2_WS/src/deepdrive
+# RUN bash -c "source install/setup.bash && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/setup_ws.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so
