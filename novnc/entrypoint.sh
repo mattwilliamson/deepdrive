@@ -16,4 +16,7 @@ case $RUN_XTERM in
     ;;
 esac
 
+# mkdir -p ~/.vnc
+# x11vnc -storepasswd ${VNC_PW} ~/.vnc/passwd
+
 exec supervisord -c /novnc/supervisord.conf

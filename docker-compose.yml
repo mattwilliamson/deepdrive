@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+  deepdrive:
+    image: deepdrive
+    # Display 10 to avoid conflicting ports with other X11 since we are using host networking
+    environment:
+      - DISPLAY=:10
+      - QT_X11_NO_MITSHM=1
+      - QT_QPA_PLATFORM=offscreen
+      - XAUTHORITY=/tmp/.xauth
+    depends_on:
+      - novnc
+    network_mode: "host"
+    build: .
+    volumes:
+      - tmp:/tmp/
+    # devices:
+      # - "/dev/dri:/dev/dri"
+    privileged: true
+    # entrypoint: /bin/bash
+    command: /bin/bash -c "sleep 600"
+    # command: /bin/bash -c "sleep 5; /usr/bin/gazebo"
+    # ros2 run rviz2 rviz2
+    
+  # VNC for viewing rviz/gazebo
+  # Open http://deepdrive:9002
+  # https://github.com/theasp/docker-novnc
+  # TODO: Generate password. See novnc/Dockerfile
+  novnc:
+    image: novnc
+    environment:
+      # Adjust to your screen size
+      - DISPLAY=:10
+      - DISPLAY_WIDTH=1600
+      - DISPLAY_HEIGHT=968
+      - RUN_XTERM=yes
+      - XAUTHORITY=/tmp/.xauth
+    ports:
+      - "9002:9002"
+    entrypoint: /novnc/entrypoint.sh
+    network_mode: "host"
+
+    build: novnc
+    volumes:
+      - tmp:/tmp/
+
+volumes:
+  tmp:

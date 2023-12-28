@@ -11,7 +11,7 @@ docker:
 
 .PHONY: dockershell
 dockershell: docker
-	docker run --runtime nvidia -it -p 8080:8080 --name deepdrive --rm -v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} ${ROS_PACKAGE} bash
+	docker run --runtime nvidia -it --network=host --name deepdrive --rm -v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} ${ROS_PACKAGE} bash
 
 # Host networking not currently working for x11 (novnc)
 # --network=host 
