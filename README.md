@@ -1,3 +1,12 @@
+
+# Simulator
+```sh
+make dockersimshell
+ros2 launch deepdrive_description display.launch.py
+```
+
+---
+
 https://github.com/ros-planning/navigation2_tutorials
 https://github.com/ros-planning/navigation2_tutorials/tree/master/sam_bot_description
 https://navigation.ros.org/

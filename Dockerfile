@@ -100,9 +100,9 @@ RUN bash setup_ws.sh \
         
 
 
-# WORKDIR $ROS2_WS
-# COPY src $ROS2_WS/src/deepdrive
-# RUN bash -c "source install/setup.bash && colcon build --symlink-install"
+WORKDIR $ROS2_WS
+COPY src $ROS2_WS/src/deepdrive
+RUN bash -c "source install/setup.bash && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/setup_ws.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so
