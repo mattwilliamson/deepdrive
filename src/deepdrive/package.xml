@@ -9,6 +9,17 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <exec_depend>deepdrive_bringup</exec_depend>
+  <exec_depend>deepdrive_cartographer</exec_depend>
+  <exec_depend>deepdrive_description</exec_depend>
+  <exec_depend>deepdrive_example</exec_depend>
+  <exec_depend>deepdrive_navigation2</exec_depend>
+  <exec_depend>deepdrive_node</exec_depend>
+  <exec_depend>deepdrive_teleop</exec_depend>
+  <exec_depend>deepdrive_navigation2</exec_depend>
+  <exec_depend>deepdrive_gazebo</exec_depend>
+  <exec_depend>deepdrive_nav2_bringup</exec_depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 

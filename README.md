@@ -1,8 +1,60 @@
+# DeepDrive
+Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
+
+## TODO:
+- [ ] param/deepdrive.yaml
+- [ ] Add tire to rim
+- [ ] tb3*
+- [ ] camera
+- [ ] URDF deepdrive_deepdrive.urdf
+- [ ] separate gazebo models? GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
+
+Bringup:
+https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
 
 # Simulator
 ```sh
 make dockersimshell
 ros2 launch deepdrive_description display.launch.py
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+
+export DEEPDRIVE_MODEL=deepdrive_deepdrive
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/ros_ws/install/deepdrive_gazebo/share/deepdrive_gazebo/models
+ros2 launch deepdrive_nav2_bringup dd_simulation_launch.py headless:=False
+
+export DEEPDRIVE_MODEL=deepdrive
+export LDS_MODEL='LDS-01'
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/ros_ws/install/deepdrive_gazebo/share/deepdrive_gazebo/models
+ros2 launch deepdrive_gazebo deepdrive_simulation_launch.py headless:=False robot_name:=deepdrive_deepdrive 
+# slam:=True
+
+
+ros2 launch deepdrive_navigation2 navigation2.launch.py
+
+## Launch Gazebo and RVIZ
+ros2 launch deepdrive_gazebo deepdrive_dqn_stage1.launch.py
+ros2 launch deepdrive_bringup rviz2.launch.py
+
+
+
+
+DEEPDRIVE_MODEL
+
+# TODO: find files waffle.*
+
+```
+## Working Test
+```sh
+export TURTLEBOT3_MODEL=waffle
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
+ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
+```
+
+```sh
+export TURTLEBOT3_MODEL=waffle
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
+ros2 launch deepdrive_nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 ---

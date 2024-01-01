@@ -1,0 +1,25 @@
+repositories:
+  deepdrive/deepdrive:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/deepdrive.git
+    version: ros2-devel
+  deepdrive/deepdrive_msgs:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/deepdrive_msgs.git
+    version: ros2-devel
+  deepdrive/deepdrive_simulations:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/deepdrive_simulations.git
+    version: ros2-devel
+  utils/DynamixelSDK:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+    version: ros2-devel
+  utils/hls_lfcd_lds_driver:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
+    version: ros2-devel
+  utils/ld08_driver:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/ld08_driver.git
+    version: ros2-devel

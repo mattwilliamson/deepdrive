@@ -33,7 +33,7 @@ dockersimshell: dockersim
 		--runtime nvidia \
 		-it \
 		-p 8080:8080 \
-		--name deepdrive \
+		--name deepdrive-sim \
 		--rm \
 		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
 		--privileged \
