@@ -17,6 +17,45 @@ RUN apt-get update && \
       xvfb && \
     rm -rf /var/lib/apt/lists/
 
+
+RUN pip3 install setuptools==58.2.0
+
+RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.38.2/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
+    tar -xvzf urdf-viz-x86_64-unknown-linux-gnu.tar.gz -C /usr/local/bin/ && \
+    chmod +x /usr/local/bin/urdf-viz && \
+    rm -f urdf-viz-x86_64-unknown-linux-gnu.tar.gz
+
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)" -- \
+    -p git \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-completions
+
+RUN gem install tmuxinator && \
+    wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O /usr/local/share/zsh/site-functions/_tmuxinator
+
+RUN apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.zshrc
+RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.zshrc
+RUN echo "source /opt/ros/humble/setup.zsh" >> /root/.zshrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.zshrc
+
+RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.zshrc
+RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.zshrc
+RUN echo 'alias ssetup="source ./install/local_setup.zsh"' >> /root/.zshrc
+RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.zshrc
+RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.zshrc
+RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.zshrc
+
+RUN echo "autoload -U bashcompinit" >> /root/.zshrc
+RUN echo "bashcompinit" >> /root/.zshrc
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.zshrc
+RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
+
+CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+
 # Setup demo environment variables
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
@@ -86,7 +125,20 @@ RUN python3 -c "import cv2; print(cv2.__version__)"
 ENV ROS2_WS=/ros_ws \
     ROS_PACKAGE=deepdrive \
     DISPLAY_WIDTH=1600 \
-    DISPLAY_HEIGHT=900
+    DISPLAY_HEIGHT=900 \
+    RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+RUN apt-get update && \
+    apt-get install -y \
+        python3-pip \
+        python3-pydantic \
+        ruby-dev \
+        rviz \
+        tmux \
+        wget \
+        xorg-dev \
+        zsh && \
+    rm -rf /var/lib/apt/lists/
 
 WORKDIR $ROS_ROOT
 # ADD *.repos ./
@@ -95,7 +147,12 @@ RUN bash setup_ws.sh \
         xacro \
 	    gazebo_ros \
 	    robot_localization \
-        gazebo_plugins
+        gazebo_plugins \
+        foxglove_bridge \
+        navigation2 \
+        rmw_cyclonedds_cpp \
+        slam_toolbox \
+        depthai_ros_driver
 
         
 

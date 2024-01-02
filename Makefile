@@ -18,6 +18,16 @@ dockershell: docker
 		-p 8080:8080 \
 		--name deepdrive \
 		--rm \
+		--privileged \
+		--gpus=all \
+		-e DISPLAY=${DISPLAY} \
+		-e PYTHONBUFFERED=1 \
+		-v /etc/timezone:/etc/timezone:ro \
+		-v /etc/localtime:/etc/localtime:ro \
+		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+		-v ${HOME}/.Xauthority:/root/.Xauthority:ro \
+		-v ${PWD}/.session.yml:/root/.session.yml \
+		-v ${PWD}/.tmux.conf:/root/.tmux.conf \
 		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
 		${ROS_PACKAGE} bash
 

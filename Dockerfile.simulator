@@ -35,6 +35,7 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-nav2-bringup \
         ros-${ROS_DISTRO}-foxglove-bridge \
         ros-${ROS_DISTRO}-turtlebot3-gazebo \
+        ros-${ROS_DISTRO}-depthai-ros-driver \
         ruby-dev \
         rviz \
         tmux \
@@ -82,7 +83,8 @@ RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
 CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
 
 ENV ROS2_WS=/ros_ws \
-    ROS_PACKAGE=deepdrive
+    ROS_PACKAGE=deepdrive \
+    RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 WORKDIR $ROS2_WS
 COPY src $ROS2_WS/src/deepdrive
