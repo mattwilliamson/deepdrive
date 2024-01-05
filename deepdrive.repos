@@ -1,25 +1,22 @@
 repositories:
-  deepdrive/deepdrive:
+  # navigation2
+  xtensor:
     type: git
-    url: https://github.com/ROBOTIS-GIT/deepdrive.git
-    version: ros2-devel
-  deepdrive/deepdrive_msgs:
+    url: https://github.com/xtensor-stack/xtensor.git
+    version: 0.24.7
+  xtl:
     type: git
-    url: https://github.com/ROBOTIS-GIT/deepdrive_msgs.git
-    version: ros2-devel
-  deepdrive/deepdrive_simulations:
+    url: https://github.com/xtensor-stack/xtl.git
+    version: 0.7.7
+  xsimd:
     type: git
-    url: https://github.com/ROBOTIS-GIT/deepdrive_simulations.git
-    version: ros2-devel
-  utils/DynamixelSDK:
+    url: https://github.com/xtensor-stack/xsimd.git
+    version: 12.1.1
+
+  # cartographer
+  absl:
     type: git
-    url: https://github.com/ROBOTIS-GIT/DynamixelSDK.git
-    version: ros2-devel
-  utils/hls_lfcd_lds_driver:
-    type: git
-    url: https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
-    version: ros2-devel
-  utils/ld08_driver:
-    type: git
-    url: https://github.com/ROBOTIS-GIT/ld08_driver.git
-    version: ros2-devel
+    url: https://github.com/abseil/abseil-cpp.git
+    version: 20230802.1
+
+

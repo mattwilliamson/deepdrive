@@ -4,6 +4,8 @@ FROM osrf/ros:humble-desktop-full
 
 ARG ROS_DISTRO=humble
 
+# TODO: Cleanup. i.e. nano, install vim
+# TODO: Learn tmuxinator
 # Install git, supervisor, VNC, & X11 packages
 RUN apt-get update && \
     apt-get install -y \
@@ -11,7 +13,7 @@ RUN apt-get update && \
         curl \
         gazebo \
         libglu1-mesa-dev \
-        nano \
+        vim \
         python3-pip \
         python3-pydantic \
         ros-${ROS_DISTRO}-gazebo-ros \
@@ -34,8 +36,13 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-navigation2 \
         ros-${ROS_DISTRO}-nav2-bringup \
         ros-${ROS_DISTRO}-foxglove-bridge \
+        a \
         ros-${ROS_DISTRO}-turtlebot3-gazebo \
         ros-${ROS_DISTRO}-depthai-ros-driver \
+        ros-${ROS_DISTRO}-hls-lfcd-lds-driver \
+        ros-${ROS_DISTRO}-rqt* \
+        x11-apps \
+        xtl-dev \
         ruby-dev \
         rviz \
         tmux \
@@ -46,7 +53,7 @@ RUN apt-get update && \
 
 RUN pip3 install setuptools==58.2.0
 
-RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.38.2/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
+RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.44.0/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
     tar -xvzf urdf-viz-x86_64-unknown-linux-gnu.tar.gz -C /usr/local/bin/ && \
     chmod +x /usr/local/bin/urdf-viz && \
     rm -f urdf-viz-x86_64-unknown-linux-gnu.tar.gz
@@ -79,6 +86,9 @@ RUN echo "autoload -U bashcompinit" >> /root/.zshrc
 RUN echo "bashcompinit" >> /root/.zshrc
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.zshrc
 RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
+
+COPY .session.yml /root/.session.yml
+COPY .tmux.conf /root/.tmux.conf
 
 CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
 

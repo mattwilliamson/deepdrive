@@ -24,12 +24,14 @@ dockershell: docker
 		-e PYTHONBUFFERED=1 \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
-		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-		-v ${HOME}/.Xauthority:/root/.Xauthority:ro \
-		-v ${PWD}/.session.yml:/root/.session.yml \
-		-v ${PWD}/.tmux.conf:/root/.tmux.conf \
 		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
 		${ROS_PACKAGE} bash
+
+		# TODO: See if we need these
+		# -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+		# -v ${HOME}/.Xauthority:/root/.Xauthority:ro \
+		# -v ${PWD}/.session.yml:/root/.session.yml \
+		# -v ${PWD}/.tmux.conf:/root/.tmux.conf \
 
 .PHONY: dockersim
 dockersim: 
@@ -52,12 +54,14 @@ dockersimshell: dockersim
 		-e PYTHONBUFFERED=1 \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
-		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-		-v ${HOME}/.Xauthority:/root/.Xauthority:ro \
-		-v ${PWD}/.session.yml:/root/.session.yml \
-		-v ${PWD}/.tmux.conf:/root/.tmux.conf \
 		--device=/dev/bus/usb:/dev/bus/usb \
 		${ROS_PACKAGE}-sim tmux
+
+		# TODO: See if we need these
+		# -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+		# -v ${HOME}/.Xauthority:/root/.Xauthority:ro \
+		# -v ${PWD}/.session.yml:/root/.session.yml \
+		# -v ${PWD}/.tmux.conf:/root/.tmux.conf \
 
 
 # Host networking not currently working for x11 (novnc)
