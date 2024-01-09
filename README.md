@@ -2,6 +2,10 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] separate workspace for depthai?
+- [ ] probably don't need vnc in the container
+- [ ] add led ring?
+- [ ] cooling holes
 - [ ] param/deepdrive.yaml
 - [ ] Add tire to rim
 - [ ] tb3*

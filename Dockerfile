@@ -155,13 +155,11 @@ RUN echo echo SOURCING ROS /ros_ws/install/setup.bash >> ~/.bashrc && \
     mkdir -p $ROS2_WS/src \
     mkdir -p $ROS_ROOT/src
 
-# RUN pip install ament_lint
 
 # ADD *.repos ./
 ADD install_deps.sh ./
 ADD deepdrive.repos ./
 RUN vcs import src < deepdrive.repos
-RUN bash install_deps.sh xacro
 
 # TODO: Clean these up. Some may not be needed. Especially for the robot.
 
@@ -179,16 +177,74 @@ RUN bash install_deps.sh \
         ros2bag \
         rosbag2_storage_default_plugins \
         rqt_tf_tree \
-        slam_toolbox 
+        slam_toolbox \
+        twist_mux \
+        usb_cam \
+        xacro \
+        gazebo_plugins
+
+RUN cd /tmp && \
+    git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
+    cmake -Hdepthai-core -Bdepthai-core/build -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr/local && \
+    cmake --build depthai-core/build --target install && \
+    rm -rf /tmp/depthai-core
+
+# Install depthai
+RUN cd src && \
+    git clone https://github.com/luxonis/depthai-ros.git -b humble && \
+    cd .. && \
+    rm -rf src/build/pluginlib/pluginlib_enable_plugin_testing src/pluginlib/test/ && \
+    rm -rf $ROS_ROOT/build/pluginlib/pluginlib_enable_plugin_testing && \
+    rm -rf /opt/ros/humble/src/pluginlib/test/ && \
+    colcon build \
+        --merge-install \
+        --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        --cmake-args -DBUILD_TESTING=OFF \
+        --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+        --cmake-args -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        --cmake-args -DBUILD_SHARED_LIBS=ON \
+        --packages-select depthai
+
+    
+# docker run -it -v /dev/:/dev/ --privileged -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix depthai_ros roslaunch depthai_examples stereo_inertial_node.launch.py
+
+# https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_common/blob/b9834877677e759cd19bf878bbc885d02ee54539/docker/Dockerfile.ros2_humble#L146
+
+# nav2_mppi_controller: [xsimd] defined as "not available" for OS version [focal]
+
+# Install nav2
+# RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
+#         && git clone https://github.com/ros-planning/navigation2.git && cd navigation2 && git checkout ec49c2772a0926c86ca83a4933c664744712e2e9 && cd .. \
+#         && git clone https://github.com/BehaviorTree/BehaviorTree.CPP.git && cd BehaviorTree.CPP && git checkout a363bdcae88350bc748598a7d2950e300859469c && cd .. \
+#         && source ${ROS_ROOT}/setup.bash && cd ${ROS_ROOT} \
+#         && rosdep install -y -r --ignore-src --from-paths src --rosdistro ${ROS_DISTRO} \
+#         && colcon build --merge-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo --packages-up-to-regex nav2* --packages-ignore nav2_system_tests \
+#         && rm -Rf src build log \
+#     && rm -rf /var/lib/apt/lists/* \
+#     && apt-get clean
+
+# depthai_examples: No definition of [foxglove_msgs] for OS version [focal]
+# nav2_mppi_controller: [xsimd] defined as "not available" for OS version [focal]
+# depthai_ros_driver: No definition of [image_transport_plugins] for OS version [focal]
 
 # ADD depthai.repos ./
-RUN vcs import src < depthai.repos
-RUN bash install_deps.sh depthai
+# RUN vcs import src < depthai.repos
+# RUN bash -c "source /opt/ros/${ROS_DISTRO}/install/setup.bash && \
+#             colcon build --merge-install \
+#                 --cmake-args -DBUILD_TESTING=OFF \
+#                 --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+#                 --packages-ignore depthai-bootloader-shared"
+# --cmake-args -DCMAKE_BUILD_TYPE=$build_type \
+# --cmake-args -DBUILD_TESTING=OFF --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --cmake-args -DCMAKE_POSITION_INDEPENDENT_CODE=ON --cmake-args -DBUILD_SHARED_LIBS=ON
+
+# rosdep install -i --from-path ./ --ignore-src -r -y --rosdistro $ROS_DISTRO --skip-keys "$SKIP_KEYS"
+# RUN bash install_deps.sh xsimd
+
 
         # depthai
-RUN bash install_deps.sh twist_mux usb_cam xacro
+# RUN bash install_deps.sh twist_mux usb_cam xacro
 
-RUN bash install_deps.sh depthai_ros_driver
+# RUN bash install_deps.sh depthai_ros_driver
 
 # RUN bash install_deps.sh turtlebot3 
 # RUN bash install_deps.sh turtlebot3_gazebo 

@@ -1,13 +1,11 @@
 repositories:
-  depthai_core:
+  depthai-core:
     type: git
-    url: https://github.com/luxonis/depthai-core.git
-    version: v2.24.0
-  depthai:
+    url: https://github.com/luxonis/depthai-core-release.git
+    version: release/humble/depthai/2.22.0-1
+
+  imu_tools:
     type: git
-    url: https://github.com/luxonis/depthai.git
-    version: v1.13.1-sdk
-  depthai_ros_driver:
-    type: git
-    url: https://github.com/luxonis/depthai-ros.git
+    url:  https://github.com/CCNYRoboticsLab/imu_tools.git
     version: humble
+
