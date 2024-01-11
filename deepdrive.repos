@@ -19,4 +19,11 @@ repositories:
     url: https://github.com/abseil/abseil-cpp.git
     version: 20230802.1
 
+  depthai-ros:
+    type: git
+    url: https://github.com/luxonis/depthai-ros.git
+    version: humble
+
+
+
 

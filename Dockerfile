@@ -155,6 +155,11 @@ RUN echo echo SOURCING ROS /ros_ws/install/setup.bash >> ~/.bashrc && \
     mkdir -p $ROS2_WS/src \
     mkdir -p $ROS_ROOT/src
 
+RUN cd /tmp && \
+    git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
+    cmake -Hdepthai-core -Bdepthai-core/build -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr/local && \
+    cmake --build depthai-core/build --target install && \
+    rm -rf /tmp/depthai-core
 
 # ADD *.repos ./
 ADD install_deps.sh ./
@@ -183,27 +188,21 @@ RUN bash install_deps.sh \
         xacro \
         gazebo_plugins
 
-RUN cd /tmp && \
-    git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
-    cmake -Hdepthai-core -Bdepthai-core/build -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr/local && \
-    cmake --build depthai-core/build --target install && \
-    rm -rf /tmp/depthai-core
-
 # Install depthai
-RUN cd src && \
-    git clone https://github.com/luxonis/depthai-ros.git -b humble && \
-    cd .. && \
-    rm -rf src/build/pluginlib/pluginlib_enable_plugin_testing src/pluginlib/test/ && \
-    rm -rf $ROS_ROOT/build/pluginlib/pluginlib_enable_plugin_testing && \
-    rm -rf /opt/ros/humble/src/pluginlib/test/ && \
-    colcon build \
-        --merge-install \
-        --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-        --cmake-args -DBUILD_TESTING=OFF \
-        --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-        --cmake-args -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        --cmake-args -DBUILD_SHARED_LIBS=ON \
-        --packages-select depthai
+# RUN cd src && \
+#     git clone https://github.com/luxonis/depthai-ros.git -b humble && \
+#     cd .. && \
+#     rm -rf src/build/pluginlib/pluginlib_enable_plugin_testing src/pluginlib/test/ && \
+#     rm -rf $ROS_ROOT/build/pluginlib/pluginlib_enable_plugin_testing && \
+#     rm -rf /opt/ros/humble/src/pluginlib/test/ && \
+#     colcon build \
+#         --merge-install \
+#         --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+#         --cmake-args -DBUILD_TESTING=OFF \
+#         --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+#         --cmake-args -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+#         --cmake-args -DBUILD_SHARED_LIBS=ON \
+#         --packages-skip-regex depthai
 
     
 # docker run -it -v /dev/:/dev/ --privileged -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix depthai_ros roslaunch depthai_examples stereo_inertial_node.launch.py
@@ -269,7 +268,7 @@ RUN cd src && \
 
 WORKDIR $ROS2_WS
 COPY src $ROS2_WS/src/deepdrive
-RUN bash -c "source install/setup.bash && colcon build --symlink-install"
+# RUN bash -c "source install/setup.bash && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/install_deps.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so
