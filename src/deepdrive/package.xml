@@ -14,7 +14,7 @@
   <exec_depend>deepdrive_description</exec_depend>
   <exec_depend>deepdrive_example</exec_depend>
   <exec_depend>deepdrive_navigation2</exec_depend>
-  <exec_depend>deepdrive_node</exec_depend>
+  <exec_depend>deepdrive_hardware</exec_depend>
   <exec_depend>deepdrive_teleop</exec_depend>
   <exec_depend>deepdrive_navigation2</exec_depend>
   <exec_depend>deepdrive_gazebo</exec_depend>

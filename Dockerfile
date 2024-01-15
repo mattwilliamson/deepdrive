@@ -3,35 +3,35 @@ FROM dustynv/ros:humble-desktop-pytorch-l4t-r35.4.1
 
 # NOVNC remote desktop Nabbed from https://github.com/theasp/docker-novnc/blob/master/Dockerfile
 
-# Install git, supervisor, VNC, & X11 packages
-RUN apt-get update && \
-    apt-get install -y \
-      bash \
-      fluxbox \
-      git \
-      net-tools \
-      novnc \
-      supervisor \
-      x11vnc \
-      xterm \
-      xvfb && \
-    rm -rf /var/lib/apt/lists/
+# # Install git, supervisor, VNC, & X11 packages
+# RUN apt-get update && \
+#     apt-get install -y \
+#       bash \
+#       fluxbox \
+#       git \
+#       net-tools \
+#       novnc \
+#       supervisor \
+#       x11vnc \
+#       xterm \
+#       xvfb && \
+#     rm -rf /var/lib/apt/lists/
 
-# Setup demo environment variables
-ENV HOME=/root \
-    DEBIAN_FRONTEND=noninteractive \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8 \
-    LC_ALL=C.UTF-8 \
-    DISPLAY=:0.0 \
-    DISPLAY_WIDTH=1024 \
-    DISPLAY_HEIGHT=768 \
-    RUN_XTERM=yes \
-    RUN_FLUXBOX=yes
+# # Setup demo environment variables
+# ENV HOME=/root \
+#     DEBIAN_FRONTEND=noninteractive \
+#     LANG=en_US.UTF-8 \
+#     LANGUAGE=en_US.UTF-8 \
+#     LC_ALL=C.UTF-8 \
+#     DISPLAY=:0.0 \
+#     DISPLAY_WIDTH=1024 \
+#     DISPLAY_HEIGHT=768 \
+#     RUN_XTERM=yes \
+#     RUN_FLUXBOX=yes
     
-COPY novnc /novnc
-# CMD ["/novnc/entrypoint.sh"]
-EXPOSE 8080
+# COPY novnc /novnc
+# # CMD ["/novnc/entrypoint.sh"]
+# EXPOSE 8080
 
 
 #@  You can create an x11vnc password file by running:       @#
@@ -47,101 +47,7 @@ EXPOSE 8080
 #@      x11vnc -rfbauth /path/to/passfile                    @#
 
 
-
-
 # ----------------------------------------------------------------------------
-
-# Install opencv (needed for gazebo_plugins)
-# TODO: Move this above all install_deps.sh and consolidate those
-# Most of these are already installed, but keep them for posterity
-# WORKDIR /usr/local/src
-# RUN apt-get update && \
-#     apt-get install -y \
-#         build-essential cmake git pkg-config libgtk-3-dev \
-#         libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
-#         libxvidcore-dev libx264-dev libjpeg-dev libpng-dev libtiff-dev \
-#         gfortran openexr libatlas-base-dev python3-dev python3-numpy \
-#         libtbb2 libtbb-dev libdc1394-22-dev libopenexr-dev \
-#         libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev && \
-#     git clone https://github.com/opencv/opencv.git && \
-#     git clone https://github.com/opencv/opencv_contrib.git && \
-#     cd opencv && mkdir -p build && cd build && \
-#     cmake -D CMAKE_BUILD_TYPE=RELEASE \
-#         -D CMAKE_INSTALL_PREFIX=/usr/local \
-#         -D INSTALL_C_EXAMPLES=ON \
-#         -D INSTALL_PYTHON_EXAMPLES=ON \
-#         -D OPENCV_GENERATE_PKGCONFIG=ON \
-#         -D OPENCV_EXTRA_MODULES_PATH=/usr/local/src/opencv_contrib/modules \
-#         -D BUILD_EXAMPLES=ON .. && \
-#     make -j6 && \
-#     make install && \
-#     rm -rf /var/lib/apt/lists/
-
-# Check it's installed
-RUN pkg-config --modversion opencv4
-RUN python3 -c "import cv2; print(cv2.__version__)"
-
-# ----------------------------------------------------------------------------
-
-# ZSH and TMUX and such
-
-RUN apt-get update && \
-    apt-get install -y \
-        vim \
-        python3-pip \
-        python3-pydantic \
-        ruby-dev \
-        rviz \
-        tmux \
-        wget \
-        xorg-dev \
-        xtl-dev \
-        zsh && \
-    rm -rf /var/lib/apt/lists/
-RUN pip3 install setuptools==58.2.0
-
-# TODO: Wrong architecture
-# RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.44.0/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
-#     tar -xvzf urdf-viz-x86_64-unknown-linux-gnu.tar.gz -C /usr/local/bin/ && \
-#     chmod +x /usr/local/bin/urdf-viz && \
-#     rm -f urdf-viz-x86_64-unknown-linux-gnu.tar.gz
-
-RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)" -- \
-    -p git \
-    -p https://github.com/zsh-users/zsh-autosuggestions \
-    -p https://github.com/zsh-users/zsh-completions
-
-RUN gem install tmuxinator && \
-    wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O /usr/local/share/zsh/site-functions/_tmuxinator
-
-RUN apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.zshrc
-RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.zshrc
-RUN echo "source /opt/ros/humble/setup.zsh" >> /root/.zshrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.zshrc
-
-RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.zshrc
-RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.zshrc
-RUN echo 'alias ssetup="source ./install/local_setup.zsh"' >> /root/.zshrc
-RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.zshrc
-RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.zshrc
-RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.zshrc
-
-RUN echo "autoload -U bashcompinit" >> /root/.zshrc
-RUN echo "bashcompinit" >> /root/.zshrc
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.zshrc
-RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
-
-COPY .session.yml /root/.session.yml
-COPY .tmux.conf /root/.tmux.conf
-
-CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
-
-
-# Actual ROS2 stuff
 
 ENV ROS2_WS=/ros_ws \
     ROS_PACKAGE=deepdrive \
@@ -186,30 +92,8 @@ RUN bash install_deps.sh \
         twist_mux \
         usb_cam \
         xacro \
-        gazebo_plugins
-
-# Install depthai
-# RUN cd src && \
-#     git clone https://github.com/luxonis/depthai-ros.git -b humble && \
-#     cd .. && \
-#     rm -rf src/build/pluginlib/pluginlib_enable_plugin_testing src/pluginlib/test/ && \
-#     rm -rf $ROS_ROOT/build/pluginlib/pluginlib_enable_plugin_testing && \
-#     rm -rf /opt/ros/humble/src/pluginlib/test/ && \
-#     colcon build \
-#         --merge-install \
-#         --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-#         --cmake-args -DBUILD_TESTING=OFF \
-#         --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-#         --cmake-args -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-#         --cmake-args -DBUILD_SHARED_LIBS=ON \
-#         --packages-skip-regex depthai
-
-    
-# docker run -it -v /dev/:/dev/ --privileged -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix depthai_ros roslaunch depthai_examples stereo_inertial_node.launch.py
-
-# https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_common/blob/b9834877677e759cd19bf878bbc885d02ee54539/docker/Dockerfile.ros2_humble#L146
-
-# nav2_mppi_controller: [xsimd] defined as "not available" for OS version [focal]
+        gazebo_plugins \
+        gazebo_ros_pkgs
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
@@ -226,49 +110,81 @@ RUN bash install_deps.sh \
 # nav2_mppi_controller: [xsimd] defined as "not available" for OS version [focal]
 # depthai_ros_driver: No definition of [image_transport_plugins] for OS version [focal]
 
-# ADD depthai.repos ./
-# RUN vcs import src < depthai.repos
-# RUN bash -c "source /opt/ros/${ROS_DISTRO}/install/setup.bash && \
-#             colcon build --merge-install \
-#                 --cmake-args -DBUILD_TESTING=OFF \
-#                 --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-#                 --packages-ignore depthai-bootloader-shared"
-# --cmake-args -DCMAKE_BUILD_TYPE=$build_type \
-# --cmake-args -DBUILD_TESTING=OFF --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --cmake-args -DCMAKE_POSITION_INDEPENDENT_CODE=ON --cmake-args -DBUILD_SHARED_LIBS=ON
 
-# rosdep install -i --from-path ./ --ignore-src -r -y --rosdistro $ROS_DISTRO --skip-keys "$SKIP_KEYS"
-# RUN bash install_deps.sh xsimd
+# ----------------------------------------------------------------------------
 
 
-        # depthai
-# RUN bash install_deps.sh twist_mux usb_cam xacro
+# ZSH and TMUX and such
 
-# RUN bash install_deps.sh depthai_ros_driver
+RUN apt-get update && \
+    apt-get install -y \
+        vim \
+        python3-pip \
+        python3-pydantic \
+        ruby-dev \
+        rviz \
+        tmux \
+        wget \
+        xorg-dev \
+        xtl-dev \
+        zsh && \
+    rm -rf /var/lib/apt/lists/
+RUN pip3 install setuptools==58.2.0 && \
+    pip3 install --upgrade pip
 
-# RUN bash install_deps.sh turtlebot3 
-# RUN bash install_deps.sh turtlebot3_gazebo 
-# RUN bash install_deps.sh turtlebot3_msgs 
-        # depthai_ros_driver \
-        # gazebo_plugins \
-        # gazebo_ros \
-        # gazebo_ros_pkgs \
+# TODO: Wrong architecture
+# RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.44.0/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
+#     tar -xvzf urdf-viz-x86_64-unknown-linux-gnu.tar.gz -C /usr/local/bin/ && \
+#     chmod +x /usr/local/bin/urdf-viz && \
+#     rm -f urdf-viz-x86_64-unknown-linux-gnu.tar.gz
 
-#   Could not find a package configuration file provided by "absl" with any of
-#   the following names:
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)" -- \
+    -p git \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-completions
 
-#     abslConfig.cmake
-#     absl-config.cmake
+RUN gem install tmuxinator && \
+    wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O /usr/local/share/zsh/site-functions/_tmuxinator
 
-#   Add the installation prefix of "absl" to CMAKE_PREFIX_PATH or set
-#   "absl_DIR" to a directory containing one of the above files.  If "absl"
-#   provides a separate development package or SDK, be sure it has been
-#   installed.
-# ENV CMAKE_PREFIX_PATH
+RUN apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
+RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.zshrc
+RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.zshrc
+RUN echo "source /opt/ros/humble/setup.zsh" >> /root/.zshrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.zshrc
+
+RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.zshrc
+RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.zshrc
+RUN echo 'alias ssetup="source ./install/local_setup.zsh"' >> /root/.zshrc
+RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.zshrc
+RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.zshrc
+RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.zshrc
+
+RUN echo "autoload -U bashcompinit" >> /root/.zshrc
+RUN echo "bashcompinit" >> /root/.zshrc
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.zshrc
+RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
+
+COPY .session.yml /root/.session.yml
+COPY .tmux.conf /root/.tmux.conf
+
+CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+
+# ----------------------------------------------------------------------------
 
 WORKDIR $ROS2_WS
-COPY src $ROS2_WS/src/deepdrive
-# RUN bash -c "source install/setup.bash && colcon build --symlink-install"
+
+COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt
+
+RUN ls -lah src/deepdrive_hardware
+
+RUN pip3 install -r src/deepdrive_hardware/requirements.txt
+
+COPY src/* src/
+
+RUN zsh -c "source $ROS_ROOT/install/setup.sh && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/install_deps.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so

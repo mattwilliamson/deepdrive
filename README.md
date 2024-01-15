@@ -49,6 +49,15 @@ ros2 launch deepdrive_navigation2 navigation2.launch.py
 ros2 launch deepdrive_gazebo deepdrive_dqn_stage1.launch.py
 ros2 launch deepdrive_bringup rviz2.launch.py
 
+# Camera
+ros2 launch depthai_examples stereo_inertial_node.launch.py camera_model:=OAK-D-LITE enableRviz:=False depth_aligned:=True rectify:=True
+
+ros2 launch depthai_ros_driver rgbd_pcl.launch.py camera_model:=OAK-D-LITE enableRviz:=False depth_aligned:=True rectify:=True r_set_man_focus:=True r_focus:=1 imuMode:=1
+# r_focus:=1
+
+# Foxglove Studio Bridge
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+
 
 
 
@@ -57,6 +66,15 @@ DEEPDRIVE_MODEL
 # TODO: find files waffle.*
 
 ```
+
+## LIDAR
+```sh
+sudo chmod a+rw /dev/ttyTHS0
+screen -L /dev/ttyTHS0 230400
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 3.14159 3.14159 oak-d-base-frame laser
+ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py port:=/dev/ttyTHS0
+```
+
 ## Working Test
 ```sh
 export TURTLEBOT3_MODEL=waffle

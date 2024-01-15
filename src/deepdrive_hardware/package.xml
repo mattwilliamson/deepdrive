@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>deepdrive_hardware</name>
+  <version>0.1.1</version>
+  <description>
+    Hardware implementations for Deepdrive.
+  </description>
+  <maintainer email="matt@aimatt.com">Matt Williamson</maintainer>
+  <license>Apache 2.0</license>
+  <url type="website">http://aimatt.com</url>
+  <url type="repository">https://github.com/mattwilliamson/deepdrive</url>
+  <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
+  <author email="matt@aimatt.com">Matt Williamson</author>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <!-- <exec_depend>Jetson.GPIO</exec_depend> -->
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

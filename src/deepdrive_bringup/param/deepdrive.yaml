@@ -1,4 +1,4 @@
-deepdrive_node:
+deepdrive_hardware:
   ros__parameters:
 
     opencr:

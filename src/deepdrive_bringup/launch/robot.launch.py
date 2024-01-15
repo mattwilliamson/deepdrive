@@ -29,7 +29,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    DEEPDRIVE_MODEL = os.environ['DEEPDRIVE_MODEL']
+    DEEPDRIVE_MODEL = os.environ['DEEPDRIVE_MODEL'] or 'deepdrive'
     LDS_MODEL = os.environ['LDS_MODEL'] or 'LDS-01'
     LDS_LAUNCH_FILE = '/hlds_laser.launch.py'
 

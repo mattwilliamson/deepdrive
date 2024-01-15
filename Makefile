@@ -15,13 +15,13 @@ dockershell: docker
 		--network=host \
 		--runtime nvidia \
 		-it \
-		-p 8080:8080 \
 		--name deepdrive \
 		--rm \
 		--privileged \
 		--gpus=all \
 		-e DISPLAY=${DISPLAY} \
 		-e PYTHONBUFFERED=1 \
+		-v /dev/:/dev/ \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
@@ -44,7 +44,6 @@ dockersimshell: dockersim
 		--network=host \
 		--runtime nvidia \
 		-it \
-		-p 8080:8080 \
 		--name deepdrive-sim \
 		--rm \
 		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
