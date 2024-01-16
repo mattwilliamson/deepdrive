@@ -67,6 +67,13 @@ DEEPDRIVE_MODEL
 
 ```
 
+## Robot
+```sh
+ros2 run deepdrive_hardware motor_controller
+
+ros2 launch deepdrive_bringup robot_real.launch.py
+```
+
 ## LIDAR
 ```sh
 sudo chmod a+rw /dev/ttyTHS0

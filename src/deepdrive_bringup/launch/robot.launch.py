@@ -33,7 +33,7 @@ def generate_launch_description():
     LDS_MODEL = os.environ['LDS_MODEL'] or 'LDS-01'
     LDS_LAUNCH_FILE = '/hlds_laser.launch.py'
 
-    usb_port = LaunchConfiguration('usb_port', default='/dev/ttyACM0')
+    usb_port = LaunchConfiguration('usb_port', default='/dev/ttyTHS0')
 
     deepdrive_param_dir = LaunchConfiguration(
         'deepdrive_param_dir',

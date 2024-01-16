@@ -5,8 +5,10 @@ import RPi.GPIO as GPIO
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 
+# TODO: Jetson Orin Nano is having issues with PWM. Need to debug.
+# Use full speed for now.
 
-class MotorDiffDrive:
+class MotorDriverL293:
     def __init__(
         self,
         left_enable=32,
@@ -40,28 +42,33 @@ class MotorDiffDrive:
         self.left_pwm.start(0)
         self.right_pwm.start(0)
 
+    def _set_pin(self, pin, value):
+        print(f"Setting pin {pin} to {value}")
+        GPIO.output(pin, value)
+
     def set_motors(self, left_speed=0.0, right_speed=0.0):
         """Set the motor speeds. Negative values for reverse."""
         if left_speed > 0.0:
-            GPIO.output(self.left_forward, GPIO.HIGH)
-            GPIO.output(self.left_backward, GPIO.LOW)
+            self._set_pin(self.left_forward, GPIO.HIGH)
+            self._set_pin(self.left_backward, GPIO.LOW)
         elif left_speed < 0.0:
-            GPIO.output(self.left_forward, GPIO.LOW)
-            GPIO.output(self.left_backward, GPIO.HIGH)
+            self._set_pin(self.left_forward, GPIO.LOW)
+            self._set_pin(self.left_backward, GPIO.HIGH)
         else:
-            GPIO.output(self.left_forward, GPIO.LOW)
-            GPIO.output(self.left_backward, GPIO.LOW)
+            self._set_pin(self.left_forward, GPIO.LOW)
+            self._set_pin(self.left_backward, GPIO.LOW)
 
         if right_speed > 0.0:
-            GPIO.output(self.right_forward, GPIO.HIGH)
-            GPIO.output(self.right_backward, GPIO.LOW)
+            self._set_pin(self.right_forward, GPIO.HIGH)
+            self._set_pin(self.right_backward, GPIO.LOW)
         elif right_speed < 0.0:
-            GPIO.output(self.right_forward, GPIO.LOW)
-            GPIO.output(self.right_backward, GPIO.HIGH)
+            self._set_pin(self.right_forward, GPIO.LOW)
+            self._set_pin(self.right_backward, GPIO.HIGH)
         else:
-            GPIO.output(self.right_forward, GPIO.LOW)
-            GPIO.output(self.right_backward, GPIO.LOW)
+            self._set_pin(self.right_forward, GPIO.LOW)
+            self._set_pin(self.right_backward, GPIO.LOW)
 
+        print("Setting duty cycle to: ", abs(left_speed), abs(right_speed))
         self.left_pwm.ChangeDutyCycle(abs(left_speed))
         self.right_pwm.ChangeDutyCycle(abs(right_speed))
 

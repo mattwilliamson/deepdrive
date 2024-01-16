@@ -22,9 +22,12 @@ dockershell: docker
 		-e DISPLAY=${DISPLAY} \
 		-e PYTHONBUFFERED=1 \
 		-v /dev/:/dev/ \
+		-v /proc/device-tree/compatible:/proc/device-tree/compatible \
+		-v /proc/device-tree/chosen:/proc/device-tree/chosen \
+		--device /dev/gpiochip0 \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
-		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
+		-v ${PWD}/src:${ROS_ROOT}/src/ \
 		${ROS_PACKAGE} bash
 
 		# TODO: See if we need these
@@ -32,6 +35,7 @@ dockershell: docker
 		# -v ${HOME}/.Xauthority:/root/.Xauthority:ro \
 		# -v ${PWD}/.session.yml:/root/.session.yml \
 		# -v ${PWD}/.tmux.conf:/root/.tmux.conf \
+		# -e JETSON_MODEL_NAME="JETSON_ORIN_NANO" \
 
 .PHONY: dockersim
 dockersim: 
@@ -46,7 +50,7 @@ dockersimshell: dockersim
 		-it \
 		--name deepdrive-sim \
 		--rm \
-		-v ${PWD}/src:${ROS_ROOT}/src/${ROS_PACKAGE} \
+		-v ${PWD}/src:${ROS_ROOT}/src/ \
 		--privileged \
 		--gpus=all \
 		-e DISPLAY=${DISPLAY} \

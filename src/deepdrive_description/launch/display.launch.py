@@ -31,7 +31,6 @@ def generate_launch_description():
         output='screen',
         arguments=['-d', LaunchConfiguration('rvizconfig')],
     )
-    
     spawn_entity = launch_ros.actions.Node(
     	package='gazebo_ros', 
     	executable='spawn_entity.py',

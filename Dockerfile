@@ -56,8 +56,9 @@ ENV ROS2_WS=/ros_ws \
     RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 WORKDIR $ROS_ROOT
-RUN echo echo SOURCING ROS /ros_ws/install/setup.bash >> ~/.bashrc && \
-    echo source /ros_ws/install/setup.bash >> ~/.bashrc && \
+
+RUN echo echo SOURCING ROS $ROS2_WS/install/setup.bash >> ~/.bashrc && \
+    echo source $ROS2_WS/install/setup.bash >> ~/.bashrc && \
     mkdir -p $ROS2_WS/src \
     mkdir -p $ROS_ROOT/src
 
@@ -93,7 +94,8 @@ RUN bash install_deps.sh \
         usb_cam \
         xacro \
         gazebo_plugins \
-        gazebo_ros_pkgs
+        gazebo_ros_pkgs \
+        rtabmap_ros
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
@@ -150,22 +152,22 @@ RUN apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.zshrc
-RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.zshrc
-RUN echo "source /opt/ros/humble/setup.zsh" >> /root/.zshrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.zshrc
+RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.bashrc
+RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.bashrc
+RUN echo "source /opt/ros/humble/install/setup.sh" >> /root/.bashrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.bashrc
 
-RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.zshrc
-RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.zshrc
-RUN echo 'alias ssetup="source ./install/local_setup.zsh"' >> /root/.zshrc
-RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.zshrc
-RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.zshrc
-RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.zshrc
+RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.bashrc
+RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.bashrc
+RUN echo 'alias ssetup="source ./install/local_setup.sh"' >> /root/.bashrc
+RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.bashrc
+RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.bashrc
+RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.bashrc
 
-RUN echo "autoload -U bashcompinit" >> /root/.zshrc
-RUN echo "bashcompinit" >> /root/.zshrc
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.zshrc
-RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
+RUN echo "autoload -U bashcompinit" >> /root/.bashrc
+RUN echo "bashcompinit" >> /root/.bashrc
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.bashrc
+RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
 
 COPY .session.yml /root/.session.yml
 COPY .tmux.conf /root/.tmux.conf
@@ -184,7 +186,11 @@ RUN pip3 install -r src/deepdrive_hardware/requirements.txt
 
 COPY src/* src/
 
-RUN zsh -c "source $ROS_ROOT/install/setup.sh && colcon build --symlink-install"
+
+
+
+
+RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/install_deps.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so
