@@ -76,7 +76,7 @@ def generate_launch_description():
     dotProjectormA     = LaunchConfiguration('dotProjectormA', default = 200.0)
     floodLightmA       = LaunchConfiguration('floodLightmA', default = 200.0)
     enableRosBaseTimeUpdate       = LaunchConfiguration('enableRosBaseTimeUpdate', default = False)
-    enableRviz         = LaunchConfiguration('enableRviz', default = True)
+    enableRviz         = LaunchConfiguration('enableRviz', default = False)
 
 
     declare_mxId_cmd = DeclareLaunchArgument(

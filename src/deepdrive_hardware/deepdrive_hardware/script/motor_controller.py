@@ -5,6 +5,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
+from rclpy.qos import QoSProfile
 
 import os
 IS_LOCAL = os.getenv('IS_LOCAL', False)
@@ -25,9 +26,13 @@ KI_FWD = 0.1#0.0001
 
 
 class MotorController(Node):
-    def __init__(self, port=8765):
-        super().__init__('ws_server')
-        self.cmd_sub_ = self.create_subscription(Twist, 'cmd_vel', self.cmd_callback, 10)
+    def __init__(self):
+        super().__init__('deepdrive_motor_controller')
+    # def __init__(self, port=8765):
+    #     super().__init__('ws_server')
+        self.get_logger().info("deepdrive_motor_controller node has been initialised.")
+        qos = QoSProfile(depth=10)
+        self.cmd_sub_ = self.create_subscription(Twist, 'cmd_vel', self.cmd_callback, qos)
         # self.odom_sub_ = self.create_subscription(Odometry, 'rs_t265/odom', self.odom_callback, 10)
         self.vel_cmd_ = 0.0
         self.yaw_rate_cmd_ = 0.0
@@ -77,6 +82,8 @@ class MotorController(Node):
 
 
     def cmd_callback(self, msg):
+        print("cmd_callback hit")
+        self.get_logger().info("deepdrive_motor_controller cmd_callback")
         vel_ref = msg.linear.x
         yaw_rate_ref = msg.angular.z
         if(vel_ref < 0.0):
@@ -84,6 +91,7 @@ class MotorController(Node):
         self.yaw_rate_cmd_  = yaw_rate_ref
         self.vel_cmd_  = vel_ref
         print(f'motor_controller got command: vel_ref: {vel_ref}, yaw_rate_ref: {yaw_rate_ref}')
+        self.get_logger().info(f'motor_controller got command: vel_ref: {vel_ref}, yaw_rate_ref: {yaw_rate_ref}')
 
         # Nabbed from odom, to test without odom
 
@@ -101,6 +109,7 @@ class MotorController(Node):
         wheel_speed_l, wheel_speed_r = self.inverse_diff_kinematics(vel_out, -yaw_rate_out)
         print('vel: {}, vel_cmd: {} , vel_out: {}'.format(vel,self.vel_cmd_,vel_out))
         print('w: {}, w_cmd: {} , w_out: {}'.format(yaw_rate,self.yaw_rate_cmd_,yaw_rate_out))
+        
         if not IS_LOCAL:
             self.robot.set_motors(wheel_speed_r, -wheel_speed_l)
 

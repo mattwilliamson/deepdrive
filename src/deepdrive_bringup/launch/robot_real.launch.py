@@ -35,6 +35,7 @@ def generate_launch_description():
 
     namespace = LaunchConfiguration('namespace', default="deepdrive")
     lidar_port = LaunchConfiguration("lidar_port", default="/dev/ttyTHS0")
+    use_rviz = LaunchConfiguration('use_rviz', default=False)
     use_robot_state_pub = LaunchConfiguration('use_robot_state_pub')
     # default_model_path = os.path.join(pkg_share, 'src/description/deepdrive_description.urdf')
     description_dir = get_package_share_directory('deepdrive_description')
@@ -77,6 +78,12 @@ def generate_launch_description():
                 default_value=lidar_port,
                 description="TTY port for LDS-01 lidar",
             ),
+
+            # DeclareLaunchArgument(
+            #     "use_rviz",
+            #     default_value=False,
+            #     description="Show RVIZ UI",
+            # ),
 
             declare_use_robot_state_pub_cmd,
             # DeclareLaunchArgument(
@@ -130,7 +137,7 @@ def generate_launch_description():
                             #    "cam_roll": LaunchConfiguration("cam_roll"),
                             #    "cam_pitch": LaunchConfiguration("cam_pitch"),
                             #    "cam_yaw": LaunchConfiguration("cam_yaw"),
-                            #    "use_rviz": LaunchConfiguration("use_rviz")
+                            #    "enableRviz": False
                                }.items(),
             ),
 
@@ -144,7 +151,7 @@ def generate_launch_description():
                         "/hlds_laser.launch.py",
                     ]
                 ),
-                launch_arguments={"port": lidar_port, "frame_id": "base_scan"}.items(),
+                launch_arguments={"port": lidar_port, "frame_id": "laser"}.items(),
             ),
 
             # Transform for lidar
@@ -162,6 +169,8 @@ def generate_launch_description():
                     "laser",
                 ],
             ),
+
+            # <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_laser" args="0 0 0 3.14159 0 0 $(arg frame_prefix)base_link $(arg frame_prefix)laser" />
 
             # Foxglove Studio Bridge
             Node(
