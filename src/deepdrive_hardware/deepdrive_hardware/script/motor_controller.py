@@ -33,6 +33,8 @@ class MotorController(Node):
         self.get_logger().info("deepdrive_motor_controller node has been initialised.")
         qos = QoSProfile(depth=10)
         self.cmd_sub_ = self.create_subscription(Twist, 'cmd_vel', self.cmd_callback, qos)
+        self.odom_publisher = self.create_publisher(Odometry, 'wheel/odometry', 30)
+        self.create_timer(.1, self.odom_tick)
         # self.odom_sub_ = self.create_subscription(Odometry, 'rs_t265/odom', self.odom_callback, 10)
         self.vel_cmd_ = 0.0
         self.yaw_rate_cmd_ = 0.0
@@ -109,10 +111,28 @@ class MotorController(Node):
         wheel_speed_l, wheel_speed_r = self.inverse_diff_kinematics(vel_out, -yaw_rate_out)
         print('vel: {}, vel_cmd: {} , vel_out: {}'.format(vel,self.vel_cmd_,vel_out))
         print('w: {}, w_cmd: {} , w_out: {}'.format(yaw_rate,self.yaw_rate_cmd_,yaw_rate_out))
-        
+        self.get_logger().info(f'motor_controller got command: vel_ref: {vel_ref}, yaw_rate_ref: {yaw_rate_ref}')
+
         if not IS_LOCAL:
             self.robot.set_motors(wheel_speed_r, -wheel_speed_l)
+            self.get_logger().info(f'motor_controller setting wheel speed l/r: {wheel_speed_r}, {-wheel_speed_l}')
 
+
+    def publish_odometry(self, x, y, z, quat_x, quat_y, quat_z, quat_w):
+        msg = Odometry()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.pose.pose.position.x = x
+        msg.pose.pose.position.y = y
+        msg.pose.pose.position.z = z
+        msg.pose.pose.orientation.x = quat_x
+        msg.pose.pose.orientation.y = quat_y
+        msg.pose.pose.orientation.z = quat_z
+        msg.pose.pose.orientation.w = quat_w
+        self.odom_publisher.publish(msg)
+
+    def odom_tick(self):
+        self.publish_odometry(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+        # self.get_logger().info("odom_tick")
 
     def on_shutdown(self):
         print('motor_controller shutting down')

@@ -240,7 +240,7 @@
     <visual>
      <origin xyz="0 0 0" rpy="1.57 0 1.57"/>
       <geometry>
-       <mesh filename="package://deepdrive_description/meshes/sensors/r200.dae" />
+       <mesh filename="package://depthai_descriptions/urdf/models/OAK-D-LITE.stl" />
       </geometry>
     </visual>
     <collision>

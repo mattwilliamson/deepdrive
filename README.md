@@ -71,7 +71,7 @@ DEEPDRIVE_MODEL
 ```sh
 ros2 run deepdrive_hardware motor_controller
 
-ros2 launch deepdrive_bringup robot_real.launch.py
+ros2 launch deepdrive_bringup robot.launch.xml
 ```
 
 ## LIDAR

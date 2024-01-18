@@ -29,6 +29,7 @@ def launch_setup(context, *args, **kwargs):
         ("rgb/image", name+"/rgb/image_rect"),
         ("rgb/camera_info", name+"/rgb/camera_info"),
         ("depth/image", name+"/stereo/image_raw"),
+        ("odom", name+"/odom"),
     ]
 
     return [

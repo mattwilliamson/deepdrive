@@ -95,7 +95,8 @@ RUN bash install_deps.sh \
         xacro \
         gazebo_plugins \
         gazebo_ros_pkgs \
-        rtabmap_ros
+        rtabmap_ros \
+        foxglove_msgs
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
@@ -154,18 +155,19 @@ RUN apt-get autoremove -y \
 
 RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.bashrc
 RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.bashrc
-RUN echo "source /opt/ros/humble/install/setup.sh" >> /root/.bashrc
+RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.bashrc
+RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.bashrc
 RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.bashrc
 
 RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.bashrc
 RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.bashrc
-RUN echo 'alias ssetup="source ./install/local_setup.sh"' >> /root/.bashrc
+RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.bashrc
 RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.bashrc
 RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.bashrc
 RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.bashrc
 
-RUN echo "autoload -U bashcompinit" >> /root/.bashrc
-RUN echo "bashcompinit" >> /root/.bashrc
+# RUN echo "autoload -U bashcompinit" >> /root/.bashrc
+# RUN echo "bashcompinit" >> /root/.bashrc
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.bashrc
 RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
 

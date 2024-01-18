@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import RPi.GPIO as GPIO
+import Jetson.GPIO as GPIO
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
@@ -47,7 +47,7 @@ class MotorDriverL293:
         GPIO.output(pin, value)
 
     def set_motors(self, left_speed=0.0, right_speed=0.0):
-        """Set the motor speeds. Negative values for reverse."""
+        """Set the motor speeds. Negative values for reverse. 0.0-1.0"""
         if left_speed > 0.0:
             self._set_pin(self.left_forward, GPIO.HIGH)
             self._set_pin(self.left_backward, GPIO.LOW)
@@ -69,8 +69,10 @@ class MotorDriverL293:
             self._set_pin(self.right_backward, GPIO.LOW)
 
         print("Setting duty cycle to: ", abs(left_speed), abs(right_speed))
-        self.left_pwm.ChangeDutyCycle(abs(left_speed))
-        self.right_pwm.ChangeDutyCycle(abs(right_speed))
+        left_pwm_speed = min(abs(left_speed) * 100.0, 100.0)
+        right_pwm_speed = min(abs(right_speed) * 100.0, 100.0)
+        self.left_pwm.ChangeDutyCycle(left_pwm_speed)
+        self.right_pwm.ChangeDutyCycle(right_pwm_speed)
 
 
     def cleanup(self):

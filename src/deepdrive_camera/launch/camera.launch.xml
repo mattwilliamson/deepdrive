@@ -1,0 +1,44 @@
+<launch>
+    <arg name="use_gui" default="FALSE"/>
+    <arg name="camera_model" default="OAK-D-LITE"/>
+
+    <!-- Camera -->
+    <!-- This one gives us a pointcloud successfully -->
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/pointcloud.launch.py"> -->
+
+    <!-- This one successfully publishes on odom and map topics as well as point clouds -->
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
+        <!-- camera/odometry -->
+        <!-- <remap from="/input/pose" to="/turtlesim1/turtle1/pose"/> -->
+        
+    <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py">
+    
+        <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
+        <arg name="enableRviz" value="$(var use_gui)"/>
+
+        <arg name="nnName" value="yolov4_tiny_coco_416x416_openvino_2021.4_6shave_bgr.blob"/>
+        <arg name="previewWidth" value="416"/>
+        <arg name="previewHeight" value="416"/>
+
+        <!-- <arg name="nnName" value="deeplab_v3_plus_mnv2_decoder_256_openvino_2021.4.blob"/> -->
+        <!-- <arg name="previewWidth" value="416"/> -->
+        <!-- <arg name="previewHeight" value="416"/> -->
+
+        <!-- <arg name="nnName" value="mobilenet-ssd_openvino_2021.2_6shave.blob"/>
+        <arg name="previewWidth" value="300"/>
+        <arg name="previewHeight" value="300"/> -->
+
+        <arg name="camera_model" value="$(var camera_model)"/>
+        <arg name="monoResolution" value="480p"/>
+        <arg name="rgbResolution" value="1080p"/>
+        <arg name="confidence" value="200" />
+        <arg name="stereo_fps" value="15" />
+        <arg name="enableMarkerPublish" value="true" />
+        <!-- <arg name="enableMarkerPublish" value="true" /> -->
+        <arg name="enableSpatialDetection" value="true" />
+        <!-- <arg name="enableSpatialDetection" value="true" /> -->
+        <arg name="imuMode" value="0" />
+        <!-- 0 -> COPY, 1 -> LINEAR_INTERPOLATE_GYRO, 2 -> LINEAR_INTERPOLATE_ACCEL -->
+    </include>
+
+</launch>

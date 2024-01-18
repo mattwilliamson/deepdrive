@@ -26,11 +26,11 @@ def generate_launch_description():
     usb2Mode     = LaunchConfiguration('usb2Mode',  default = False)
     poeMode      = LaunchConfiguration('poeMode',   default = False)
 
-    camera_model = LaunchConfiguration('camera_model',  default = 'OAK-D')
+    camera_model = LaunchConfiguration('camera_model',  default = 'OAK-D-LITE')
     tf_prefix    = LaunchConfiguration('tf_prefix',     default = 'oak')
     mode         = LaunchConfiguration('mode', default = 'depth')
     base_frame   = LaunchConfiguration('base_frame',    default = 'oak-d_frame')
-    parent_frame = LaunchConfiguration('parent_frame',  default = 'oak-d-base-frame')
+    parent_frame = LaunchConfiguration('parent_frame',  default = 'base_link')
     imuMode      = LaunchConfiguration('imuMode', default = '1')
 
     cam_pos_x    = LaunchConfiguration('cam_pos_x',     default = '0.0')
@@ -380,6 +380,7 @@ def generate_launch_description():
     pointcloud_topic = '/stereo/points'
     point_cloud_creator = None
     rviz_node = None
+    
     if LaunchConfigurationEquals('depth_aligned', 'True'): 
         point_cloud_creator = launch_ros.descriptions.ComposableNode(
                     package='depth_image_proc',
@@ -415,6 +416,15 @@ def generate_launch_description():
             condition=IfCondition(enableRviz))
 
 
+    point_cloud_creator = launch_ros.descriptions.ComposableNode(
+                package='depth_image_proc',
+                plugin='depth_image_proc::PointCloudXyzrgbNode',
+                name='point_cloud_xyzrgb_node',
+                remappings=[('depth_registered/image_rect', 'stereo/converted_depth'),
+                            ('rgb/image_rect_color', 'color/image'),
+                            ('rgb/camera_info', 'color/camera_info'),
+                            ('points', pointcloud_topic )]
+            )
 
     if point_cloud_creator is not None:
         point_cloud_container = launch_ros.actions.ComposableNodeContainer(
@@ -492,8 +502,10 @@ def generate_launch_description():
     ld.add_action(urdf_launch)
     ld.add_action(stereo_node)
 
-    if LaunchConfigurationEquals('depth_aligned', 'True') and LaunchConfigurationEquals('rectify', 'True'):
-        ld.add_action(point_cloud_container)
+    # if LaunchConfigurationEquals('depth_aligned', 'True') and LaunchConfigurationEquals('rectify', 'True'):
+        # ld.add_action(point_cloud_container)
+    
+    ld.add_action(point_cloud_container)
     
     # ld.add_action(point_cloud_node)
     if LaunchConfigurationEquals('enableRviz', 'True') and rviz_node is not None:
