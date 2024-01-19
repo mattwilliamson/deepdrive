@@ -22,6 +22,10 @@
 
     <!-- Camera -->
     <include file="$(find-pkg-share deepdrive_camera)/launch/camera.launch.xml" />
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="base_footprint_oak" args="0 0 0 0 0 0 camera_link oak" output="screen" />
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_base" args="0 0 0 0 0 0 oak oak-d-base-frame" output="screen" />
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="base_footprint_odom" args="0 0 0 0 0 0 imu_link odom" output="screen" />
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_footprint_oak" args="0 0 0 0 0 0 oak oak_model_origin" output="screen" /> -->
 
 
     <!-- Odometry / localization -->

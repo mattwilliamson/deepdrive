@@ -13,6 +13,8 @@ if not IS_LOCAL:
     from deepdrive_hardware.pwm_motor import MotorDriverL293
 
 # TODO: Probably want a PID controller here
+    
+# TODO: Smooth the acceleration
 
 wheelbase = 0.10
 wheel_radius = 0.02
@@ -41,6 +43,7 @@ class MotorController(Node):
 
         self.yaw_rate_error_int_ = 0.0
         self.vel_error_int_ = 0.0
+        
         if not IS_LOCAL:
             # TODO: pass in all the pin configs
             self.robot = MotorDriverL293()
@@ -131,7 +134,7 @@ class MotorController(Node):
         self.odom_publisher.publish(msg)
 
     def odom_tick(self):
-        self.publish_odometry(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0)
+        self.publish_odometry(0.0, 0.0, 0.0, self.vel_cmd_, 0.0, self.yaw_rate_cmd_, 1.0)
         # self.get_logger().info("odom_tick")
 
     def on_shutdown(self):

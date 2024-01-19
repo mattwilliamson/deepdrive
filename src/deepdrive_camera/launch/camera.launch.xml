@@ -7,11 +7,12 @@
     <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/pointcloud.launch.py"> -->
 
     <!-- This one successfully publishes on odom and map topics as well as point clouds -->
-    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
+    <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py">
+        <arg name="frame" value="camera_link"/>
         <!-- camera/odometry -->
         <!-- <remap from="/input/pose" to="/turtlesim1/turtle1/pose"/> -->
         
-    <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py">
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py"> -->
     
         <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
         <arg name="enableRviz" value="$(var use_gui)"/>

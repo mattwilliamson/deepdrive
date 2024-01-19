@@ -24,12 +24,16 @@ import launch.actions
 from launch.actions import DeclareLaunchArgument
 
 def generate_launch_description():
+    remappings = [("/odometry/filtered", "odom")]
+
     return LaunchDescription([
         launch_ros.actions.Node(
             package='robot_localization',
             executable='ekf_node',
             name='ekf_filter_node',
             output='screen',
+            # parameters=[os.path.join(get_package_share_directory("deepdrive_bringup"), 'config', 'ekf', 'footprint_to_odom.yaml')],
             parameters=[os.path.join(get_package_share_directory("deepdrive_bringup"), 'config', 'ekf.yaml')],
+            remappings=remappings,
            ),
 ])

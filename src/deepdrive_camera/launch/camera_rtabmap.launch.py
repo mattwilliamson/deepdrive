@@ -11,12 +11,13 @@ from launch_ros.descriptions import ComposableNode
 
 def launch_setup(context, *args, **kwargs):
     name = LaunchConfiguration('name').perform(context)
+    frame = LaunchConfiguration('frame').perform(context)
     depthai_prefix = get_package_share_directory("depthai_ros_driver")
 
     params_file= LaunchConfiguration("params_file")
     parameters = [
         {
-            "frame_id": name,
+            "frame_id": frame,
             "subscribe_rgb": True,
             "subscribe_depth": True,
             "subscribe_odom_info": True,
