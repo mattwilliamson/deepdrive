@@ -1,12 +1,23 @@
-# Deepdrive Hardware
+# Deepdrive Vision
 
-## Motor Controller
-
-### Install Requirements
+## Run litellm docker container
+https://litellm.vercel.app/docs/providers/ollama
 
 ```sh
-pip install --upgrade Jetson.GPIO
+
+docker run -it --net host --name ollama litellm/ollama
+
 ```
+
+## Install Requirements
+
+```sh
+make dockersimshell
+
+python3 -m pip install -r src/deepdrive_vision/requirements.txt
+ros2 run deepdrive_vision vision_service
+```
+
 
 
 ## Example Payloads

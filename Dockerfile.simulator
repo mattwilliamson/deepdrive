@@ -36,7 +36,6 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-navigation2 \
         ros-${ROS_DISTRO}-nav2-bringup \
         ros-${ROS_DISTRO}-foxglove-bridge \
-        a \
         ros-${ROS_DISTRO}-turtlebot3-gazebo \
         ros-${ROS_DISTRO}-depthai-ros-driver \
         ros-${ROS_DISTRO}-hls-lfcd-lds-driver \
@@ -70,37 +69,45 @@ RUN apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.zshrc
-RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.zshrc
-RUN echo "source /opt/ros/humble/setup.zsh" >> /root/.zshrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.zshrc
-
-RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.zshrc
-RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.zshrc
-RUN echo 'alias ssetup="source ./install/local_setup.zsh"' >> /root/.zshrc
-RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.zshrc
-RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.zshrc
-RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.zshrc
-
-RUN echo "autoload -U bashcompinit" >> /root/.zshrc
-RUN echo "bashcompinit" >> /root/.zshrc
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.zshrc
-RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.zshrc
-
-COPY .session.yml /root/.session.yml
-COPY .tmux.conf /root/.tmux.conf
-
-CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
-
-ENV ROS2_WS=/ros_ws \
+ENV ROS_ROOT=/opt/ros/${ROS_DISTRO} \
+    ROS2_WS=/ros_ws \
     ROS_PACKAGE=deepdrive \
     RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.bashrc
+RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.bashrc
+RUN echo "source $ROS_ROOT/setup.sh" >> /root/.bashrc
+RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.bashrc
+RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.bashrc
+
+RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.bashrc
+RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.bashrc
+RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.bashrc
+RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.bashrc
+RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.bashrc
+RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.bashrc
+
+# RUN echo "autoload -U bashcompinit" >> /root/.bashrc
+# RUN echo "bashcompinit" >> /root/.bashrc
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.bashrc
+RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
+
+# COPY .session.yml /root/.session.yml
+# COPY .tmux.conf /root/.tmux.conf
+
+# CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+
+# ----------------------------------------------------------------------------
+
 WORKDIR $ROS2_WS
-COPY src $ROS2_WS/src/deepdrive
-RUN zsh -c "source /opt/ros/humble/setup.zsh && \
-            colcon build --symlink-install && \
-            echo source $ROS2_WS/install/setup.sh >> /root/.zshrc"
+
+COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt
+RUN pip3 install -r src/deepdrive_hardware/requirements.txt
+
+
+COPY src/* src/
+VOLUME /tmp
+RUN bash -c "source $ROS_ROOT/setup.bash && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/setup_ws.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so

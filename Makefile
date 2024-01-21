@@ -22,6 +22,7 @@ dockershell: docker
 		-e DISPLAY=${DISPLAY} \
 		-e PYTHONBUFFERED=1 \
 		-v /dev/:/dev/ \
+		-v /tmp:/tmp \
 		-v /proc/device-tree/compatible:/proc/device-tree/compatible \
 		-v /proc/device-tree/chosen:/proc/device-tree/chosen \
 		--device /dev/gpiochip0 \
@@ -43,7 +44,7 @@ dockersim:
 
 .PHONY: dockersimshell
 dockersimshell: dockersim
-	xhost +local:docker
+	# xhost +local:docker
 	docker run \
 		--network=host \
 		--runtime nvidia \
