@@ -1,6 +1,7 @@
 <launch>
     <arg name="lidar_port" default="/dev/ttyTHS0"/>
     <arg name="use_gui" default="FALSE"/>
+    <arg name="use_lidar" default="TRUE"/>
     <arg name="camera_model" default="OAK-D-LITE"/>
     <!-- <arg name="base_frame" default="base_link" /> -->
 
@@ -14,7 +15,7 @@
     <!-- LIDAR -->
     <!-- https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver/tree/master/launch -->
     <!-- <node pkg="hls_lfcd_lds_driver" type="hlds_laser_segment_publisher" name="hlds_laser_segment_publisher" output="screen"> -->
-    <node pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
+    <node if="$(var use_lidar)"  pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
         <param name="port" value="$(var lidar_port)"/>
         <param name="frame_id" value="laser"/>
     </node>
@@ -23,8 +24,8 @@
     <!-- Camera -->
     <include file="$(find-pkg-share deepdrive_camera)/launch/camera.launch.xml" />
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_footprint_oak" args="0 0 0 0 0 0 camera_link oak" output="screen" /> -->
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_base" args="0 0 0 0 0 0 oak-d-base-frame oak" output="screen" />
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_imu" args="0 0 0 0 0 0 base_link oak-d-base-frame" output="screen" />
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_base" args="0 0 0 0 0 0 oak-d-base-frame oak" output="screen" /> -->
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_imu" args="0 0 0 0 0 0 base_link oak-d-base-frame" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="imu_link_odom" args="0 0 0 0 0 0 imu_link odom" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="imu_link_oak_base_frame" args="0 0 0 0 0 0 imu_link oak-d-base-frame" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_oak_model_origin" args="0 0 0 0 0 0 oak oak_model_origin" output="screen" /> -->
