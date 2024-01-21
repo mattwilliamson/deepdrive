@@ -57,6 +57,7 @@ dockersimshell: dockersim
 		-e PYTHONBUFFERED=1 \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
+		-v /tmp:/tmp \
 		--device=/dev/bus/usb:/dev/bus/usb \
 		${ROS_PACKAGE}-sim tmux
 

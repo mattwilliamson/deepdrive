@@ -189,7 +189,7 @@ RUN pip3 install -r src/deepdrive_hardware/requirements.txt
 COPY src/* src/
 
 
-
+VOLUME /tmp
 
 
 RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"

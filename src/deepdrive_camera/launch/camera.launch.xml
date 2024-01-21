@@ -7,7 +7,11 @@
     <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/pointcloud.launch.py"> -->
 
     <!-- This one successfully publishes on odom and map topics as well as point clouds -->
-    <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py">
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
+
+    <!-- Try to detect object with onboard AI model on oak d lite -->
+    <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py">
+    
         <arg name="frame" value="base_footprint"/>
         <!-- camera/odometry -->
         <!-- <remap from="/input/pose" to="/turtlesim1/turtle1/pose"/> -->
