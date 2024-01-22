@@ -181,10 +181,10 @@ CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
 WORKDIR $ROS2_WS
 
 COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt
-
-RUN ls -lah src/deepdrive_hardware
-
 RUN pip3 install -r src/deepdrive_hardware/requirements.txt
+
+COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
+RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
 COPY src/* src/
 

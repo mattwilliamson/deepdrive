@@ -6,7 +6,8 @@ https://litellm.vercel.app/docs/providers/ollama
 ```sh
 
 docker run -it --net host --name ollama litellm/ollama
-
+docker exec -it ollama ollama pull llama2
+docker exec -it ollama ollama pull mixtral
 ```
 
 ## Install Requirements
@@ -15,7 +16,22 @@ docker run -it --net host --name ollama litellm/ollama
 make dockersimshell
 
 python3 -m pip install -r src/deepdrive_vision/requirements.txt
+
 ros2 run deepdrive_vision vision_service
+```
+
+## Playback Rosbag
+https://github.com/ros2/rosbag2
+```sh
+mkdir src/bag
+cd src/bag
+ros2 bag record -a
+ros2 bag play src/bag/rosbag2_2024_01_22-09_43_40
+```
+
+## Foxglove studio
+```sh
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ```
 
 
