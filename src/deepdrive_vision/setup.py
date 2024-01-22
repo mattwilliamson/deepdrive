@@ -13,6 +13,7 @@ setup(
     ],
     install_requires=[
         'setuptools',
+        'litellm',
     ],
     zip_safe=True,
     author='Matt Williamson',
