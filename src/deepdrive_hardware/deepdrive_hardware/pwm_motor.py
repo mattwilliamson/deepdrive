@@ -29,18 +29,21 @@ class MotorDriverL293:
         self.init_pins()
 
     def init_pins(self):
+        # Turn on PWM for speed control
         GPIO.setup(self.left_enable, GPIO.OUT)
+        self.left_pwm = GPIO.PWM(self.left_enable, self.hz)
+        self.left_pwm.start(0)
+
+        # Turn on PWM for speed control
+        GPIO.setup(self.right_enable, GPIO.OUT)
+        self.right_pwm = GPIO.PWM(self.right_enable, self.hz)
+        self.right_pwm.start(0)
+        
         GPIO.setup(self.left_forward, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.left_backward, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.right_enable, GPIO.OUT)
         GPIO.setup(self.right_forward, GPIO.OUT, initial=GPIO.LOW)
         GPIO.setup(self.right_backward, GPIO.OUT, initial=GPIO.LOW)
-
-        # Turn on PWM for pin control
-        self.left_pwm = GPIO.PWM(self.left_enable, self.hz)
-        self.right_pwm = GPIO.PWM(self.right_enable, self.hz)
-        self.left_pwm.start(0)
-        self.right_pwm.start(0)
+        
 
     def _set_pin(self, pin, value):
         print(f"Setting pin {pin} to {value}")
