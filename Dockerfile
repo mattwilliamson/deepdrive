@@ -174,7 +174,8 @@ RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
 COPY .session.yml /root/.session.yml
 COPY .tmux.conf /root/.tmux.conf
 
-CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+# CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+CMD [ "bash" ]
 
 # ----------------------------------------------------------------------------
 

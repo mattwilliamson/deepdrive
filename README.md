@@ -98,7 +98,7 @@ ros2 launch deepdrive_nav2_bringup tb3_simulation_launch.py headless:=False use_
 
 ### Vizualize URDF
 ```sh
-urdf-viz src/deepdrive/deepdrive_description/urdf/deepdrive_deepdrive.urdf
+urdf-viz src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 ```
 
 ---

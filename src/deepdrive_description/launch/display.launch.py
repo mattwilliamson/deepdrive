@@ -9,9 +9,9 @@ from launch.conditions import IfCondition
 
 def generate_launch_description():
     pkg_share = launch_ros.substitutions.FindPackageShare(package='deepdrive_description').find('deepdrive_description')
-    default_model_path = os.path.join(pkg_share, 'src/description/deepdrive_description.urdf')
+    default_model_path = os.path.join(pkg_share, 'urdf/deepdrive_deepdrive.urdf')
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/urdf_config.rviz')
-    world_path=os.path.join(pkg_share, 'world/my_world.sdf')
+    world_path=os.path.join(pkg_share, 'worlds/deepdrive_world.world')
     
     robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
@@ -42,15 +42,16 @@ def generate_launch_description():
          executable='ekf_node',
          name='ekf_filter_node',
          output='screen',
-         parameters=[os.path.join(pkg_share, 'config/ekf.yaml'), {'use_sim_time': LaunchConfiguration('use_sim_time')}]
+         parameters=[os.path.join(get_package_share_directory("deepdrive_bringup"), 'config', 'ekf.yaml'), {'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     foxglove_bridge = IncludeLaunchDescription(
         XMLLaunchDescriptionSource(
             os.path.join(
                 get_package_share_directory("foxglove_bridge"),
+                "launch",
                 "foxglove_bridge_launch.xml",
-            )
+            ),
         )
     )
 
@@ -64,11 +65,11 @@ def generate_launch_description():
                                             description='Absolute path to rviz config file'),
         launch.actions.DeclareLaunchArgument(name='use_sim_time', default_value='True',
                                             description='Flag to enable use_sim_time'),
-        launch.actions.ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', world_path], output='screen'),
+        # launch.actions.ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', world_path], output='screen'),
         joint_state_publisher_node,
         robot_state_publisher_node,
-        spawn_entity,
+        # spawn_entity,
         robot_localization_node,
-        rviz_node,
+        # rviz_node,
         foxglove_bridge
     ])

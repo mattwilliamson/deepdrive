@@ -107,9 +107,13 @@ RUN pip3 install -r src/deepdrive_hardware/requirements.txt
 COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
 RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
-COPY src/* src/
 VOLUME /tmp
+
+COPY src/* src/
+
+
 RUN bash -c "source $ROS_ROOT/setup.bash && colcon build --symlink-install"
+RUN bash -c "source $ROS2_WS/install/setup.bash && colcon build --symlink-install"
 
 # RUN bash /opt/ros/humble/setup_ws.sh libgazebo_ros_diff_drive
 # libgazebo_ros_imu_sensor.so
