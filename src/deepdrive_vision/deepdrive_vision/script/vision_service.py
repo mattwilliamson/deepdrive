@@ -63,14 +63,14 @@ class VisionService(Node):
         # depthai_ros_msgs/msg/SpatialDetectionArray @ 1705790925.999000000 sec
 
         self.img_sub = self.create_subscription(
-            Image, "/oak/rgb/image_raw", self.got_image, qos
+            Image, "/camera/rgb/image_raw", self.got_image, qos
         )
 
         self.pub_annotations = self.create_publisher(
-            ImageAnnotations, "/oak/rgb/annotations", qos
+            ImageAnnotations, "/camera/rgb/annotations", qos
         )
 
-        self.pub_markers = self.create_publisher(TextMarker, "/oak/rgb/markers", qos)
+        self.pub_markers = self.create_publisher(TextMarker, "/camera/rgb/markers", qos)
 
         self.previous_items = []
 

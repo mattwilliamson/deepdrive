@@ -81,7 +81,7 @@ ekf_filter_node:
 # odom1, twist0, twist1, imu0, imu1, imu2, etc. The value should be the topic name. These parameters obviously have no
 # default values, and must be specified.
         # odom0: wheel/odometry
-        odom0: /oak/odom
+        odom0: /camera/odom
 
 # Each sensor reading updates some or all of the filter's state. These options give you greater control over which
 # values from each measurement are fed to the filter. For example, if you have an odometry message as input, but only
@@ -136,7 +136,7 @@ ekf_filter_node:
         odom0_pose_rejection_threshold: 5.0
         odom0_twist_rejection_threshold: 1.0
 
-        imu0: imu
+        imu0: /camera/imu/data
         imu0_config: [false, false, false,
                       false, false, true,
                       false, false, false,

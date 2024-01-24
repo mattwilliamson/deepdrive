@@ -17,15 +17,16 @@
     <!-- <node pkg="hls_lfcd_lds_driver" type="hlds_laser_segment_publisher" name="hlds_laser_segment_publisher" output="screen"> -->
     <node if="$(var use_lidar)"  pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
         <param name="port" value="$(var lidar_port)"/>
-        <param name="frame_id" value="laser"/>
+        <param name="frame_id" value="base_scan"/>
     </node>
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="0 0 0 3.14159 0 0 base_link laser" output="screen" />
+    
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="0 0 0 3.14159 0 0 base_link laser" output="screen" /> -->
 
     <!-- Camera -->
     <include file="$(find-pkg-share deepdrive_camera)/launch/camera.launch.xml" />
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_footprint_oak" args="0 0 0 0 0 0 camera_link oak" output="screen" /> -->
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_base" args="0 0 0 0 0 0 oak-d-base-frame oak" output="screen" />
-    <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_imu" args="0 0 0 0 0 0 base_link oak-d-base-frame" output="screen" />
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_base" args="0 0 0 0 0 0 oak-d-base-frame oak" output="screen" /> -->
+    <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_imu" args="0 0 0 0 0 0 base_link oak-d-base-frame" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="imu_link_odom" args="0 0 0 0 0 0 imu_link odom" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="imu_link_oak_base_frame" args="0 0 0 0 0 0 imu_link oak-d-base-frame" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_oak_model_origin" args="0 0 0 0 0 0 oak oak_model_origin" output="screen" /> -->
@@ -41,7 +42,7 @@
     <!-- https://index.ros.org/p/foxglove_bridge/ -->
     <include file="$(find-pkg-share foxglove_bridge)/launch/foxglove_bridge_launch.xml">
         <arg name="port" value="8765"/>
-        <arg name="asset_uri_allowlist" value="[^package://.*.stl$]"/>
+        <arg name="asset_uri_allowlist" value="['^package://.*\\.(?:dae|fbx|glb|gltf|jpeg|jpg|mtl|obj|png|stl|tif|tiff|urdf|webp|xacro)$']"/>
         <!-- <arg name="asset_uri_allowlist" default="['^package://(?:\\w+/)*\\w+\\.(?:dae|fbx|glb|gltf|jpeg|jpg|mtl|obj|png|stl|tif|tiff|urdf|webp|xacro)$']" />  Needs double-escape -->
     </include>
 </launch>
