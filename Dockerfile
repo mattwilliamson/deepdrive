@@ -96,7 +96,8 @@ RUN bash install_deps.sh \
         gazebo_plugins \
         gazebo_ros_pkgs \
         rtabmap_ros \
-        foxglove_msgs
+        foxglove_msgs \
+        ros_control
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \

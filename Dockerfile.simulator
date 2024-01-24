@@ -40,6 +40,8 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-depthai-ros-driver \
         ros-${ROS_DISTRO}-hls-lfcd-lds-driver \
         ros-${ROS_DISTRO}-rqt* \
+        ros-${ROS_DISTRO}-joint-state-publisher-gui \
+        ros-${ROS_DISTRO}-ros-control ros-${ROS_DISTRO}-ros2-control ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-gazebo-ros2-control \
         x11-apps \
         xtl-dev \
         ruby-dev \
