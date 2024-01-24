@@ -21,7 +21,7 @@
 
 
         <!-- <param name="odom0" value="odometry/gps"/> -->
-        <param name="imu0" value="/imu/data"/>
+        <param name="imu0" value="/camera/imu/data"/>
 
         <!-- <rosparam param="process_noise_covariance"></rosparam>
         <rosparam param="initial_estimate_covariance"></rosparam> -->
