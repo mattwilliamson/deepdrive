@@ -59,8 +59,9 @@ dockersimshell: dockersim
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp:/tmp \
+		-v "/tmp/.gazebo/:/root/.gazebo/" \
 		--device=/dev/bus/usb:/dev/bus/usb \
-		${ROS_PACKAGE}-sim tmux
+		${ROS_PACKAGE}-sim
 
 		# TODO: See if we need these
 		# -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
