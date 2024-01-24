@@ -187,7 +187,7 @@ RUN pip3 install -r src/deepdrive_hardware/requirements.txt
 COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
 RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
-COPY src/* src/
+COPY src ./src/
 
 
 VOLUME /tmp
