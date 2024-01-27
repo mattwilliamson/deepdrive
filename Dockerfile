@@ -97,7 +97,12 @@ RUN bash install_deps.sh \
         gazebo_ros_pkgs \
         rtabmap_ros \
         foxglove_msgs \
-        ros_control
+        ros2_control \
+        ros2_controllers \
+        control_toolbox \
+        realtime_tools \
+        control_msgs \
+        ros2_control_demos
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
