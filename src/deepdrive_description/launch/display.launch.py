@@ -11,10 +11,12 @@ from launch.conditions import IfCondition
 
 def generate_launch_description():
     pkg_share = launch_ros.substitutions.FindPackageShare(package='deepdrive_description').find('deepdrive_description')
-    default_model_path = os.path.join(pkg_share, 'urdf/deepdrive_deepdrive.urdf')
+    default_model_path = os.path.join(pkg_share, 'urdf/deepdrive_deepdrive.xacro')
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/model.rviz')
-    world_path=os.path.join(pkg_share, 'worlds/deepdrive_world.world')
+    
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
+    # world_path=os.path.join(pkg_share, 'worlds/deepdrive_world.world')
+    world_path = os.path.join(get_package_share_directory('deepdrive_gazebo'), 'worlds', 'deepdrive_house.world')
     
     robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
@@ -70,15 +72,15 @@ def generate_launch_description():
                                             description='Absolute path to robot urdf file'),
         launch.actions.DeclareLaunchArgument(name='rvizconfig', default_value=default_rviz_config_path,
                                             description='Absolute path to rviz config file'),
-        launch.actions.DeclareLaunchArgument(name='use_sim_time', default_value='False',
+        launch.actions.DeclareLaunchArgument(name='use_sim_time', default_value='True',
                                             description='Flag to enable use_sim_time'),
-        # launch.actions.ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', world_path], output='screen'),
+        launch.actions.ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_init.so', '-s', 'libgazebo_ros_factory.so', world_path], output='screen'),
         # gzserver_cmd,
         # gzclient_cmd,
         joint_state_publisher_node,
         robot_state_publisher_node,
         spawn_entity,
-        # robot_localization_node,
+        robot_localization_node,
         rviz_node,
-        foxglove_bridge
+        # foxglove_bridge
     ])

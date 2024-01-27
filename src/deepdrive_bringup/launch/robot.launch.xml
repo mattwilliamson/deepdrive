@@ -5,7 +5,7 @@
     <arg name="camera_model" default="OAK-D-LITE"/>
     <!-- <arg name="base_frame" default="base_link" /> -->
 
-    <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher" output="screen" args="$(find-pkg-share deepdrive_description)/urdf/deepdrive_deepdrive.urdf"/>
+    <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher" output="screen" args="$(find-pkg-share deepdrive_description)/urdf/deepdrive_deepdrive.xacro"/>
 
     <node pkg="joint_state_publisher" exec="joint_state_publisher" name="joint_state_publisher" output="screen">
         <param name="use_gui" value="$(var use_gui)"/>

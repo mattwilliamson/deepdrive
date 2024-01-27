@@ -172,7 +172,7 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
-    urdf = os.path.join(description_dir, 'urdf', 'deepdrive_deepdrive.urdf')
+    urdf = os.path.join(description_dir, 'urdf', 'deepdrive_deepdrive.xacro')
     with open(urdf, 'r') as infp:
         robot_description = infp.read()
 

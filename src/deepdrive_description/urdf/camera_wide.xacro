@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="camera_wide" params="mount_point">
+
+        <!-- Wide angle camera -->
+        <joint name="${mount_point}_joint" type="fixed">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="${mount_point}"/>
+            <child link="${mount_point}_link"/>
+        </joint>
+
+        <link name="${mount_point}_link">
+            <visual>
+                <origin xyz="-0.01 -0.015 0.001" rpy="${pi/2} 0 ${pi/2}"/>
+                <geometry>
+                    <mesh filename="package://deepdrive_description/meshes/sensors/camera_wide.stl" scale=".001 .001 .001"/>
+                </geometry>
+                <material name="green"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.005 0.025 0.025"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${mount_point}_optical_joint" type="fixed">
+            <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+            <parent link="${mount_point}"/>
+            <child link="${mount_point}_optical_frame"/>
+        </joint>
+        <link name="${mount_point}_optical_frame"/>
+
+        <gazebo reference="${mount_point}_link">
+            <material>Gazebo/White</material>
+
+            <sensor type="camera" name="${mount_point}">
+                <pose>0 0 0 0 0 0</pose>
+                <update_rate>10.0</update_rate>
+                <visualize>true</visualize>
+                <camera>
+                    <horizontal_fov>2.181661565</horizontal_fov>
+                    <image>
+                        <width>800</width>
+                        <height>600</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.03</near>
+                        <far>300</far>
+                    </clip>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.007</stddev>
+                    </noise>
+                </camera>
+
+                <plugin name="${mount_point}_optical_frame" filename="libgazebo_ros_camera.so">
+                    <frame_name>${mount_point}_optical_frame</frame_name>
+
+                    <!-- <alwaysOn>true</alwaysOn> -->
+                    <!-- <updateRate>0.0</updateRate> -->
+                    <!-- <cameraName>${mount_point}_optical_frame</cameraName> -->
+                    <!-- <imageTopicName>${mount_point}_optical</imageTopicName> -->
+                    <!-- <cameraInfoTopicName>${mount_point}_optical_info</cameraInfoTopicName> -->
+                    <!-- <frameName>${mount_point}_optical_frame</frameName> -->
+                    <!-- setting hackBaseline to anything but 0.0 will cause a misalignment
+                between the gazebo sensor image and the frame it is supposed to
+                be attached to -->
+                    <!-- <hackBaseline>0.0</hackBaseline> -->
+                    <!-- <distortionK1>0.0</distortionK1> -->
+                    <!-- <distortionK2>0.0</distortionK2> -->
+                    <!-- <distortionK3>0.0</distortionK3> -->
+                    <!-- <distortionT1>0.0</distortionT1> -->
+                    <!-- <distortionT2>0.0</distortionT2> -->
+                    <!-- <CxPrime>0</CxPrime> -->
+                    <!-- <Cx>0.0</Cx> -->
+                    <!-- <Cy>0.0</Cy> -->
+                    <!-- <focalLength>0.0</focalLength> -->
+                </plugin>
+
+            </sensor>
+
+        </gazebo>
+    </xacro:macro>
+</robot>

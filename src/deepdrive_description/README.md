@@ -9,5 +9,5 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
 ```sh
-urdf-viz src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
+urdf-viz src/deepdrive_description/urdf/deepdrive_deepdrive.xacro
 ```

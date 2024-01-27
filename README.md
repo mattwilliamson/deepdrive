@@ -19,6 +19,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] navigation2
 - [ ] slam 2d/3d slam-toolbox/rtabmap
 - [ ] https://github.com/BehaviorTree/BehaviorTree.CPP
+- [ ]   <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py

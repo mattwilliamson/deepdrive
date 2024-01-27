@@ -45,7 +45,7 @@ def generate_launch_description():
     use_robot_state_pub = LaunchConfiguration("use_robot_state_pub")
     # default_model_path = os.path.join(pkg_share, 'src/description/deepdrive_description.urdf')
     description_dir = get_package_share_directory("deepdrive_description")
-    urdf = os.path.join(description_dir, "urdf", "deepdrive_deepdrive.urdf")
+    urdf = os.path.join(description_dir, "urdf", "deepdrive_deepdrive.xacro")
     # pkg_share = launch_ros.substitutions.FindPackageShare(package='deepdrive_description').find('deepdrive_description')
 
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]

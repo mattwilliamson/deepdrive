@@ -110,6 +110,7 @@ WORKDIR $ROS2_WS
 # RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
 VOLUME /tmp
+ENV GAZEBO_MODEL_PATH=$ROS2_WS/src/:$GAZEBO_MODEL_PATH
 
 CMD [ "bash" ]
 

@@ -43,12 +43,5 @@
       </ode>
     </physics>
 
-    <model name="deepdrive_world">
-      <static>1</static>
-      <include>
-        <uri>model://deepdrive_world</uri>
-      </include>
-    </model>
-
   </world>
 </sdf>
