@@ -34,7 +34,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'motor_controller = deepdrive_hardware.script.motor_controller:main'
+            'motor_controller = deepdrive_hardware.script.motor_controller:main',
+            'speed_test = deepdrive_hardware.script.speed_test:main',
         ],
     },
 )

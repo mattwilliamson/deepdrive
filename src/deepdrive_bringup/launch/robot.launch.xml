@@ -5,7 +5,8 @@
     <arg name="camera_model" default="OAK-D-LITE"/>
     <!-- <arg name="base_frame" default="base_link" /> -->
 
-    <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher" output="screen" args="$(find-pkg-share deepdrive_description)/urdf/deepdrive_deepdrive.xacro"/>
+    <!-- Robot state publisher -->
+    <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" />
 
     <node pkg="joint_state_publisher" exec="joint_state_publisher" name="joint_state_publisher" output="screen">
         <param name="use_gui" value="$(var use_gui)"/>
@@ -13,12 +14,7 @@
     <!-- <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" name="joint_state_publisher_gui"/> -->
 
     <!-- LIDAR -->
-    <!-- https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver/tree/master/launch -->
-    <!-- <node pkg="hls_lfcd_lds_driver" type="hlds_laser_segment_publisher" name="hlds_laser_segment_publisher" output="screen"> -->
-    <node if="$(var use_lidar)"  pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
-        <param name="port" value="$(var lidar_port)"/>
-        <param name="frame_id" value="base_scan"/>
-    </node>
+    <include if="$(var use_lidar)" file="$(find-pkg-share deepdrive_bringup)/launch/lidar.launch.xml" />
     
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="0 0 0 3.14159 0 0 base_link laser" output="screen" /> -->
 
