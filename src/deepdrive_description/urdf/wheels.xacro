@@ -11,7 +11,7 @@
             <parent link="base_link"/>
             <child link="wheel_${name}_link"/>
             <origin xyz="${wheel_front_offset/2 + (fb * (wheel_base / 2))} ${-lr * wheel_base/2} 0.0" rpy="0 0 ${lr*1.57}"/>
-            <axis xyz="${-1*lr} 0 0"/>
+            <axis xyz="${lr} 0 0"/>
         </joint>
 
         <link name="wheel_${name}_link">
