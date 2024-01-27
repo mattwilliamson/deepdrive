@@ -58,7 +58,7 @@ dockersimshell: dockersim
 		-e PYTHONBUFFERED=1 \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
-		-v /tmp:/tmp \
+		-v /tmp/deepdrive:/tmp \
 		-v "/tmp/.gazebo/:/root/.gazebo/" \
 		--device=/dev/bus/usb:/dev/bus/usb \
 		${ROS_PACKAGE}-sim

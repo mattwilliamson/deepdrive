@@ -3,6 +3,7 @@
   xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:property name="wheel_base" value="0.175" />
+  <xacro:property name="wheel_radius" value="0.035" />
 
   <xacro:include filename="$(find deepdrive_description)/urdf/common_properties.xacro"/>
   <xacro:include filename="$(find deepdrive_description)/urdf/wheels.xacro"/>
@@ -39,11 +40,15 @@
     </inertial>
   </link>
 
+  <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
 
-  <xacro:wheel name="front_right" lr="1" fb="1" wheel_base="${wheel_base}" />
-  <xacro:wheel name="back_right" lr="1" fb="-1" wheel_base="${wheel_base}" />
-  <xacro:wheel name="front_left" lr="-1" fb="-1" wheel_base="${wheel_base}" />
-  <xacro:wheel name="back_left" lr="-1" fb="1" wheel_base="${wheel_base}" />
+
+  <xacro:wheel name="front_right" lr="1" fb="1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="back_right" lr="1" fb="-1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="front_left" lr="-1" fb="-1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="back_left" lr="-1" fb="1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
 
 
 
@@ -70,6 +75,67 @@
   <xacro:include filename="$(find deepdrive_description)/urdf/camera.xacro" />
 
 
+
+  <gazebo>
+    <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
+
+
+      <!-- Wheel Information -->
+      <num_wheel_pairs>2</num_wheel_pairs>
+      <left_joint>wheel_front_left_joint</left_joint>
+      <right_joint>wheel_front_right_joint</right_joint>
+      <left_joint>wheel_back_left_joint</left_joint>
+      <right_joint>wheel_back_right_joint</right_joint>
+      <wheel_separation>${wheel_base}</wheel_separation>
+      <wheel_diameter>${wheel_radius*2}</wheel_diameter>
+
+      <!-- Limits -->
+      <max_wheel_torque>200</max_wheel_torque>
+      <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+
+      <!-- Output -->
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+
+         <!-- <ros>
+        <namespace>/demo</namespace>
+        <remapping>cmd_vel:=cmd_demo</remapping>
+        <remapping>odom:=odom_demo</remapping>
+      </ros> -->
+
+      <!-- <updateRate>100.0</updateRate>
+      <robotNamespace>/</robotNamespace>
+      <leftFrontJoint>wheel_front_left_joint</leftFrontJoint>
+      <rightFrontJoint>wheel_front_right_joint</rightFrontJoint>
+      <leftRearJoint>wheel_back_left_joint</leftRearJoint>
+      <rightRearJoint>wheel_back_right_joint</rightRearJoint>
+      <wheelSeparation>${wheel_base}</wheelSeparation>
+      <wheelDiameter>${wheel_radius*2}</wheelDiameter>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <torque>20</torque>
+      <topicName>cmd_vel</topicName>
+      <broadcastTF>true</broadcastTF>
+
+      <num_wheel_pairs>2</num_wheel_pairs>
+
+      <max_wheel_torque>20</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+
+
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf> -->
+
+    </plugin>
+  </gazebo>
 
 
 </robot>

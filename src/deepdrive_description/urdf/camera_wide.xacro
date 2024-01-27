@@ -34,7 +34,7 @@
         <link name="${mount_point}_optical_frame"/>
 
         <gazebo reference="${mount_point}_link">
-            <material>Gazebo/White</material>
+            <!-- <material>Gazebo/White</material> -->
 
             <sensor type="camera" name="${mount_point}">
                 <pose>0 0 0 0 0 0</pose>

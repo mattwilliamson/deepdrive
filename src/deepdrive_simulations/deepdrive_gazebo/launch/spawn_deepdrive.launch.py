@@ -23,13 +23,10 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Get the urdf file
-    DEEPDRIVE_MODEL = os.environ['DEEPDRIVE_MODEL']
-    model_folder = 'deepdrive_' + DEEPDRIVE_MODEL
     urdf_path = os.path.join(
-        get_package_share_directory('deepdrive_gazebo'),
-        'models',
-        model_folder,
-        'model.sdf'
+        get_package_share_directory('deepdrive_description'),
+        'urdf',
+        'deepdrive_deepdrive.urdf'
     )
 
     # Launch configuration variables specific to simulation
@@ -49,14 +46,24 @@ def generate_launch_description():
         package='gazebo_ros',
         executable='spawn_entity.py',
         arguments=[
-            '-entity', DEEPDRIVE_MODEL,
-            '-file', urdf_path,
+            '-entity', "deepdrive",
+            # '-file', urdf_path,
+            '-topic', 'robot_description',
             '-x', x_pose,
             '-y', y_pose,
             '-z', '0.01'
         ],
         output='screen',
     )
+
+    
+
+    # spawn_entity = launch_ros.actions.Node(
+    # 	package='gazebo_ros', 
+    # 	executable='spawn_entity.py',
+    #     arguments=['-entity', 'deepdrive', '-topic', 'robot_description'],
+    #     output='screen'
+    # )
 
     ld = LaunchDescription()
 

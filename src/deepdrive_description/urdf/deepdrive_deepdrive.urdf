@@ -61,6 +61,9 @@
       <inertia ixx="8.7002718e-03" ixy="-4.7576583e-05" ixz="1.1160499e-04" iyy="8.6195418e-03" iyz="-3.5422299e-06" izz="1.4612727e-02"/>
     </inertial>
   </link>
+  <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
   <joint name="wheel_front_right_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_front_right_link"/>
@@ -87,6 +90,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="wheel_front_right_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
   <joint name="tire_front_right_joint" type="fixed">
     <parent link="wheel_front_right_link"/>
     <child link="tire_front_right_link"/>
@@ -113,6 +119,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="tire_front_right_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
   <joint name="wheel_back_right_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_back_right_link"/>
@@ -139,6 +148,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="wheel_back_right_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
   <joint name="tire_back_right_joint" type="fixed">
     <parent link="wheel_back_right_link"/>
     <child link="tire_back_right_link"/>
@@ -165,6 +177,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="tire_back_right_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
   <joint name="wheel_front_left_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_front_left_link"/>
@@ -191,6 +206,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="wheel_front_left_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
   <joint name="tire_front_left_joint" type="fixed">
     <parent link="wheel_front_left_link"/>
     <child link="tire_front_left_link"/>
@@ -217,6 +235,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="tire_front_left_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
   <joint name="wheel_back_left_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_back_left_link"/>
@@ -243,6 +264,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="wheel_back_left_link">
+    <material>Gazebo/Blue</material>
+  </gazebo>
   <joint name="tire_back_left_joint" type="fixed">
     <parent link="wheel_back_left_link"/>
     <child link="tire_back_left_link"/>
@@ -269,6 +293,9 @@
       <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
     </inertial>
   </link>
+  <gazebo reference="tire_back_left_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
   <!-- <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
@@ -420,7 +447,7 @@
   </joint>
   <link name="camera_depth_depth_frame"/>
   <gazebo reference="camera_depth_link">
-    <material>Gazebo/White</material>
+    <material>Gazebo/Black</material>
     <sensor name="camera_depth_depth" type="depth">
       <pose>0.01233 -0.03 .01878 0 0 0</pose>
       <camera>
@@ -486,7 +513,7 @@
   </joint>
   <link name="camera_wide_optical_frame"/>
   <gazebo reference="camera_wide_link">
-    <material>Gazebo/White</material>
+    <!-- <material>Gazebo/White</material> -->
     <sensor name="camera_wide" type="camera">
       <pose>0 0 0 0 0 0</pose>
       <update_rate>10.0</update_rate>
@@ -583,4 +610,24 @@
     </joint>
     <link name="camera_depth_optical_frame"/> -->
   <!-- Gazebo plugin for center RGB camera -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="diff_drive">
+      <!-- Wheel Information -->
+      <left_joint>wheel_front_left_joint</left_joint>
+      <right_joint>wheel_front_right_joint</right_joint>
+      <left_joint>wheel_back_left_joint</left_joint>
+      <right_joint>wheel_back_right_joint</right_joint>
+      <wheel_separation>0.175</wheel_separation>
+      <wheel_diameter>0.07</wheel_diameter>
+      <!-- Limits -->
+      <max_wheel_torque>200</max_wheel_torque>
+      <max_wheel_acceleration>10.0</max_wheel_acceleration>
+      <!-- Output -->
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+    </plugin>
+  </gazebo>
 </robot>

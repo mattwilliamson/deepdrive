@@ -178,6 +178,8 @@ COPY .tmux.conf /root/.tmux.conf
 # CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
 CMD [ "bash" ]
 
+ENV DEEPDRIVE_MODEL=deepdrive
+
 # ----------------------------------------------------------------------------
 
 WORKDIR $ROS2_WS

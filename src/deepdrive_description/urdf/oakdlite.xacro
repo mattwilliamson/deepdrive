@@ -81,7 +81,7 @@
     <link name="${mount_point}_depth_frame"/>
 
     <gazebo reference="${mount_point}_link">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Black</material>
 
       <sensor name="${mount_point}_depth" type="depth">
         <pose>0.01233 -0.03 .01878 0 0 0</pose>
