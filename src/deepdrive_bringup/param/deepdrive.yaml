@@ -6,6 +6,7 @@ deepdrive_hardware:
       baud_rate: 1000000
       protocol_version: 2.0
 
+    # TODO: use these
     wheels:
       separation: 0.287
       radius: 0.033

@@ -2,7 +2,7 @@
 ekf_filter_node:
     ros__parameters:
 
-        use_sim_time: false
+        use_sim_time: true
 
         
 # The frequency, in Hz, at which the filter will output a position estimate. Note that the filter will not begin
@@ -81,7 +81,8 @@ ekf_filter_node:
 # odom1, twist0, twist1, imu0, imu1, imu2, etc. The value should be the topic name. These parameters obviously have no
 # default values, and must be specified.
         # odom0: wheel/odometry
-        odom0: /camera/odom
+        odom0: /diff_drive_controller/odom
+        # /odometry/filtered
 
 # Each sensor reading updates some or all of the filter's state. These options give you greater control over which
 # values from each measurement are fed to the filter. For example, if you have an odometry message as input, but only
@@ -136,7 +137,8 @@ ekf_filter_node:
         odom0_pose_rejection_threshold: 5.0
         odom0_twist_rejection_threshold: 1.0
 
-        imu0: /camera/imu/data
+        imu0: /imu_plugin/out
+        # imu0: /camera/imu/data
         imu0_config: [false, false, false,
                       false, false, true,
                       false, false, false,
@@ -156,7 +158,7 @@ ekf_filter_node:
         
         imu0_nodelay: false
         imu0_differential: false
-        imu0_relative: true
+        imu0_relative: false
         imu0_queue_size: 10
         imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
         imu0_twist_rejection_threshold: 0.8                #
@@ -178,7 +180,7 @@ ekf_filter_node:
 # predicition. Note that if an acceleration measurement for the variable in question is available from one of the
 # inputs, the control term will be ignored.
 # Whether or not we use the control input during predicition. Defaults to false.
-        use_control: true
+        use_control: false
 # Whether the input (assumed to be cmd_vel) is a geometry_msgs/Twist or geometry_msgs/TwistStamped message. Defaults to
 # false.
         stamped_control: false
