@@ -57,7 +57,7 @@ def generate_launch_description():
         package="joy",
         executable="joy_node",
         parameters=[joy_params, {"use_sim_time": use_sim_time}],
-        # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )
 
     teleop_node = Node(
@@ -65,7 +65,7 @@ def generate_launch_description():
         executable="teleop_node",
         name="teleop_node",
         parameters=[joy_params, {"use_sim_time": use_sim_time}],
-        # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )
 
     twist_mux_params = os.path.join(
@@ -116,17 +116,25 @@ def generate_launch_description():
         output="screen",
     )
 
-    # diff_drive_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner",
-    #     arguments=["diff_drive_controller"],
-    # )
+    diff_drive_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller"],
+        parameters=[{"use_sim_time": use_sim_time}],
+        # remappings=[
+        #     ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
+        # ],
+    )
 
-    # joint_broad_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner",
-    #     arguments=["joint_state_broadcaster"],
-    # )
+    joint_broad_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+        parameters=[{"use_sim_time": use_sim_time}],
+        # remappings=[
+        #     ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
+        # ],
+    )
 
     # Fuse IMU to odometry
     robot_localization_node = Node(
@@ -180,13 +188,13 @@ def generate_launch_description():
                 description="Absolute path to rviz config file",
             ),
             robot_state_pub_node,
-            joy_node,
+            # joy_node,
             # twist_mux,
             gazebo,
             spawn_entity,
-            # diff_drive_spawner,
-            # joint_broad_spawner,
-            robot_localization_node,
+            diff_drive_spawner,
+            joint_broad_spawner,
+            # robot_localization_node,
             teleop_node,
             rviz_node,
         ]
