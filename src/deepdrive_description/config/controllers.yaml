@@ -31,7 +31,7 @@ diff_drive_controller:
 
     # Odometry fused with IMU is published by robot_localization, so
     # no need to publish a TF based on encoders alone.
-    enable_odom_tf: true
+    enable_odom_tf: false
     # enable_odom_tf: true
 
     # pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
