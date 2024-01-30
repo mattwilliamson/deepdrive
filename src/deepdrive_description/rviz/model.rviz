@@ -13,6 +13,7 @@ Panels:
         - /TF1/Tree1
         - /Odometry1
         - /Imu1
+        - /Imu1/Acceleration properties1
       Splitter Ratio: 0.5
     Tree Height: 792
   - Class: rviz_common/Selection
