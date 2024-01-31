@@ -2,8 +2,11 @@
 <robot name="deepdrive_deepdrive"
   xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <xacro:arg name="sim_mode" default="false"/>
+
   <xacro:property name="wheel_base" value="0.175" />
   <xacro:property name="wheel_radius" value="0.035" />
+  <!-- <xacro:property name="use_mock_hardware" value="0.035" /> -->
 
   <xacro:include filename="$(find deepdrive_description)/urdf/common_properties.xacro"/>
   <xacro:include filename="$(find deepdrive_description)/urdf/wheels.xacro"/>
@@ -75,84 +78,59 @@
 
   <xacro:include filename="$(find deepdrive_description)/urdf/camera.xacro" />
 
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware> 
-  <!-- <hardware>
-      <plugin>mock_components/GenericSystem</plugin>
-      <param name="calculate_dynamics">true</param>
-    </hardware> -->
-  <joint name="wheel_front_left_joint">
+  <!-- ros2_control -->
+  <xacro:macro name="ros2_wheel_joint" params="name">
+    <joint name="wheel_${name}_joint">
       <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
+        <param name="min">-1</param>
+        <param name="max">1</param>
       </command_interface>
       <state_interface name="position" />
       <state_interface name="velocity" />
     </joint>
-    <joint name="wheel_front_right_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="velocity" />
-      <state_interface name="position" />
-    </joint>
-    <joint name="wheel_back_left_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="position" />
-      <state_interface name="velocity" />
-    </joint>
-    <joint name="wheel_back_right_joint">
-      <command_interface name="velocity">
-        <param name="min">-10</param>
-        <param name="max">10</param>
-      </command_interface>
-      <state_interface name="velocity" />
-      <state_interface name="position" />
-    </joint>
-  </ros2_control>
+  </xacro:macro>
 
-  <!-- <ros2_control name="${name}" type="system">
-    <xacro:unless value="${use_mock_hardware}">
+  <ros2_control name="GazeboSystem" type="system">
+
+    <!-- Gazebo simulation -->
+    <xacro:if value="$(arg sim_mode)">
       <hardware>
-        <plugin>ros2_control_demo_example_2/DiffBotSystemHardware</plugin>
-        <param name="example_param_hw_start_duration_sec">0</param>
-        <param name="example_param_hw_stop_duration_sec">3.0</param>
-      </hardware>
-    </xacro:unless>
-    <xacro:if value="${use_mock_hardware}">
-      <hardware>
-        <plugin>mock_components/GenericSystem</plugin>
-        <param name="calculate_dynamics">true</param>
+        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
       </hardware>
     </xacro:if>
-    <joint name="${prefix}left_wheel_joint">
-      <command_interface name="velocity"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="${prefix}right_wheel_joint">
-      <command_interface name="velocity"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control> -->
+
+    <!-- Physical Robot -->
+    <xacro:unless value="$(arg sim_mode)">
+      <hardware>
+        <plugin>deepdrive_control/DeepdriveSystemHardware</plugin>
+        <param name="mock_hardware">true</param>
+        <param name="pin_left_enable">32</param>
+        <param name="pin_left_forward">38</param>
+        <param name="pin_left_backward">37</param>
+        <param name="pin_right_enable">33</param>
+        <param name="pin_right_forward">35</param>
+        <param name="pin_right_backward">36</param>
+        <param name="pwm_hz">50</param>
+      </hardware>
+    </xacro:unless>
+
+    <xacro:ros2_wheel_joint name="back_right" />
+    <xacro:ros2_wheel_joint name="front_left" />
+    <xacro:ros2_wheel_joint name="back_left" />
+    <xacro:ros2_wheel_joint name="front_right" />
+
+  </ros2_control>
+
+  <xacro:if value="$(arg sim_mode)">
+    <gazebo>
+      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+        <parameters>$(find deepdrive_description)/config/controllers.yaml</parameters>
+      </plugin>
+    </gazebo>
 
 
-  <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find deepdrive_description)/config/controllers.yaml</parameters>
-    </plugin>
-  </gazebo>
-
-
-<!-- This one works in gazebo -->
-  <!-- <gazebo>
+    <!-- This one works in gazebo without ros2_control -->
+    <!-- <gazebo>
     <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
       <num_wheel_pairs>2</num_wheel_pairs>
       <left_joint>wheel_front_left_joint</left_joint>
@@ -175,75 +153,77 @@
   </gazebo> -->
 
 
-  <gazebo reference="imu_link">
-    <sensor name="imu_sensor" type="imu">
-      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-        <ros>
-          <namespace>/</namespace>
-          <remapping>~/out:=imu</remapping>
-        </ros>
-        <initial_orientation_as_reference>false</initial_orientation_as_reference>
-      </plugin>
-      <always_on>true</always_on>
-      <update_rate>100</update_rate>
-      <visualize>true</visualize>
-      <imu>
-        <angular_velocity>
-          <x>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>2e-4</stddev>
-              <bias_mean>0.0000075</bias_mean>
-              <bias_stddev>0.0000008</bias_stddev>
-            </noise>
-          </x>
-          <y>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>2e-4</stddev>
-              <bias_mean>0.0000075</bias_mean>
-              <bias_stddev>0.0000008</bias_stddev>
-            </noise>
-          </y>
-          <z>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>2e-4</stddev>
-              <bias_mean>0.0000075</bias_mean>
-              <bias_stddev>0.0000008</bias_stddev>
-            </noise>
-          </z>
-        </angular_velocity>
-        <linear_acceleration>
-          <x>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>1.7e-2</stddev>
-              <bias_mean>0.1</bias_mean>
-              <bias_stddev>0.001</bias_stddev>
-            </noise>
-          </x>
-          <y>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>1.7e-2</stddev>
-              <bias_mean>0.1</bias_mean>
-              <bias_stddev>0.001</bias_stddev>
-            </noise>
-          </y>
-          <z>
-            <noise type="gaussian">
-              <mean>0.0</mean>
-              <stddev>1.7e-2</stddev>
-              <bias_mean>0.1</bias_mean>
-              <bias_stddev>0.001</bias_stddev>
-            </noise>
-          </z>
-        </linear_acceleration>
-      </imu>
-    </sensor>
-  </gazebo>
 
+    <gazebo reference="imu_link">
+      <sensor name="imu_sensor" type="imu">
+        <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+          <ros>
+            <namespace>/</namespace>
+            <remapping>~/out:=imu</remapping>
+          </ros>
+          <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        </plugin>
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <visualize>true</visualize>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </gazebo>
+
+  </xacro:if>
 
 
 

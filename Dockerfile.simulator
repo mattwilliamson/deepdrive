@@ -42,7 +42,7 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-rqt* \
         ros-${ROS_DISTRO}-joint-state-publisher-gui \
         ros-${ROS_DISTRO}-ros2-control ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-gazebo-ros2-control \
-        joystick jstest-gtk evtest \
+        apt install joystick jstest-gtk evtest \
         x11-apps \
         xtl-dev \
         ruby-dev \
@@ -102,6 +102,17 @@ RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
 
 # ----------------------------------------------------------------------------
 
+# Install JetsonGPIO
+WORKDIR /usr/src
+RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
+    cd JetsonGPIO && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=./install -DBUILD_EXAMPLES=ON -DJETSON_GPIO_POST_INSTALL=OFF && \
+    cmake --build . --target install
+
+
+# Add ROS2 code
 WORKDIR $ROS2_WS
 
 # COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt

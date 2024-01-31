@@ -16,9 +16,6 @@ from launch.actions import (
 
 
 def generate_launch_description():
-    # Include the robot_state_publisher launch file, provided by our own package. Force sim time to be enabled
-    # !!! MAKE SURE YOU SET THE PACKAGE NAME CORRECTLY !!!
-
     package_name = "deepdrive_description"
     pkg_share = FindPackageShare(package="deepdrive_description").find(
         "deepdrive_description"
@@ -27,7 +24,7 @@ def generate_launch_description():
     default_rviz_config_path = os.path.join(pkg_share, "rviz/model.rviz")
     default_model_path = os.path.join(pkg_share, "urdf/deepdrive_deepdrive.xacro")
     robot_description = {
-        "robot_description": Command(["xacro ", LaunchConfiguration("model")])
+        "robot_description": Command(["xacro ", LaunchConfiguration("model"), ' sim_mode:=', use_sim_time])
     }
 
     rviz_node = Node(
@@ -42,12 +39,13 @@ def generate_launch_description():
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="both",
-        parameters=[robot_description],
+        parameters=[robot_description, {'use_sim_time': use_sim_time}],
         # parameters=[],
         # remappings=[
         #     ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
         # ],
     )
+
 
     joy_params = os.path.join(
         get_package_share_directory("articubot_one"), "config", "joystick.yaml"

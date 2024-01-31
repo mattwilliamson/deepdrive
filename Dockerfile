@@ -187,6 +187,16 @@ ENV DEEPDRIVE_MODEL=deepdrive
 
 # ----------------------------------------------------------------------------
 
+# Install JetsonGPIO
+WORKDIR /usr/src
+RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
+    cd JetsonGPIO && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=./install -DBUILD_EXAMPLES=ON -DJETSON_GPIO_POST_INSTALL=OFF && \
+    cmake --build . --target install
+
+# Add ROS2 source code
 WORKDIR $ROS2_WS
 
 COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt
