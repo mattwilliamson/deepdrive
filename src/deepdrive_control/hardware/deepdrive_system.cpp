@@ -47,6 +47,8 @@ DeepdriveSystemHardware::on_init(const hardware_interface::HardwareInfo &info) {
 
   hw_mock_ = parse_bool(info_.hardware_parameters["mock_hardware"]);
 
+  command_rate_hz_ = std::stoi(info_.hardware_parameters["command_rate"]);
+
   hw_pin_left_enable_ = std::stoi(info_.hardware_parameters["pin_left_enable"]);
   hw_pin_left_forward_ =
       std::stoi(info_.hardware_parameters["pin_left_forward"]);
@@ -228,9 +230,7 @@ DeepdriveSystemHardware::read(const rclcpp::Time & /*time*/,
 hardware_interface::return_type
 deepdrive_control::DeepdriveSystemHardware::write(
     const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/) {
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to
-  // your production code
-  // RCLCPP_INFO(rclcpp::get_logger("DeepdriveSystemHardware"), "Writing...");
+
 
   for (auto i = 0u; i < hw_commands_.size(); i++) {
     // Simulate sending commands to the hardware
@@ -238,7 +238,7 @@ deepdrive_control::DeepdriveSystemHardware::write(
     //   rclcpp::get_logger("DeepdriveSystemHardware"), "Got command %.5f for'%s'!", 
     //   hw_commands_[i], info_.joints[i].name.c_str());
 
-    // I'm not sure what units these are, but max signal I see when sending is 1
+    // I'm not sure what units these are, but max signal I see when sending is 16
     // so that will be max pwm
     hw_velocities_[i] = hw_commands_[i];
     if (hw_velocities_[i] > MAX_SPEED) {

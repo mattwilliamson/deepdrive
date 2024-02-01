@@ -39,6 +39,7 @@ class SpeedTest(Node):
         self.robot = MotorDriverL293()
         self.last_scan = 0
         self.last_distance = 0.0
+        self.get_logger().info("delta_distance,delta_time,velocity")
 
     def scan_callback(self, msg):
         if len(msg.ranges) == 0:
@@ -53,7 +54,7 @@ class SpeedTest(Node):
             delta_distance = new_distance - self.last_distance
             delta_time = time.time() - self.last_scan
             velocity = delta_distance / delta_time
-            self.get_logger().info(f"delta_distance: {delta_distance}, delta_time: {delta_time} ,velocity: {velocity}")
+            self.get_logger().info(f"{delta_distance},{delta_time},{velocity}")
         
         # 360
         # self.get_logger().info(f'Total messages: {len(msg.ranges)}')

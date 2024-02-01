@@ -1,7 +1,6 @@
 controller_manager:
   ros__parameters:
-    # update_rate: 50
-    update_rate: 5
+    update_rate: 50
     use_sim_time: false
 
     diff_drive_controller:
@@ -13,6 +12,7 @@ controller_manager:
 diff_drive_controller:
   ros__parameters:
     # if true This ignores the feedback from hardware and publishes odometry based on the commanded velocity.
+    # currently just fed back inside of deepdrive_system.cpp. Will add rotary encoders later.
     open_loop: false
     
     # https://github.com/ros-controls/ros2_control_demos/blob/humble/example_2/bringup/config/diffbot_controllers.yaml
@@ -24,9 +24,11 @@ diff_drive_controller:
     right_wheel_names: ['wheel_front_right_joint', 'wheel_back_right_joint']
     wheel_separation: 0.175
     wheel_radius: 0.035
-    # wheel_radius: 0.004
+    
+    # These two multipliers compensate for skid-steer slippage
     wheel_separation_multiplier: 1.5
     wheel_radius_multiplier: .5
+
     use_stamped_vel: false
     #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
 

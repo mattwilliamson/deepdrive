@@ -111,6 +111,8 @@
         <param name="pin_right_forward">35</param>
         <param name="pin_right_backward">36</param>
         <param name="pwm_hz">50</param>
+        <!-- should match controller.yaml update rate -->
+        <param name="command_rate">50</param>
       </hardware>
     </xacro:unless>
 

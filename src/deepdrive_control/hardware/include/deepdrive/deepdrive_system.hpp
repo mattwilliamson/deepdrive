@@ -68,6 +68,9 @@ public:
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
+  // TODO: Figure out max speed based on the following:
+  // is the command velocity in m/s or rad/s or some abstract amount?
+  // l_wheel_.cmd / l_wheel_.rads_per_count / cfg_.loop_rate
   const int MAX_SPEED = 8;
   const int MIN_SPEED = -8;
   const uint RIGHT = 0;
@@ -83,6 +86,7 @@ private:
   uint8_t hw_pin_right_forward_;
   uint8_t hw_pin_right_backward_;
   uint8_t hw_pwm_hz_;
+  uint8_t command_rate_hz_;
 
   GPIO::PWM *left_pwm_;
   GPIO::PWM *right_pwm_;

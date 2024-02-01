@@ -1,9 +1,10 @@
 <launch>
     <!-- https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver/tree/master/launch -->
     <!-- <node pkg="hls_lfcd_lds_driver" type="hlds_laser_segment_publisher" name="hlds_laser_segment_publisher" output="screen"> -->
-        <node pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
-            <param name="port" value="$(var lidar_port)"/>
-            <param name="frame_id" value="base_scan"/>
-        </node>
+    <arg name="lidar_port" default="/dev/ttyTHS0"/>
+    <node pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
+        <param name="port" value="$(var lidar_port)"/>
+        <param name="frame_id" value="base_scan"/>
+    </node>
 
-    </launch>
+</launch>
