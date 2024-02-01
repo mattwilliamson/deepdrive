@@ -234,9 +234,9 @@ deepdrive_control::DeepdriveSystemHardware::write(
 
   for (auto i = 0u; i < hw_commands_.size(); i++) {
     // Simulate sending commands to the hardware
-    RCLCPP_INFO(
-      rclcpp::get_logger("DeepdriveSystemHardware"), "Got command %.5f for'%s'!", 
-      hw_commands_[i], info_.joints[i].name.c_str());
+    // RCLCPP_DEBUG(
+    //   rclcpp::get_logger("DeepdriveSystemHardware"), "Got command %.5f for'%s'!", 
+    //   hw_commands_[i], info_.joints[i].name.c_str());
 
     // I'm not sure what units these are, but max signal I see when sending is 1
     // so that will be max pwm
@@ -258,10 +258,10 @@ deepdrive_control::DeepdriveSystemHardware::write(
   auto left_duty_cycle = std::abs(hw_velocities_[1] / MAX_SPEED * 100);
   left_pwm_->ChangeDutyCycle(left_duty_cycle);
 
-  if (hw_velocities_[0] > 0) {
+  if (hw_velocities_[RIGHT] > 0) {
     GPIO::output(hw_pin_right_forward_, GPIO::HIGH);
     GPIO::output(hw_pin_right_backward_, GPIO::LOW);
-  } else if (hw_velocities_[0] < 0) {
+  } else if (hw_velocities_[RIGHT] < 0) {
     GPIO::output(hw_pin_right_forward_, GPIO::LOW);
     GPIO::output(hw_pin_right_backward_, GPIO::HIGH);
   } else {
@@ -269,17 +269,17 @@ deepdrive_control::DeepdriveSystemHardware::write(
     GPIO::output(hw_pin_right_backward_, GPIO::LOW);
   }
 
-  RCLCPP_INFO(rclcpp::get_logger("DeepdriveSystemHardware"),
-              "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
-              info_.joints[0].name.c_str(), hw_velocities_[0]);
-  RCLCPP_INFO(rclcpp::get_logger("DeepdriveSystemHardware"),
-              "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
-              info_.joints[1].name.c_str(), hw_velocities_[1]);
+  // RCLCPP_DEBUG(rclcpp::get_logger("DeepdriveSystemHardware"),
+  //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
+  //             info_.joints[0].name.c_str(), hw_velocities_[0]);
+  // RCLCPP_DEBUG(rclcpp::get_logger("DeepdriveSystemHardware"),
+  //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
+  //             info_.joints[1].name.c_str(), hw_velocities_[1]);
 
-  if (hw_velocities_[1] > 0) {
+  if (hw_velocities_[LEFT] > 0) {
     GPIO::output(hw_pin_left_forward_, GPIO::HIGH);
     GPIO::output(hw_pin_left_backward_, GPIO::LOW);
-  } else if (hw_velocities_[1] < 0) {
+  } else if (hw_velocities_[LEFT] < 0) {
     GPIO::output(hw_pin_left_forward_, GPIO::LOW);
     GPIO::output(hw_pin_left_backward_, GPIO::HIGH);
   } else {

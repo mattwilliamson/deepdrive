@@ -68,8 +68,10 @@ public:
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
-  const int MAX_SPEED = 16;
-  const int MIN_SPEED = -16;
+  const int MAX_SPEED = 8;
+  const int MIN_SPEED = -8;
+  const uint RIGHT = 0;
+  const uint LEFT = 1;
   
   // Parameters for the Deepdrive PWM motor controller
   bool hw_mock_;

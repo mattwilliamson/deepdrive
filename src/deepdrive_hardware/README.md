@@ -4,6 +4,7 @@
 
 ### Install Requirements
 
+# TODO: This has been changed to use ros2_control and custom CPP code
 ```sh
 pip install --upgrade Jetson.GPIO
 ```
