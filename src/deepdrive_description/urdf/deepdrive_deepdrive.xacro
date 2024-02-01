@@ -103,7 +103,7 @@
     <xacro:unless value="$(arg sim_mode)">
       <hardware>
         <plugin>deepdrive_control/DeepdriveSystemHardware</plugin>
-        <param name="mock_hardware">true</param>
+        <param name="mock_hardware">false</param>
         <param name="pin_left_enable">32</param>
         <param name="pin_left_forward">38</param>
         <param name="pin_left_backward">37</param>
