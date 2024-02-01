@@ -15,7 +15,7 @@ It can be used to find the velocity of the robot for a given PWM value.
 # Which range should we use? For a regular orientation, 0 should be pointing forward.
 scan_index = 180
 
-from deepdrive_hardware.pwm_motor import MotorDriverL293
+# from deepdrive_hardware.pwm_motor import MotorDriverL293
 import time
 import rclpy
 from rclpy.node import Node
@@ -36,10 +36,10 @@ class SpeedTest(Node):
         self.get_logger().info("deepdrive_speed_test node has been initialised.")
         qos = QoSPresetProfiles.SENSOR_DATA.value
         self.scan_sub = self.create_subscription(LaserScan, 'scan', self.scan_callback, qos)
-        self.robot = MotorDriverL293()
+        # self.robot = MotorDriverL293()
         self.last_scan = 0
         self.last_distance = 0.0
-        self.get_logger().info("delta_distance,delta_time,velocity")
+        self.get_logger().info("time,distance,delta_distance,delta_time,velocity")
 
     def scan_callback(self, msg):
         if len(msg.ranges) == 0:
@@ -49,12 +49,15 @@ class SpeedTest(Node):
         self.scan_ranges = msg.ranges
         new_distance = msg.ranges[scan_index]
 
+        if new_distance == 0:
+            return
+
         if self.last_scan > 0:
             # self.get_logger().info(f"new_distance: {new_distance}, last_distance: {self.last_distance} ,last_scan: {self.last_scan}")
             delta_distance = new_distance - self.last_distance
             delta_time = time.time() - self.last_scan
             velocity = delta_distance / delta_time
-            self.get_logger().info(f"{delta_distance},{delta_time},{velocity}")
+            self.get_logger().info(f"{time.time()},{new_distance},{delta_distance},{delta_time},{velocity}")
         
         # 360
         # self.get_logger().info(f'Total messages: {len(msg.ranges)}')
@@ -65,10 +68,10 @@ class SpeedTest(Node):
         self.last_distance = new_distance
 
 
-    def on_shutdown(self):
-        print('motor_controller shutting down')
-        self.robot.set_motors(0.0, 0.0)
-        self.robot.cleanup()
+    # def on_shutdown(self):
+    #     print('motor_controller shutting down')
+    #     self.robot.set_motors(0.0, 0.0)
+    #     self.robot.cleanup()
         
 
 def main(args=None):
@@ -78,7 +81,7 @@ def main(args=None):
     rclpy.spin(speed_test)
 
     speed_test.destroy_node()
-    rclpy.shutdown()
+    # rclpy.shutdown()
     speed_test.on_shutdown()
 
 if __name__ == '__main__':
