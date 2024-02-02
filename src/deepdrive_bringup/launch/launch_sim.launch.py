@@ -48,7 +48,7 @@ def generate_launch_description():
 
 
     joy_params = os.path.join(
-        get_package_share_directory("articubot_one"), "config", "joystick.yaml"
+        get_package_share_directory("deepdrive_bringup"), "config", "joystick.yaml"
     )
 
     joy_node = Node(
@@ -61,7 +61,7 @@ def generate_launch_description():
     teleop_node = Node(
         package="teleop_twist_joy",
         executable="teleop_node",
-        name="teleop_node",
+        name="teleop_twist_joy_node",
         parameters=[joy_params, {"use_sim_time": use_sim_time}],
         remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )

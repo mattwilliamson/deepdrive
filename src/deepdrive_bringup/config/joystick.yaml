@@ -4,7 +4,7 @@ joy_node:
     deadzone: 0.05
     autorepeat_rate: 20.0
 
-teleop_node:
+teleop_twist_joy_node:
   ros__parameters:
     axis_linear:
       x: 1
