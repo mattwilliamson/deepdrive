@@ -2,25 +2,24 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
-- [ ] separate workspace for depthai?
-- [ ] probably don't need vnc in the container
-- [ ] add led ring?
-- [ ] cooling holes
-- [ ] param/deepdrive.yaml
-- [ ] Add tire to rim
-- [ ] tb3*
-- [ ] camera
-- [ ] URDF deepdrive_deepdrive.urdf
-- [ ] separate gazebo models? GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
-- [ ] motion controller like this? https://github.com/jdgalviss/jetbot-ros2/blob/main/dev_ws/src/motion_control/motion_control/speed_control_node.py
-- [ ] Add depthai and cache models
-- [ ] add wide angle camera
+- [ ] calibrate motor pwm speed
+- [ ] add wheel encoders to stl
 - [ ] m-explore
+- [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
 - [ ] slam 2d/3d slam-toolbox/rtabmap
+- [ ] separate workspace for depthai?
+- [ ] add led ring
+- [ ] cooling holes
+- [ ] param/deepdrive.yaml
+- [ ] oak d lite camera simulated
+- [x] URDF deepdrive_deepdrive.urdf
+- [ ] Add depthai and cache models
+- [x] add wide angle camera
 - [ ] https://github.com/BehaviorTree/BehaviorTree.CPP
-- [x]   <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
 - [ ] ros params for wheelbase, serial port, etc
+- [ ] second IMU / compass
+- [ ] gps
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
