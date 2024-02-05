@@ -13,7 +13,7 @@ diff_drive_controller:
   ros__parameters:
     # if true This ignores the feedback from hardware and publishes odometry based on the commanded velocity.
     # currently just fed back inside of deepdrive_system.cpp. Will add rotary encoders later.
-    open_loop: false
+    open_loop: true
     
     # https://github.com/ros-controls/ros2_control_demos/blob/humble/example_2/bringup/config/diffbot_controllers.yaml
     publish_rate: 50.0 # You can set this higher than the controller manager update rate, but it will be throttled
@@ -30,7 +30,7 @@ diff_drive_controller:
     wheel_radius_multiplier: .5
 
     use_stamped_vel: false
-    #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
+    wheels_per_side: 2  # actually 2, but both are controlled by 1 signal
 
     # Odometry fused with IMU is published by robot_localization, so
     # no need to publish a TF based on encoders alone.
@@ -53,19 +53,19 @@ diff_drive_controller:
     linear.x.has_velocity_limits: true
     linear.x.has_acceleration_limits: true
     linear.x.has_jerk_limits: false
-    linear.x.max_velocity: 0.5
-    linear.x.min_velocity: -0.5
-    linear.x.max_acceleration: 0.25
+    linear.x.max_velocity: 1.5
+    linear.x.min_velocity: -1.5
+    linear.x.max_acceleration: 1.0
     linear.x.max_jerk: 0.0
     linear.x.min_jerk: 0.0
 
-    angular.z.has_velocity_limits: true
-    angular.z.has_acceleration_limits: true
+    angular.z.has_velocity_limits: false
+    angular.z.has_acceleration_limits: false
     angular.z.has_jerk_limits: false
-    angular.z.max_velocity: 0.25
-    angular.z.min_velocity: -0.25
-    angular.z.max_acceleration: 0.5
-    angular.z.min_acceleration: -0.5
+    angular.z.max_velocity: 1.5
+    angular.z.min_velocity: -1.5
+    angular.z.max_acceleration: 1.0
+    angular.z.min_acceleration: -1.0
     angular.z.max_jerk: 0.0
     angular.z.min_jerk: 0.0
     
@@ -73,7 +73,7 @@ diff_drive_controller:
     publish_cmd: true
 
     # Preserve turning radius when limiting speed/acceleration/jerk
-    preserve_turning_radius: false
+    preserve_turning_radius: true
 
     # Publish wheel data
     publish_wheel_data: true

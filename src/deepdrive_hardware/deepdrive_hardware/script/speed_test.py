@@ -21,7 +21,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-# from rclpy.qos import QoSProfile
+from rclpy.qos import QoSProfile
 from rclpy.qos import QoSPresetProfiles
 from sensor_msgs.msg import LaserScan
 
@@ -35,11 +35,14 @@ class SpeedTest(Node):
         super().__init__('deepdrive_speed_test')
         self.get_logger().info("deepdrive_speed_test node has been initialised.")
         qos = QoSPresetProfiles.SENSOR_DATA.value
+        self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, QoSProfile(depth=10))
         self.scan_sub = self.create_subscription(LaserScan, 'scan', self.scan_callback, qos)
+        
         # self.robot = MotorDriverL293()
         self.last_scan = 0
         self.last_distance = 0.0
-        self.get_logger().info("time,distance,delta_distance,delta_time,velocity")
+        self.get_logger().info("time,distance,delta_distance,delta_time,velocity,odom_pos_x")
+        self.last_odom = 0
 
     def scan_callback(self, msg):
         if len(msg.ranges) == 0:
@@ -57,7 +60,7 @@ class SpeedTest(Node):
             delta_distance = new_distance - self.last_distance
             delta_time = time.time() - self.last_scan
             velocity = delta_distance / delta_time
-            self.get_logger().info(f"{time.time()},{new_distance},{delta_distance},{delta_time},{velocity}")
+            self.get_logger().info(f"{time.time()},{new_distance},{delta_distance},{delta_time},{velocity},{self.last_odom}")
         
         # 360
         # self.get_logger().info(f'Total messages: {len(msg.ranges)}')
@@ -67,6 +70,9 @@ class SpeedTest(Node):
         self.last_scan = time.time()
         self.last_distance = new_distance
 
+    def odom_callback(self, msg):
+        # self.get_logger().info(f"odom_callback: {msg}")
+        self.last_odom = msg.pose.pose.position.x
 
     # def on_shutdown(self):
     #     print('motor_controller shutting down')

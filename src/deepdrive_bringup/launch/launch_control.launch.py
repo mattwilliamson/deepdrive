@@ -47,7 +47,7 @@ def generate_launch_description():
             description="Use simulation (Gazebo) clock if true",
         )
     )
-    # use_sim_time = LaunchConfiguration("use_sim_time")
+    use_sim_time = LaunchConfiguration("use_sim_time")
 
     # Initialize Arguments
     gui = LaunchConfiguration("gui")
@@ -150,6 +150,38 @@ def generate_launch_description():
         ],
     )
 
+    joy_params = PathJoinSubstitution([
+        FindPackageShare("deepdrive_bringup"),
+        "config",
+        "joystick.yaml",
+    ])
+
+    joy_node = Node(
+        package="joy",
+        executable="joy_node",
+        parameters=[joy_params, {"use_sim_time": use_sim_time}],
+        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+    )
+
+    teleop_node = Node(
+        package="teleop_twist_joy",
+        executable="teleop_node",
+        name="teleop_twist_joy_node",
+        parameters=[joy_params, {"use_sim_time": use_sim_time}],
+        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+    )
+
+    # twist_mux_params = os.path.join(
+    #     get_package_share_directory(package_name), "config", "twist_mux.yaml"
+    # )
+    # twist_mux = Node(
+    #     package="twist_mux",
+    #     executable="twist_mux",
+    #     parameters=[twist_mux_params, {"use_sim_time": use_sim_time}],
+    #     remappings=[("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped")],
+    # )
+
+
 
     nodes = [
         control_node,
@@ -158,6 +190,8 @@ def generate_launch_description():
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         robot_localization_node,
+        # teleop_node,
+        # joy_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

@@ -8,13 +8,10 @@
 
     left:
       r_focus: 1
-    left:
       r_set_man_focus: true
     rgb:
       r_focus: 1
-    rgb:
       r_set_man_focus: true
     right:
       r_focus: 1
-    right:
       r_set_man_focus: true

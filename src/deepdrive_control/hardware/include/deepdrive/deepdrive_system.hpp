@@ -71,8 +71,8 @@ private:
   // TODO: Figure out max speed based on the following:
   // is the command velocity in m/s or rad/s or some abstract amount?
   // l_wheel_.cmd / l_wheel_.rads_per_count / cfg_.loop_rate
-  const int MAX_SPEED = 8;
-  const int MIN_SPEED = -8;
+  const int MAX_SPEED = 32.0;
+  const int MIN_SPEED = -32.0;
   const uint RIGHT = 0;
   const uint LEFT = 1;
   

@@ -32,14 +32,16 @@
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="imu_link_odom" args="0 0 0 0 0 0 imu_link odom" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="imu_link_oak_base_frame" args="0 0 0 0 0 0 imu_link oak-d-base-frame" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_oak_model_origin" args="0 0 0 0 0 0 oak oak_model_origin" output="screen" /> -->
-
+    <!-- https://github.com/luxonis/depthai-ros-examples/blob/humble/depthai_cliff_detection/launch/cliff_detection.launch.py -->
 
     <!-- Odometry / localization -->
-    <include file="$(find-pkg-share deepdrive_bringup)/launch/localization.launch.py" />
+    <!-- <include file="$(find-pkg-share deepdrive_bringup)/launch/localization.launch.py" /> -->
 
     <!-- Motor Controller -->
-    <node pkg="deepdrive_hardware" exec="motor_controller" name="motor_controller" output="screen" />
+    <!-- <node pkg="deepdrive_hardware" exec="motor_controller" name="motor_controller" output="screen" /> -->
 
     <!-- Robot state publisher -->
-    <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" />
+    <!-- <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" /> -->
+
+    <include file="$(find-pkg-share deepdrive_bringup)/launch/launch_control.launch.py" />
 </launch>
