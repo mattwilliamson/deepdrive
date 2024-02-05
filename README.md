@@ -20,6 +20,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] ros params for wheelbase, serial port, etc
 - [ ] second IMU / compass
 - [ ] gps
+- [ ] diagnostics for motor controller
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py

@@ -42,7 +42,9 @@ def launch_setup(context, *args, **kwargs):
                     remappings=[('depth/image_rect', name+'/stereo/image_raw'),
                                 ('intensity/image_rect', name+'/right/image_rect'),
                                 ('intensity/camera_info', name+'/stereo/camera_info'),
-                                ('points', name+'/points')
+                                ('points', name+'/points'),
+                                # ('/tf', name+'/depth_camera/tf'),
+                                # ('/tf_static', name+'/depth_camera/tf_static'),
                                 ]),
             ],
         ),
@@ -50,7 +52,7 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    deepdrive_prefix = get_package_share_directory("deepdrive_camera")
     declared_arguments = [
         DeclareLaunchArgument("name", default_value="oak"),
         DeclareLaunchArgument("parent_frame", default_value="oak-d-base-frame"),
@@ -60,7 +62,7 @@ def generate_launch_description():
         DeclareLaunchArgument("cam_roll", default_value="0.0"),
         DeclareLaunchArgument("cam_pitch", default_value="0.0"),
         DeclareLaunchArgument("cam_yaw", default_value="0.0"),
-        DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'pcl.yaml')),
+        DeclareLaunchArgument("params_file", default_value=os.path.join(deepdrive_prefix, 'param', 'pcl.yaml')),
         DeclareLaunchArgument("use_rviz", default_value="False"),
     ]
 

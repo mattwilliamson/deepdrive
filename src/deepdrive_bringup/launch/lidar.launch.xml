@@ -4,7 +4,7 @@
     <arg name="lidar_port" default="/dev/ttyTHS0"/>
     <node pkg="hls_lfcd_lds_driver" exec="hlds_laser_publisher" name="hlds_laser_publisher" output="screen">
         <param name="port" value="$(var lidar_port)"/>
-        <param name="frame_id" value="base_scan"/>
+        <param name="frame_id" value="laser"/>
     </node>
 
 </launch>

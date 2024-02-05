@@ -1,6 +1,7 @@
 <launch>
     <arg name="use_gui" default="FALSE"/>
     <arg name="camera_model" default="OAK-D-LITE"/>
+    
 
     <!-- Camera -->
     <!-- This one gives us a pointcloud successfully -->
@@ -12,10 +13,17 @@
     <!-- Try to detect object with onboard AI model on oak d lite -->
     <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
     
-        <arg name="frame" value="base_footprint"/>
-        <!-- camera/odometry -->
-        <!-- <remap from="/oak/rgb/image_raw" to="/rgb_camera/image_raw"/> -->
-        <!-- <remap from="/oak/rgb/camera_info" to="/rgb_camera/camera_info"/> -->
+    <arg name="name" value="camera_depth"/>
+    <arg name="parent_frame" value="base_link"/>
+    <!-- camera_depth_rgb_camera_optical_frame -->
+    <!-- camera/odometry -->
+
+    <arg name="cam_pos_x" value="0.0"/>
+    <arg name="cam_pos_y" value="0.0"/>
+    <arg name="cam_pos_z" value="0.0"/>
+    <arg name="cam_roll" value="0.0"/>
+    <arg name="cam_pitch" value="0.0"/>
+    <arg name="cam_yaw" value="0.0"/>
         
     <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py"> -->
     
@@ -45,6 +53,7 @@
         <!-- <arg name="enableSpatialDetection" value="true" /> -->
         <arg name="imuMode" value="0" />
         <!-- 0 -> COPY, 1 -> LINEAR_INTERPOLATE_GYRO, 2 -> LINEAR_INTERPOLATE_ACCEL -->
+        
     </include>
 
 </launch>

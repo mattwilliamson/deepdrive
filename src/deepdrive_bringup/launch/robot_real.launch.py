@@ -149,7 +149,7 @@ def generate_launch_description():
                 # [ThisLaunchFileDir(), '/example_marker_publish.launch.py']),
                 # [ThisLaunchFileDir(), '/example_segmentation.launch.py']),
                 launch_arguments={
-                    "name": "oak",
+                    "name": "depth_camera",
                     #   "params_file": params_file,
                     #   "parent_frame": LaunchConfiguration("parent_frame"),
                     #    "cam_pos_x": LaunchConfiguration("cam_pos_x"),

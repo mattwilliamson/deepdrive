@@ -63,11 +63,10 @@
 
   <link name="imu_link"/>
 
-  <!--
-   <joint name="oak_joint" type="fixed">
+   <!-- <joint name="oak_joint" type="fixed">
     <parent link="base_link"/>
     <child link="oak"/>
-    <origin xyz="0.0 0 0.068" rpy="0 0 1.57"/>
+    <origin xyz="0.0 0 0.068" rpy="0 0 0"/>
   </joint>
 
   <link name="oak"/> -->

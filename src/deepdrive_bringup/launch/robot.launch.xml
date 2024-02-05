@@ -5,8 +5,14 @@
     <arg name="camera_model" default="OAK-D-LITE"/>
     <!-- <arg name="base_frame" default="base_link" /> -->
 
-    <!-- Robot state publisher -->
-    <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" />
+    <!-- Foxglove Bridge -->
+    <!-- https://index.ros.org/p/foxglove_bridge/ -->
+    <include file="$(find-pkg-share foxglove_bridge)/launch/foxglove_bridge_launch.xml">
+        <arg name="port" value="8765"/>
+        <arg name="asset_uri_allowlist" value="['^package://.*\\.(?:dae|fbx|glb|gltf|jpeg|jpg|mtl|obj|png|stl|tif|tiff|urdf|webp|xacro)$']"/>
+        <arg name="max_qos_depth" value="100"/>
+        <arg name="send_buffer_limit" value="10000000"/>
+    </include>
 
     <node pkg="joint_state_publisher" exec="joint_state_publisher" name="joint_state_publisher" output="screen">
         <param name="use_gui" value="$(var use_gui)"/>
@@ -34,11 +40,6 @@
     <!-- Motor Controller -->
     <node pkg="deepdrive_hardware" exec="motor_controller" name="motor_controller" output="screen" />
 
-    <!-- Foxglove Bridge -->
-    <!-- https://index.ros.org/p/foxglove_bridge/ -->
-    <include file="$(find-pkg-share foxglove_bridge)/launch/foxglove_bridge_launch.xml">
-        <arg name="port" value="8765"/>
-        <arg name="asset_uri_allowlist" value="['^package://.*\\.(?:dae|fbx|glb|gltf|jpeg|jpg|mtl|obj|png|stl|tif|tiff|urdf|webp|xacro)$']"/>
-        <!-- <arg name="asset_uri_allowlist" default="['^package://(?:\\w+/)*\\w+\\.(?:dae|fbx|glb|gltf|jpeg|jpg|mtl|obj|png|stl|tif|tiff|urdf|webp|xacro)$']" />  Needs double-escape -->
-    </include>
+    <!-- Robot state publisher -->
+    <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" />
 </launch>
