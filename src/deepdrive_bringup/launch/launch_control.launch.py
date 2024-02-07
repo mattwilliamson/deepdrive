@@ -47,7 +47,16 @@ def generate_launch_description():
             description="Use simulation (Gazebo) clock if true",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "imu_target_frame",
+            default_value="imu_link",
+            # default_value="camera_depth_imu_frame",
+            description="Which frame to translate the IMU data to",
+        )
+    )
     use_sim_time = LaunchConfiguration("use_sim_time")
+    imu_target_frame = LaunchConfiguration("imu_target_frame")
 
     # Initialize Arguments
     gui = LaunchConfiguration("gui")
@@ -84,6 +93,7 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[robot_description, robot_controllers],
         output="both",
+        remappings=[("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel")],
     )
     
     robot_state_pub_node = Node(
@@ -181,7 +191,35 @@ def generate_launch_description():
     #     remappings=[("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped")],
     # )
 
+    # <node pkg="imu_transformer" type="imu_transformer_node" name="imu_data_transformer" output="screen">
+    #     <remap from="imu_in" to="imu_raw"/>
+    #     <remap from="imu_out" to="imu"/>
+    #     <param name="target_frame" value="base_link"/>
+    # </node>
 
+    # https://github.com/ros-perception/imu_pipeline/blob/ros2/imu_transformer/launch/ned_to_enu.launch.xml
+    #   <node pkg="tf2_ros" exec="static_transform_publisher" name="tf_imu_ned_enu"
+    # args="0 0 0 1.5708 0 3.1416 imu_link_ned imu_link" output="screen"/>
+    # <remap from="imu_in" to="imu_ned"/>
+    # <remap from="imu_out" to="imu_enu"/>
+    
+    imu_publisher_node = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="imu_publisher_node",
+        arguments=["0", "0", "0", "-1.57", "0", "1.57", "imu_link", "camera_depth_imu_frame"],
+    )
+
+    imu_transformer_node = Node(
+        package="imu_transformer",
+        executable="imu_transformer_node",
+        name="imu_transformer_node",
+        parameters=[{"target_frame": "imu_link"}],
+        remappings=[
+            ("imu_in", "/camera_depth/imu/data"),
+            ("imu_out", "imu"),
+        ],
+    )
 
     nodes = [
         control_node,
@@ -190,6 +228,8 @@ def generate_launch_description():
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         robot_localization_node,
+        imu_publisher_node,
+        imu_transformer_node,
         # teleop_node,
         # joy_node,
     ]

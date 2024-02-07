@@ -15,6 +15,8 @@
     
     <arg name="name" value="camera_depth"/>
     <arg name="parent_frame" value="base_link"/>
+    <!-- <arg name="imu_from_descr" value="false"/> -->
+    
     <!-- camera_depth_rgb_camera_optical_frame -->
     <!-- camera/odometry -->
 

@@ -1,6 +1,7 @@
 <launch>
     <arg name="lidar_port" default="/dev/ttyTHS0"/>
     <arg name="use_gui" default="FALSE"/>
+    <arg name="use_sim_time" default="false"/>
     <arg name="use_lidar" default="TRUE"/>
     <arg name="camera_model" default="OAK-D-LITE"/>
     <!-- <arg name="base_frame" default="base_link" /> -->
@@ -44,4 +45,9 @@
     <!-- <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" /> -->
 
     <include file="$(find-pkg-share deepdrive_bringup)/launch/launch_control.launch.py" />
+
+    <!-- <include file="$(find-pkg-share deepdrive_nav2_bringup)/launch/localization_launch.xml">
+        <arg name="use_sim_time" value="$(var use_sim_time)"/>
+        <arg name="map" value="$(find-pkg-share deepdrive_nav2_bringup)/maps/test.yml"/>
+    </include> -->
 </launch>

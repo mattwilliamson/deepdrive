@@ -65,11 +65,11 @@
 
    <!-- <joint name="oak_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="oak"/>
-    <origin xyz="0.0 0 0.068" rpy="0 0 0"/>
-  </joint>
+    <child link="camera_depth_imu_frame"/>
+    <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+  </joint> -->
 
-  <link name="oak"/> -->
+  <!-- <link name="camera_depth_imu_frame"/> -->
 
 
   <!-- LIDAR -->
@@ -89,7 +89,7 @@
     </joint>
   </xacro:macro>
 
-  <ros2_control name="GazeboSystem" type="system">
+  <ros2_control name="deepdrive" type="system">
 
     <!-- Gazebo simulation -->
     <xacro:if value="$(arg sim_mode)">

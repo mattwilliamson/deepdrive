@@ -41,8 +41,8 @@ diff_drive_controller:
     # twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     # pose_covariance_diagonal : [0.001, .001, 1000000., 1000000., 1000000., 1000.]
     # twist_covariance_diagonal: [0.001, .001, 1000000., 1000000., 1000000., 1000.]
-    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
-    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
 
     cmd_vel_timeout: 0.5
     #publish_limited_velocity: true

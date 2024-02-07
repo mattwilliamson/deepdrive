@@ -4,6 +4,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 ## TODO:
 - [ ] calibrate motor pwm speed
 - [ ] add wheel encoders to stl
+- [ ] Fix mount since it covers camera cables
 - [ ] m-explore
 - [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
@@ -21,6 +22,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] second IMU / compass
 - [ ] gps
 - [ ] diagnostics for motor controller
+- [ ] cooling fan
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py

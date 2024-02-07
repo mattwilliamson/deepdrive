@@ -196,14 +196,15 @@ RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
     cmake --build . --target install
 
+
 # Add ROS2 source code
 WORKDIR $ROS2_WS
 
-COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt
-RUN pip3 install -r src/deepdrive_hardware/requirements.txt
+# COPY src/deepdrive_hardware/requirements.txt src/deepdrive_hardware/requirements.txt
+# RUN pip3 install -r src/deepdrive_hardware/requirements.txt
 
-COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
-RUN pip3 install -r src/deepdrive_vision/requirements.txt
+# COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
+# RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
 COPY src ./src/
 
@@ -212,11 +213,3 @@ VOLUME /tmp
 
 
 RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
-
-# RUN bash /opt/ros/humble/install_deps.sh libgazebo_ros_diff_drive
-# libgazebo_ros_imu_sensor.so
-# libgazebo_ros_ray_sensor.so
-# libgazebo_ros_diff_drive.so
-# libgazebo_ros_camera.so
-
-# gazebo_plugins
