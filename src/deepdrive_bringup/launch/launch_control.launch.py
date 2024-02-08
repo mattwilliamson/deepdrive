@@ -170,7 +170,7 @@ def generate_launch_description():
         package="joy",
         executable="joy_node",
         parameters=[joy_params, {"use_sim_time": use_sim_time}],
-        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+        # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )
 
     teleop_node = Node(
@@ -178,7 +178,7 @@ def generate_launch_description():
         executable="teleop_node",
         name="teleop_twist_joy_node",
         parameters=[joy_params, {"use_sim_time": use_sim_time}],
-        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+        # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )
 
     # twist_mux_params = os.path.join(

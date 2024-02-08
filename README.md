@@ -2,9 +2,11 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] add power button & voltage mount
 - [ ] calibrate motor pwm speed
 - [ ] add wheel encoders to stl
 - [ ] Fix mount since it covers camera cables
+- [ ] lcd display?
 - [ ] m-explore
 - [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
@@ -196,7 +198,38 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ```
 
+# Navigation
 
+https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html
+
+```sh
+ros2 launch deepdrive_bringup robot.launch.xml
+
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+
+ros2 launch slam_toolbox online_async_launch.py
+
+# This one?
+# ros2 launch deepdrive_nav2_bringup slam_launch.py
+
+```
+
+Save map
+```sh
+ros2 run nav2_map_server map_saver_cli -f $ROS2_WS/src/deepdrive_navigation2/map/desk
+```
+
+### If you have a map already
+
+```sh
+ros2 launch deepdrive_bringup robot.launch.xml
+
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml map:=$ROS2_WS/src/deepdrive_navigation2/map/desk.yaml
+
+ros2 launch deepdrive_nav2_bringup bringup_launch.py slam:=False use_sim_time:=False autostart:=True map:=$ROS2_WS/src/deepdrive_navigation2/map/desk.yaml params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+
+#ros2 launch nav2_bringup bringup_launch.py use_sim_time:=False autostart:=True map:=$ROS2_WS/src/deepdrive_navigation2/map/desk.yaml params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+```
 
 
 # Electronics
@@ -212,4 +245,5 @@ sudo apt-get install -y screen
 sudo chmod a+rw /dev/ttyTHS0
 screen -L /dev/ttyTHS0 230400
 ```
+
 
