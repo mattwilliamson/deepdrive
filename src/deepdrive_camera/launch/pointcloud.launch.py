@@ -45,7 +45,7 @@ def launch_setup(context, *args, **kwargs):
                                 ('points', name+'/points'),
                                 # ('/tf', name+'/depth_camera/tf'),
                                 # ('/tf_static', name+'/depth_camera/tf_static'),
-                                ('/robot_description', name+'/robot_description'),
+                                # ('/robot_description', name+'/robot_description'),
                                 ]),
             ],
         ),

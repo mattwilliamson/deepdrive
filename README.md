@@ -218,6 +218,7 @@ ros2 launch slam_toolbox online_async_launch.py
 Save map
 ```sh
 ros2 run nav2_map_server map_saver_cli -f $ROS2_WS/src/deepdrive_navigation2/map/desk
+ros2 run nav2_map_server map_saver_cli -f $ROS2_WS/src/deepdrive_navigation2/map/downstairs
 ```
 
 ### If you have a map already
