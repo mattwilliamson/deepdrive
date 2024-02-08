@@ -77,28 +77,30 @@ ENV ROS_ROOT=/opt/ros/${ROS_DISTRO} \
     ROS_PACKAGE=deepdrive \
     RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.bashrc
-RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.bashrc
-RUN echo "source $ROS_ROOT/setup.sh" >> /root/.bashrc
-RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.bashrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.bashrc
+RUN echo "source /root/.ros2" >> /root/.bashrc
+RUN echo "source /root/.ros2" >> /root/.zshrc
+RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
+RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.ros2
+RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.ros2
+RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.ros2
+RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.ros2
 
-RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.bashrc
-RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.bashrc
-RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.bashrc
-RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.bashrc
-RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.bashrc
-RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.bashrc
+RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.ros2
+RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.ros2
+RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.ros2
+RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.ros2
+RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.ros2
+RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.ros2
 
-# RUN echo "autoload -U bashcompinit" >> /root/.bashrc
-# RUN echo "bashcompinit" >> /root/.bashrc
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.bashrc
-RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
+# RUN echo "autoload -U bashcompinit" >> /root/.ros2
+# RUN echo "bashcompinit" >> /root/.ros2
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.ros2
+RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.ros2
 
-# COPY .session.yml /root/.session.yml
-# COPY .tmux.conf /root/.tmux.conf
+COPY .session.yml /root/.session.yml
+COPY .tmux.conf /root/.tmux.conf
 
-# CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
 
 # ----------------------------------------------------------------------------
 
@@ -125,7 +127,7 @@ VOLUME /tmp
 ENV GAZEBO_MODEL_PATH=$ROS2_WS/src/:$GAZEBO_MODEL_PATH
 ENV DEEPDRIVE_MODEL=deepdrive
 
-CMD [ "bash" ]
+# CMD [ "bash" ]
 
 COPY src ./src/
 

@@ -159,34 +159,6 @@ RUN apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.bashrc
-RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.bashrc
-RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.bashrc
-RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.bashrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.bashrc
-
-RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.bashrc
-RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.bashrc
-RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.bashrc
-RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.bashrc
-RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.bashrc
-RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.bashrc
-
-# RUN echo "autoload -U bashcompinit" >> /root/.bashrc
-# RUN echo "bashcompinit" >> /root/.bashrc
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.bashrc
-RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.bashrc
-
-COPY .session.yml /root/.session.yml
-COPY .tmux.conf /root/.tmux.conf
-
-# CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
-CMD [ "bash" ]
-
-ENV DEEPDRIVE_MODEL=deepdrive
-
-# ----------------------------------------------------------------------------
-
 # Install JetsonGPIO
 WORKDIR /usr/src
 RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
@@ -195,6 +167,38 @@ RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cd build && \
     cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
     cmake --build . --target install
+
+RUN echo "source /root/.ros2" >> /root/.bashrc
+RUN echo "source /root/.ros2" >> /root/.zshrc
+RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
+RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.ros2
+RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.ros2
+RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.ros2
+RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.ros2
+
+RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.ros2
+RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.ros2
+RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.ros2
+RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.ros2
+RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.ros2
+RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.ros2
+
+# RUN echo "autoload -U bashcompinit" >> /root/.ros2
+# RUN echo "bashcompinit" >> /root/.ros2
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.ros2
+RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.ros2
+
+CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+# CMD [ "bash" ]
+
+ENV DEEPDRIVE_MODEL=deepdrive
+
+COPY .session.yml /root/.session.yml
+COPY .tmux.conf /root/.tmux.conf
+
+
+
+# ----------------------------------------------------------------------------
 
 
 # Add ROS2 source code

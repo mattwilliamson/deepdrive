@@ -1,2 +1,4 @@
-.git.git
+.git
 venv
+src/bags
+__pycache__

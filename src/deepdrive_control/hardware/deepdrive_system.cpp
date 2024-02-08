@@ -249,7 +249,6 @@ deepdrive_control::DeepdriveSystemHardware::write(
   }
 
   // Currently one signal is used for left and one for right wheel
-  // TODO: Enum for wheel indices
   // wheel_back_right_joint, wheel_front_left_joint, wheel_back_left_joint,
   // wheel_front_right_joint
   auto right_duty_cycle = std::abs(hw_velocities_[0] / MAX_SPEED * 100);
@@ -257,6 +256,14 @@ deepdrive_control::DeepdriveSystemHardware::write(
 
   auto left_duty_cycle = std::abs(hw_velocities_[1] / MAX_SPEED * 100);
   left_pwm_->ChangeDutyCycle(left_duty_cycle);
+
+  // RCLCPP_INFO(rclcpp::get_logger("DeepdriveSystemHardware"),
+  //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
+  //             info_.joints[0].name.c_str(), hw_velocities_[0]);
+  // RCLCPP_INFO(rclcpp::get_logger("DeepdriveSystemHardware"),
+  //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", left_duty_cycle,
+  //             info_.joints[1].name.c_str(), hw_velocities_[1]);
+
 
   if (hw_velocities_[RIGHT] > 0) {
     GPIO::output(hw_pin_right_forward_, GPIO::HIGH);
@@ -268,13 +275,6 @@ deepdrive_control::DeepdriveSystemHardware::write(
     GPIO::output(hw_pin_right_forward_, GPIO::LOW);
     GPIO::output(hw_pin_right_backward_, GPIO::LOW);
   }
-
-  // RCLCPP_DEBUG(rclcpp::get_logger("DeepdriveSystemHardware"),
-  //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
-  //             info_.joints[0].name.c_str(), hw_velocities_[0]);
-  // RCLCPP_DEBUG(rclcpp::get_logger("DeepdriveSystemHardware"),
-  //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", right_duty_cycle,
-  //             info_.joints[1].name.c_str(), hw_velocities_[1]);
 
   if (hw_velocities_[LEFT] > 0) {
     GPIO::output(hw_pin_left_forward_, GPIO::HIGH);

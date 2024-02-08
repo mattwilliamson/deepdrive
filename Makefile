@@ -29,7 +29,7 @@ dockershell: docker
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v ${PWD}/src:${ROS_ROOT}/src/ \
-		${ROS_PACKAGE} bash
+		${ROS_PACKAGE} 
 
 		# TODO: See if we need these
 		# -v /tmp/.X11-unix:/tmp/.X11-unix:rw \

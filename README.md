@@ -89,9 +89,10 @@ ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/diff_drive_co
 ```
 
 ```sh
-ros2 run deepdrive_hardware motor_controller
+# ros2 run deepdrive_hardware motor_controller
 
 ros2 launch deepdrive_bringup robot.launch.xml
+ros2 run deepdrive_teleop teleop_keyboard
 ```
 
 ## LIDAR
@@ -191,10 +192,10 @@ docker run -it --rm -p 8080:8080 -e DISPLAY_WIDTH=1600 -e DISPLAY_HEIGHT=900 dee
 
 
 ```sh
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml
-ros2 launch deepdrive_description display.launch.py
-ros2 launch deepdrive_bringup rviz2.launch.py
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+# ros2 launch deepdrive_description display.launch.py
+# ros2 launch deepdrive_bringup rviz2.launch.py
+# ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ```
 

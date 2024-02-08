@@ -8,13 +8,31 @@
 name: <%= WDIR.split('/').last  %>
 root: <%= @args[0] %>
 
-startup_window: talker
+startup_window: deepdrive
 windows:
-  - talker:
-      layout: even-vertical
+  - deepdrive:
+      layout: tiled
       panes:
-        - print -S 'ros2 run demo_nodes_cpp talker'
+        - print -S 'ros2 launch deepdrive_bringup robot.launch.xml'
+        - print -S 'ros2 run deepdrive_teleop teleop_keyboard'
+        - print -S 'ros2 topic list'
+        - print -S 'ros2 launch nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml'
   - listener:
       layout: even-vertical
       panes:
         - print -S 'ros2 run demo_nodes_cpp listener'
+
+# even-horizontal
+# Panes are spread out evenly from left to right across the window.
+
+# even-vertical
+# Panes are spread evenly from top to bottom.
+
+# main-horizontal
+# A large (main) pane is shown at the top of the window and the remaining panes are spread from left to right in the leftover space at the bottom. Use the main-pane-height window option to specify the height of the top pane.
+
+# main-vertical
+# Similar to main-horizontal but the large pane is placed on the left and the others spread from top to bottom along the right. See the main-pane-width window option.
+
+# tiled
+# Panes are spread out as evenly as possible over the window in both rows and columns.

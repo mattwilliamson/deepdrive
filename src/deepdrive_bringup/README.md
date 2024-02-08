@@ -12,7 +12,7 @@ ros2 launch deepdrive_bringup lidar.launch.xml
 
 # Drive back and forth to see max speed and acceleration
 ros2 launch deepdrive_bringup launch_control.launch.py
-ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/diff_drive_controller/cmd_vel_unstamped
+ros2 run deepdrive_teleop teleop_keyboard
 
 # Replay the bag to test the script
 ros2 launch deepdrive_bringup speed_test.launch.xml use_lidar:=false

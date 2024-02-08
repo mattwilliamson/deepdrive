@@ -25,8 +25,8 @@ https://github.com/ros2/rosbag2
 ```sh
 mkdir src/bag
 cd src/bag
-ros2 bag record -a
-ros2 bag play src/bag/rosbag2_2024_01_22-09_43_40
+ros2 bags record -a
+ros2 bags play src/bags/rosbag2_2024_01_22-09_43_40
 ```
 
 ## Foxglove studio
