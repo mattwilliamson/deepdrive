@@ -68,24 +68,27 @@ public:
     const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
+
   // TODO: Figure out max speed based on the following:
   // is the command velocity in m/s or rad/s or some abstract amount?
   // l_wheel_.cmd / l_wheel_.rads_per_count / cfg_.loop_rate
   const int MAX_SPEED = 32.0;
   const int MIN_SPEED = -32.0;
-  const uint RIGHT = 0;
-  const uint LEFT = 1;
   
   // Parameters for the Deepdrive PWM motor controller
   bool hw_mock_;
+  bool use_wheel_encoder_;
 
   uint8_t hw_pin_left_enable_;
   uint8_t hw_pin_left_forward_;
   uint8_t hw_pin_left_backward_;
+  uint8_t hw_pin_left_encoder_;
   uint8_t hw_pin_right_enable_;
   uint8_t hw_pin_right_forward_;
   uint8_t hw_pin_right_backward_;
+  uint8_t hw_pin_right_encoder_;
   uint8_t hw_pwm_hz_;
+  uint8_t hw_encoder_ticks_per_rev_;
   uint8_t command_rate_hz_;
 
   GPIO::PWM *left_pwm_;
@@ -96,6 +99,22 @@ private:
   std::vector<double> hw_positions_;
   std::vector<double> hw_velocities_;
 };
+
+
+// This should really be done in a separate callback class per 
+// https://github.com/pjueon/JetsonGPIO/blob/master/docs/library_api.md
+void on_left_tick();
+void on_right_tick();
+
+// Define type for left and right sides
+typedef uint8_t Side;
+const Side RIGHT = 0;
+const Side LEFT = 1;
+
+std::vector<uint16_t> hw_wheel_ticks_;
+
+// Track which joints are left vs right
+std::vector<Side> wheel_joints_sides_;
 
 }  // namespace deepdrive_control
 

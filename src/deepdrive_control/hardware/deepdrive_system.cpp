@@ -29,7 +29,25 @@
 namespace deepdrive_control {
 
 bool parse_bool(const std::string &bool_string) {
-  return bool_string == "true" || bool_string == "True";
+  return bool_string == "true" || bool_string == "True" ||
+         bool_string == "TRUE";
+}
+
+// TODO: Is this supposed to be object oriented?
+void on_left_tick() {
+  for (std::size_t i = 0; i < wheel_joints_sides_.size(); i++) {
+    if (wheel_joints_sides_[i] == LEFT) {
+      hw_wheel_ticks_[i]++;
+    }
+  }
+}
+
+void on_right_tick() {
+  for (std::size_t i = 0; i < wheel_joints_sides_.size(); i++) {
+    if (wheel_joints_sides_[i] == RIGHT) {
+      hw_wheel_ticks_[i]++;
+    }
+  }
 }
 
 hardware_interface::CallbackReturn
@@ -46,20 +64,29 @@ DeepdriveSystemHardware::on_init(const hardware_interface::HardwareInfo &info) {
               "parent init success");
 
   hw_mock_ = parse_bool(info_.hardware_parameters["mock_hardware"]);
+  use_wheel_encoder_ =
+      parse_bool(info_.hardware_parameters["use_wheel_encoder"]);
 
   command_rate_hz_ = std::stoi(info_.hardware_parameters["command_rate"]);
 
+  // encoder is a photointerrupt sensor for wheel rotation
+  hw_encoder_ticks_per_rev_ =
+      std::stoi(info_.hardware_parameters["encoder_ticks_per_rev"]);
   hw_pin_left_enable_ = std::stoi(info_.hardware_parameters["pin_left_enable"]);
   hw_pin_left_forward_ =
       std::stoi(info_.hardware_parameters["pin_left_forward"]);
   hw_pin_left_backward_ =
       std::stoi(info_.hardware_parameters["pin_left_backward"]);
+  hw_pin_left_encoder_ =
+      std::stoi(info_.hardware_parameters["pin_left_encoder"]);
   hw_pin_right_enable_ =
       std::stoi(info_.hardware_parameters["pin_right_enable"]);
   hw_pin_right_forward_ =
       std::stoi(info_.hardware_parameters["pin_right_forward"]);
   hw_pin_right_backward_ =
       std::stoi(info_.hardware_parameters["pin_right_backward"]);
+  hw_pin_right_encoder_ =
+      std::stoi(info_.hardware_parameters["pin_right_encoder"]);
   hw_pwm_hz_ = std::stoi(info_.hardware_parameters["pwm_hz"]);
 
   hw_positions_.resize(info_.joints.size(),
@@ -68,6 +95,10 @@ DeepdriveSystemHardware::on_init(const hardware_interface::HardwareInfo &info) {
                         std::numeric_limits<double>::quiet_NaN());
   hw_commands_.resize(info_.joints.size(),
                       std::numeric_limits<double>::quiet_NaN());
+  hw_wheel_ticks_.resize(info_.joints.size(),
+                         std::numeric_limits<uint16_t>::quiet_NaN());
+  wheel_joints_sides_.resize(info_.joints.size(),
+                             std::numeric_limits<Side>::quiet_NaN());
 
   for (const hardware_interface::ComponentInfo &joint : info_.joints) {
     // DeepdriveSystem has exactly two states and one command interface on each
@@ -158,6 +189,7 @@ hardware_interface::CallbackReturn DeepdriveSystemHardware::on_activate(
     // Board pin-numbering scheme
     GPIO::setmode(GPIO::BOARD);
 
+    // L293 Motor Driver
     GPIO::setup(hw_pin_left_forward_, GPIO::OUT, GPIO::LOW);
     GPIO::setup(hw_pin_left_backward_, GPIO::OUT, GPIO::LOW);
     GPIO::setup(hw_pin_right_forward_, GPIO::OUT, GPIO::LOW);
@@ -170,6 +202,15 @@ hardware_interface::CallbackReturn DeepdriveSystemHardware::on_activate(
     GPIO::setup(hw_pin_right_enable_, GPIO::OUT, GPIO::LOW);
     right_pwm_ = new GPIO::PWM(hw_pin_right_enable_, hw_pwm_hz_);
     right_pwm_->start(0);
+
+    // Wheel encoders
+    GPIO::setup(hw_pin_left_encoder_, GPIO::IN);
+    GPIO::add_event_detect(hw_pin_left_encoder_, GPIO::Edge::RISING,
+                           on_left_tick);
+
+    GPIO::setup(hw_pin_right_encoder_, GPIO::IN);
+    GPIO::add_event_detect(hw_pin_right_encoder_, GPIO::Edge::RISING,
+                           on_right_tick);
   }
 
   // set some default values
@@ -178,6 +219,14 @@ hardware_interface::CallbackReturn DeepdriveSystemHardware::on_activate(
       hw_positions_[i] = 0;
       hw_velocities_[i] = 0;
       hw_commands_[i] = 0;
+      hw_wheel_ticks_[i] = 0;
+
+      // If the joint name has a "left" in it, it's the left wheel
+      if (info_.joints[i].name.find("left") != std::string::npos) {
+        wheel_joints_sides_[i] = LEFT;
+      } else {
+        wheel_joints_sides_[i] = RIGHT;
+      }
     }
   }
 
@@ -208,21 +257,59 @@ hardware_interface::CallbackReturn DeepdriveSystemHardware::on_deactivate(
 hardware_interface::return_type
 DeepdriveSystemHardware::read(const rclcpp::Time & /*time*/,
                               const rclcpp::Duration &period) {
-  // BEGIN: This part here is for exemplary purposes - Please do not copy to
-  // your production code
-  for (std::size_t i = 0; i < hw_velocities_.size(); i++) {
-    // Simulate Deepdrive wheels's movement as a first-order system
-    // Update the joint status: this is a revolute joint without any limit.
-    // Simply integrates
-    hw_positions_[i] = hw_positions_[i] + period.seconds() * hw_velocities_[i];
+  // TODO: Do I need to do a PID controller or will ros2_control do that?
 
-    // RCLCPP_INFO(
-    //   rclcpp::get_logger("DeepdriveSystemHardware"),
-    //   "Got position state %.5f and velocity state %.5f for '%s'!",
-    //   hw_positions_[i], hw_velocities_[i], info_.joints[i].name.c_str());
+  if (use_wheel_encoder_) {
+    // See how many ticks we got for this side since the last update
+    for (std::size_t i = 0; i < hw_velocities_.size(); i++) {
+      // Convert ticks to radians per second based on revs per tick
+      // TODO: Average these out? It's showing between 50 and 100 ticks per
+      // second based on the encoder with no in-between
+      //  Got 1 ticks for 'wheel_back_left_joint' since last update (0.0202374130s). ticks_per_second: 49.4134304617 diff_radians: 0.3141592654. Velocity: 15.5236870127 rad/s hw_encoder_ticks_per_rev_: 20
+      //  Got 1 ticks for 'wheel_front_left_joint' since last update (0.0197599320s). ticks_per_second: 50.6074616046 diff_radians: 0.3141592654. Velocity: 15.8988029594 rad/s hw_encoder_ticks_per_rev_: 20
+      //  Got 1 ticks for 'wheel_back_left_joint' since last update (0.0197599320s). ticks_per_second: 50.6074616046 diff_radians: 0.3141592654. Velocity: 15.8988029594 rad/s hw_encoder_ticks_per_rev_: 20
+
+
+      if (hw_wheel_ticks_[i] > 0) {
+        double ticks_per_second = hw_wheel_ticks_[i] / period.seconds();
+        // Scale up for precision
+        double diff_radians =
+            (1000 * hw_wheel_ticks_[i] / hw_encoder_ticks_per_rev_) * 2.0 * M_PI;
+        diff_radians/=1000;
+        hw_positions_[i] = hw_positions_[i] + diff_radians;
+        hw_velocities_[i] = diff_radians / period.seconds();
+
+        // Log info about the wheel's movement, like ticks, velocity, etc.
+
+        // Log info about the wheel's movement, like ticks, velocity, time
+        // elapsed, radians, radians per second
+        RCLCPP_INFO(
+            rclcpp::get_logger("DeepdriveSystemHardware"),
+            "Got %d ticks for '%s' since last update (%.10fs). ticks_per_second: %.10f diff_radians: "
+            "%.10f. Velocity: %.10f rad/s hw_encoder_ticks_per_rev_: %d",
+            hw_wheel_ticks_[i], info_.joints[i].name.c_str(), period.seconds(),
+            ticks_per_second, diff_radians, hw_velocities_[i], hw_encoder_ticks_per_rev_);
+
+        // Reset all ticks
+        hw_wheel_ticks_[i] = 0;
+      } else {
+        hw_velocities_[i] = 0;
+      }
+    }
+  } else {
+    for (std::size_t i = 0; i < hw_velocities_.size(); i++) {
+      // Simulate Deepdrive wheels's movement as a first-order system
+      // Update the joint status: this is a revolute joint without any limit.
+      // Simply integrates
+      hw_positions_[i] =
+          hw_positions_[i] + period.seconds() * hw_velocities_[i];
+
+      // RCLCPP_INFO(
+      //   rclcpp::get_logger("DeepdriveSystemHardware"),
+      //   "Got position state %.5f and velocity state %.5f for '%s'!",
+      //   hw_positions_[i], hw_velocities_[i], info_.joints[i].name.c_str());
+    }
   }
-  // END: This part here is for exemplary purposes - Please do not copy to your
-  // production code
 
   return hardware_interface::return_type::OK;
 }
@@ -231,30 +318,29 @@ hardware_interface::return_type
 deepdrive_control::DeepdriveSystemHardware::write(
     const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/) {
 
-
+  // if (use_wheel_encoder_) {
   for (auto i = 0u; i < hw_commands_.size(); i++) {
     // Simulate sending commands to the hardware
     // RCLCPP_DEBUG(
-    //   rclcpp::get_logger("DeepdriveSystemHardware"), "Got command %.5f for'%s'!", 
-    //   hw_commands_[i], info_.joints[i].name.c_str());
+    //   rclcpp::get_logger("DeepdriveSystemHardware"), "Got command %.5f
+    //   for'%s'!", hw_commands_[i], info_.joints[i].name.c_str());
 
-    // I'm not sure what units these are, but max signal I see when sending is 16
-    // so that will be max pwm
-    hw_velocities_[i] = hw_commands_[i];
-    if (hw_velocities_[i] > MAX_SPEED) {
-      hw_velocities_[i] = MAX_SPEED;
-    } else if (hw_velocities_[i] < MIN_SPEED) {
-      hw_velocities_[i] = MIN_SPEED;
+    // I'm not sure what units these are, but max signal I see when sending is
+    // 16 so that will be max pwm
+    if (hw_commands_[i] > MAX_SPEED) {
+      hw_commands_[i] = MAX_SPEED;
+    } else if (hw_commands_[i] < MIN_SPEED) {
+      hw_commands_[i] = MIN_SPEED;
     }
   }
 
   // Currently one signal is used for left and one for right wheel
   // wheel_back_right_joint, wheel_front_left_joint, wheel_back_left_joint,
   // wheel_front_right_joint
-  auto right_duty_cycle = std::abs(hw_velocities_[0] / MAX_SPEED * 100);
+  auto right_duty_cycle = std::abs(hw_commands_[0] / MAX_SPEED * 100);
   right_pwm_->ChangeDutyCycle(right_duty_cycle);
 
-  auto left_duty_cycle = std::abs(hw_velocities_[1] / MAX_SPEED * 100);
+  auto left_duty_cycle = std::abs(hw_commands_[1] / MAX_SPEED * 100);
   left_pwm_->ChangeDutyCycle(left_duty_cycle);
 
   // RCLCPP_INFO(rclcpp::get_logger("DeepdriveSystemHardware"),
@@ -264,11 +350,10 @@ deepdrive_control::DeepdriveSystemHardware::write(
   //             "Set PWM for %.5f for '%s' hw_vel: %.5f!", left_duty_cycle,
   //             info_.joints[1].name.c_str(), hw_velocities_[1]);
 
-
-  if (hw_velocities_[RIGHT] > 0) {
+  if (hw_commands_[RIGHT] > 0) {
     GPIO::output(hw_pin_right_forward_, GPIO::HIGH);
     GPIO::output(hw_pin_right_backward_, GPIO::LOW);
-  } else if (hw_velocities_[RIGHT] < 0) {
+  } else if (hw_commands_[RIGHT] < 0) {
     GPIO::output(hw_pin_right_forward_, GPIO::LOW);
     GPIO::output(hw_pin_right_backward_, GPIO::HIGH);
   } else {
@@ -276,10 +361,10 @@ deepdrive_control::DeepdriveSystemHardware::write(
     GPIO::output(hw_pin_right_backward_, GPIO::LOW);
   }
 
-  if (hw_velocities_[LEFT] > 0) {
+  if (hw_commands_[LEFT] > 0) {
     GPIO::output(hw_pin_left_forward_, GPIO::HIGH);
     GPIO::output(hw_pin_left_backward_, GPIO::LOW);
-  } else if (hw_velocities_[LEFT] < 0) {
+  } else if (hw_commands_[LEFT] < 0) {
     GPIO::output(hw_pin_left_forward_, GPIO::LOW);
     GPIO::output(hw_pin_left_backward_, GPIO::HIGH);
   } else {

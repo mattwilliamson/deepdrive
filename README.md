@@ -2,9 +2,13 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] tighten holes (especially motor mounts)
+- [ ] 2 more holes for all motor wires
+- [ ] slightly longer wheel encoder shaft
+- [ ] cooling fan
 - [ ] add power button & voltage mount
 - [ ] calibrate motor pwm speed
-- [ ] add wheel encoders to stl
+- [x] add wheel encoders to stl
 - [ ] Fix mount since it covers camera cables
 - [ ] lcd display?
 - [ ] m-explore
@@ -85,7 +89,7 @@ DEEPDRIVE_MODEL
 Latest testing working:
 ```sh
 ros2 launch deepdrive_bringup launch_control.launch.py
-ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/diff_drive_controller/cmd_vel_unstamped
+ros2 run deepdrive_teleop teleop_keyboard
 ```
 
 ```sh
