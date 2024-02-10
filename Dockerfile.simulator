@@ -42,7 +42,7 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-rqt* \
         ros-${ROS_DISTRO}-joint-state-publisher-gui \
         ros-${ROS_DISTRO}-ros2-control ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-gazebo-ros2-control \
-        apt install joystick jstest-gtk evtest \
+        joystick jstest-gtk evtest \
         x11-apps \
         xtl-dev \
         ruby-dev \
@@ -110,7 +110,7 @@ RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cd JetsonGPIO && \
     mkdir build && \
     cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=./install -DBUILD_EXAMPLES=ON -DJETSON_GPIO_POST_INSTALL=OFF && \
+    cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
     cmake --build . --target install
 
 
