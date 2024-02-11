@@ -112,6 +112,7 @@ const Side RIGHT = 0;
 const Side LEFT = 1;
 
 std::vector<uint16_t> hw_wheel_ticks_;
+std::vector<uint16_t> hw_wheel_ticks_prev_;
 
 // Track which joints are left vs right
 std::vector<Side> wheel_joints_sides_;

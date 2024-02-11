@@ -97,6 +97,9 @@ DeepdriveSystemHardware::on_init(const hardware_interface::HardwareInfo &info) {
                       std::numeric_limits<double>::quiet_NaN());
   hw_wheel_ticks_.resize(info_.joints.size(),
                          std::numeric_limits<uint16_t>::quiet_NaN());
+  hw_wheel_ticks_prev_.resize(info_.joints.size(),
+                              std::numeric_limits<uint16_t>::quiet_NaN());
+
   wheel_joints_sides_.resize(info_.joints.size(),
                              std::numeric_limits<Side>::quiet_NaN());
 
@@ -220,6 +223,7 @@ hardware_interface::CallbackReturn DeepdriveSystemHardware::on_activate(
       hw_velocities_[i] = 0;
       hw_commands_[i] = 0;
       hw_wheel_ticks_[i] = 0;
+      hw_wheel_ticks_prev_[i] = 0;
 
       // If the joint name has a "left" in it, it's the left wheel
       if (info_.joints[i].name.find("left") != std::string::npos) {
@@ -265,33 +269,47 @@ DeepdriveSystemHardware::read(const rclcpp::Time & /*time*/,
       // Convert ticks to radians per second based on revs per tick
       // TODO: Average these out? It's showing between 50 and 100 ticks per
       // second based on the encoder with no in-between
-      //  Got 1 ticks for 'wheel_back_left_joint' since last update (0.0202374130s). ticks_per_second: 49.4134304617 diff_radians: 0.3141592654. Velocity: 15.5236870127 rad/s hw_encoder_ticks_per_rev_: 20
-      //  Got 1 ticks for 'wheel_front_left_joint' since last update (0.0197599320s). ticks_per_second: 50.6074616046 diff_radians: 0.3141592654. Velocity: 15.8988029594 rad/s hw_encoder_ticks_per_rev_: 20
-      //  Got 1 ticks for 'wheel_back_left_joint' since last update (0.0197599320s). ticks_per_second: 50.6074616046 diff_radians: 0.3141592654. Velocity: 15.8988029594 rad/s hw_encoder_ticks_per_rev_: 20
+      //  Got 1 ticks for 'wheel_back_left_joint' since last update
+      //  (0.0202374130s). ticks_per_second: 49.4134304617 diff_radians:
+      //  0.3141592654. Velocity: 15.5236870127 rad/s hw_encoder_ticks_per_rev_:
+      //  20 Got 1 ticks for 'wheel_front_left_joint' since last update
+      //  (0.0197599320s). ticks_per_second: 50.6074616046 diff_radians:
+      //  0.3141592654. Velocity: 15.8988029594 rad/s hw_encoder_ticks_per_rev_:
+      //  20 Got 1 ticks for 'wheel_back_left_joint' since last update
+      //  (0.0197599320s). ticks_per_second: 50.6074616046 diff_radians:
+      //  0.3141592654. Velocity: 15.8988029594 rad/s hw_encoder_ticks_per_rev_:
+      //  20
 
+      if (hw_wheel_ticks_[i] < hw_wheel_ticks_prev_[i]) {
+        // Overflow
+        hw_wheel_ticks_[i] = hw_wheel_ticks_prev_[i] - hw_wheel_ticks_prev_[i];
+        hw_wheel_ticks_prev_[i] = 0;
+      }
 
-      if (hw_wheel_ticks_[i] > 0) {
-        double ticks_per_second = hw_wheel_ticks_[i] / period.seconds();
+      uint16_t tick_diff = hw_wheel_ticks_[i] - hw_wheel_ticks_prev_[i];
+
+      if (tick_diff > 0) {
+
+        double ticks_per_second = tick_diff / period.seconds();
         // Scale up for precision
         double diff_radians =
-            (1000 * hw_wheel_ticks_[i] / hw_encoder_ticks_per_rev_) * 2.0 * M_PI;
-        diff_radians/=1000;
+            (1000 * tick_diff / hw_encoder_ticks_per_rev_) * 2.0 * M_PI;
+        diff_radians /= 1000;
+
         hw_positions_[i] = hw_positions_[i] + diff_radians;
         hw_velocities_[i] = diff_radians / period.seconds();
 
-        // Log info about the wheel's movement, like ticks, velocity, etc.
-
-        // Log info about the wheel's movement, like ticks, velocity, time
-        // elapsed, radians, radians per second
         RCLCPP_INFO(
             rclcpp::get_logger("DeepdriveSystemHardware"),
-            "Got %d ticks for '%s' since last update (%.10fs). ticks_per_second: %.10f diff_radians: "
+            "Got %d ticks (total: %d) for '%s' since last update (%.10fs). "
+            "ticks_per_second: %.10f diff_radians: "
             "%.10f. Velocity: %.10f rad/s hw_encoder_ticks_per_rev_: %d",
-            hw_wheel_ticks_[i], info_.joints[i].name.c_str(), period.seconds(),
-            ticks_per_second, diff_radians, hw_velocities_[i], hw_encoder_ticks_per_rev_);
+            tick_diff, hw_wheel_ticks_[i], info_.joints[i].name.c_str(), period.seconds(),
+            ticks_per_second, diff_radians, hw_velocities_[i],
+            hw_encoder_ticks_per_rev_);
 
         // Reset all ticks
-        hw_wheel_ticks_[i] = 0;
+        hw_wheel_ticks_prev_[i] = hw_wheel_ticks_[i];
       } else {
         hw_velocities_[i] = 0;
       }
