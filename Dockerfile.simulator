@@ -50,6 +50,7 @@ RUN apt-get update && \
         tmux \
         wget \
         xorg-dev \
+        microros \
         zsh && \
     rm -rf /var/lib/apt/lists/
 

@@ -1,3 +1,0 @@
-[submodule "JetsonGPIO"]
-	path = JetsonGPIO
-	url = https://github.com/pjueon/JetsonGPIO.git

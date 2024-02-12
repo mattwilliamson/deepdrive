@@ -136,6 +136,8 @@ RUN apt-get update && \
         wget \
         xorg-dev \
         xtl-dev \
+        gcc-arm-none-eabi \
+        libnewlib-arm-none-eabi \
         zsh && \
     rm -rf /var/lib/apt/lists/
 RUN pip3 install setuptools==58.2.0 && \
@@ -159,7 +161,41 @@ RUN apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+
+# micro ros
+RUN git clone --recurse-submodules https://github.com/raspberrypi/pico-sdk.git /usr/src/pico-sdk
+ENV PICO_SDK_PATH=/usr/src/pico-sdk
+
+ENV UROS_WS=/uros_ws
+WORKDIR $UROS_WS
+RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
+    apt-get update && \
+    rosdep update && \
+    rm -rf /opt/ros/humble/build/pluginlib/pluginlib_enable_plugin_testing && \
+    rosdep install --from-paths src --ignore-src -y 
+RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
+    colcon build && \
+    source $UROS_WS/install/setup.sh && \
+    ros2 run micro_ros_setup create_agent_ws.sh && \
+    ros2 run micro_ros_setup build_agent.sh
+
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 baudrate=115200
+
+# Compile example:
+# git clone https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git -b $ROS_DISTRO src/micro_ros_raspberrypi_pico_sdk
+# cd micro_ros_raspberrypi_pico_sdk
+# mkdir build
+# cd build
+# cmake ..
+# make
+
+# RUN git clone https://github.com/micro-ROS/micro-ROS-Agent.git -b humble src/micro-ROS-Agent
+
+
+
 # Install JetsonGPIO
+# TODO: deprecate in favor of microcontroller
 WORKDIR /usr/src
 RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cd JetsonGPIO && \
@@ -168,11 +204,18 @@ RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
     cmake --build . --target install
 
+
+
+
+
+
+
 RUN echo "source /root/.ros2" >> /root/.bashrc
 RUN echo "source /root/.ros2" >> /root/.zshrc
 RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
 RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.ros2
 RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.ros2
+RUN echo "source $UROS_WS/install/setup.sh" >> /root/.ros2
 RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.ros2
 RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.ros2
 
