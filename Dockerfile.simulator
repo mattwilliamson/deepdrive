@@ -53,6 +53,12 @@ RUN apt-get update && \
         zsh && \
     rm -rf /var/lib/apt/lists/
 
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential && \
+    rm -rf /var/lib/apt/lists/
+
+
 RUN pip3 install setuptools==58.2.0
 
 RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.44.0/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
@@ -84,22 +90,22 @@ ENV PICO_SDK_PATH=/usr/src/pico-sdk
 ENV UROS_WS=/uros_ws
 WORKDIR $UROS_WS
 RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
-RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
+RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.sh && \
     apt-get update && \
     rosdep update && \
     rm -rf /opt/ros/humble/build/pluginlib/pluginlib_enable_plugin_testing && \
-    rosdep install --from-paths src --ignore-src -y 
-RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
-    colcon build && \
+    rosdep install --from-paths src --ignore-src -y "
+RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.sh && \
+    colcon build --symlink-install && \
     source $UROS_WS/install/setup.sh && \
     ros2 run micro_ros_setup create_agent_ws.sh && \
-    ros2 run micro_ros_setup build_agent.sh
+    ros2 run micro_ros_setup build_agent.sh"
 
 RUN echo "source /root/.ros2" >> /root/.bashrc
 RUN echo "source /root/.ros2" >> /root/.zshrc
 RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
 RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.ros2
-RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.ros2
+RUN echo "source $ROS_ROOT/setup.sh" >> /root/.ros2
 RUN echo "source $UROS_WS/install/setup.sh" >> /root/.ros2
 RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.ros2
 RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.ros2
