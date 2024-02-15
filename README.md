@@ -2,6 +2,7 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] PID controller for motor
 - [ ] add mounting holes for jetson mount
 - [ ] tighten holes (especially motor mounts)
 - [ ] 2 more holes for all motor wires
@@ -13,6 +14,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] cooling fan
 - [ ] add power button & voltage mount
 - [ ] calibrate motor pwm speed
+- [ ] composable nodes for hardware and cameras?
 - [x] add wheel encoders to stl
 - [ ] Fix mount since it covers camera cables
 - [ ] lcd display?

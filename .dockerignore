@@ -2,3 +2,6 @@
 venv
 src/bags
 __pycache__
+build
+*/build
+src/deepdrive_micro/build
