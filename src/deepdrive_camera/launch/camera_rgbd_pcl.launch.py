@@ -12,7 +12,9 @@ from launch.conditions import IfCondition
 
 def launch_setup(context, *args, **kwargs):
     params_file = LaunchConfiguration("params_file")
-    depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    # TODO: Check if this change helped
+    # depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    depthai_prefix = get_package_share_directory("deepdrive_camera")
 
     name = LaunchConfiguration('name').perform(context)
     rgb_topic_name = name+'/rgb/image_raw'

@@ -36,6 +36,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] gps
 - [ ] diagnostics for motor controller
 - [ ] cooling fan
+- [ ] camera urdf overwriting robot_description: https://discuss.luxonis.com/d/2221-launching-oak-d-pro-without-overwriting-existing-robot-description/3
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py

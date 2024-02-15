@@ -119,7 +119,8 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    # depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    depthai_prefix = get_package_share_directory("deepdrive_camera")
     #   <xacro:depthai_camera camera_name="camera" parent="base_link" camera_model="OAK-D-LITE" base_frame="camera_frame" cam_pos_x="0" cam_pos_y="0" cam_pos_z="0" cam_roll="0" cam_pitch="0" cam_yaw="0"/>
     declared_arguments = [
         DeclareLaunchArgument("name", default_value="camera"),

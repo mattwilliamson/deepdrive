@@ -9,7 +9,8 @@ from launch_ros.actions import Node
 
 def launch_setup(context, *args, **kwargs):
     name = LaunchConfiguration('name').perform(context)
-    depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    # depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    depthai_prefix = get_package_share_directory("deepdrive_camera")
 
     params_file= LaunchConfiguration("params_file")
 
@@ -27,7 +28,8 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    # depthai_prefix = get_package_share_directory("depthai_ros_driver")
+    depthai_prefix = get_package_share_directory("deepdrive_camera")
     declared_arguments = [
         DeclareLaunchArgument("name", default_value="oak"),
         DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'camera.yaml')),
