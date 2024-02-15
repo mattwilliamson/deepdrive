@@ -2,8 +2,13 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] add mounting holes for jetson mount
 - [ ] tighten holes (especially motor mounts)
 - [ ] 2 more holes for all motor wires
+- [ ] new N20 motors
+- [ ] battery level
+- [ ] fuse
+- [ ] stall detection based on rotary encoders
 - [ ] slightly longer wheel encoder shaft
 - [ ] cooling fan
 - [ ] add power button & voltage mount

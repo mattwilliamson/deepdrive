@@ -13,10 +13,22 @@ add_executable(deepdrive_micro
     deepdrive_micro.c
     pico_uart_transport.c
 )
+
+# To add to this, here are examples: `cat /usr/src/pico-sdk/test/kitchen_sink/CMakeLists.txt | grep pwm`
+# /usr/src/pico-sdk/test/kitchen_sink/kitchen_sink.c
+# #if LIB_PICO_CYW43_ARCH
+# grep -i cyw43 /usr/src/pico-sdk/test/kitchen_sink/CMakeLists.txt 
 target_link_libraries(deepdrive_micro
     pico_stdlib
     microros
+    hardware_pwm
 )
+
+if (TARGET pico_cyw43_arch)
+target_link_libraries(deepdrive_micro
+    pico_cyw43_arch_none
+)
+endif()
 
 target_include_directories(deepdrive_micro PUBLIC
     libmicroros/include
