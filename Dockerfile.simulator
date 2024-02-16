@@ -1,8 +1,16 @@
 # Borrowed from https://github.com/sskorol/ros2-humble-docker-dev-template
 
-FROM osrf/ros:humble-desktop-full
-
 ARG ROS_DISTRO=humble
+
+FROM osrf/ros:${ROS_DISTRO}-desktop-full
+
+RUN apt update && \
+    apt-get install -y software-properties-common curl && \
+    add-apt-repository universe && \
+    apt-get update && \
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros2-latest-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros2-latest-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
 
 # TODO: Cleanup. i.e. nano, install vim
 # TODO: Learn tmuxinator
@@ -41,6 +49,7 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-hls-lfcd-lds-driver \
         ros-${ROS_DISTRO}-rqt* \
         ros-${ROS_DISTRO}-joint-state-publisher-gui \
+        ros-dev-tools \
         ros-${ROS_DISTRO}-ros2-control ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-gazebo-ros2-control \
         joystick jstest-gtk evtest \
         x11-apps \
@@ -50,12 +59,10 @@ RUN apt-get update && \
         tmux \
         wget \
         xorg-dev \
+        build-essential \
+        gcc-arm-none-eabi \
+        libnewlib-arm-none-eabi \
         zsh && \
-    rm -rf /var/lib/apt/lists/
-
-RUN apt-get update && \
-    apt-get install -y \
-        build-essential && \
     rm -rf /var/lib/apt/lists/
 
 

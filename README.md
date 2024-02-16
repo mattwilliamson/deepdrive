@@ -2,6 +2,13 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] BNO080 publisher
+- [ ] lidar odom? https://github.com/PRBonn/kiss-icp
+- [ ] second IMU / compass BNO080/BNO085 9-DOF
+- [ ] new micro-ros based differential drive controller
+- [ ] set collision detection on IMU
+- [ ] I2C scanner server?
+- [ ] new custom differential drive controller
 - [ ] PID controller for motor
 - [ ] add mounting holes for jetson mount
 - [ ] tighten holes (especially motor mounts)
@@ -32,7 +39,6 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [x] add wide angle camera
 - [ ] https://github.com/BehaviorTree/BehaviorTree.CPP
 - [ ] ros params for wheelbase, serial port, etc
-- [ ] second IMU / compass
 - [ ] gps
 - [ ] diagnostics for motor controller
 - [ ] cooling fan
@@ -261,3 +267,18 @@ screen -L /dev/ttyTHS0 230400
 ```
 
 
+
+---
+
+# IMU BNO080
+`sudo /opt/nvidia/jetson-io/jetson-io.py`
+```sh
+sudo apt-get install libi2c-dev
+sudo i2cdetect -r -y 1
+```
+
+pin3 - i2c2
+pin5 - i2c2
+
+
+7 pins up from bottom
