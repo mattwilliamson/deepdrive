@@ -58,7 +58,7 @@ class ImuNode(Node):
         self.bno = BNO08X_I2C(i2c, address=I2C_ADDRESS)
 
         self.bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
-        # self.bno.enable_feature(BNO_REPORT_LINEAR_ACCELERATION)
+        self.bno.enable_feature(BNO_REPORT_LINEAR_ACCELERATION)
         self.bno.enable_feature(BNO_REPORT_GYROSCOPE)
         self.bno.enable_feature(BNO_REPORT_MAGNETOMETER)
         self.bno.enable_feature(BNO_REPORT_ACCELEROMETER)
@@ -88,7 +88,7 @@ class ImuNode(Node):
 
         # Increase the covariance for the orientation if the calibration status is low
         # Status: 0=Unreliable 1=Accuracy Low 2=Accuracy Medium 3=Accuracy High 
-        cov = 0.0025 + ((3 - self.calibration_status) * .05)
+        cov = 0.001 + ((3 - self.calibration_status) * .05)
 
         # Orientation
         quat_i, quat_j, quat_k, quat_real = self.bno.quaternion
@@ -100,8 +100,8 @@ class ImuNode(Node):
         msg.orientation_covariance[4] = cov
         msg.orientation_covariance[8] = cov
 
-        # accel_y, accel_z, accel_x = self.bno.acceleration
-        accel_x, accel_y, accel_z = self.bno.acceleration
+        # Linear Acceleration with gravity removed
+        accel_x, accel_y, accel_z = self.bno.linear_acceleration
         msg.linear_acceleration.x = accel_x
         msg.linear_acceleration.y = accel_y
         msg.linear_acceleration.z = accel_z
@@ -119,13 +119,13 @@ class ImuNode(Node):
         msg.angular_velocity_covariance[8] = cov
 
         # Accelerometer
-        accel_x, accel_y, accel_z = self.bno.acceleration
-        msg.linear_acceleration.x = accel_x
-        msg.linear_acceleration.y = accel_y
-        msg.linear_acceleration.z = accel_z
-        msg.linear_acceleration_covariance[0] = cov
-        msg.linear_acceleration_covariance[4] = cov
-        msg.linear_acceleration_covariance[8] = cov
+        # accel_x, accel_y, accel_z = self.bno.acceleration
+        # msg.linear_acceleration.x = accel_x
+        # msg.linear_acceleration.y = accel_y
+        # msg.linear_acceleration.z = accel_z
+        # msg.linear_acceleration_covariance[0] = cov
+        # msg.linear_acceleration_covariance[4] = cov
+        # msg.linear_acceleration_covariance[8] = cov
 
         self.imu_publisher.publish(msg)
 
