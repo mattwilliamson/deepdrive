@@ -88,6 +88,14 @@ def generate_launch_description():
         [FindPackageShare("deepdrive_description"), "rviz", "model.rviz"]
     )
 
+    imu_node = Node(
+        package="imu_bno08x",
+        executable="imu_bno08x_publisher",
+        # parameters=[],
+        output="both",
+        # remappings=[("/imu_bno08x/data", "/imu/")],
+    )
+
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -232,6 +240,7 @@ def generate_launch_description():
         imu_transformer_node,
         # teleop_node,
         # joy_node,
+        imu_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

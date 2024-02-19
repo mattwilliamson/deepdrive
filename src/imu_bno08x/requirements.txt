@@ -1,0 +1,3 @@
+Adafruit_CircuitPython_BNO08x 
+Adafruit-extended-bus 
+Jetson.GPIO

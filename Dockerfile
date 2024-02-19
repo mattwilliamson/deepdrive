@@ -204,12 +204,6 @@ RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
     cmake --build . --target install
 
-
-
-
-
-
-
 RUN echo "source /root/.ros2" >> /root/.bashrc
 RUN echo "source /root/.ros2" >> /root/.zshrc
 RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
@@ -252,6 +246,9 @@ WORKDIR $ROS2_WS
 
 # COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
 # RUN pip3 install -r src/deepdrive_vision/requirements.txt
+
+COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
+RUN pip3 install -r src/imu_bno08x/requirements.txt
 
 COPY src ./src/
 

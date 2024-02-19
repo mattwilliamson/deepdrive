@@ -2,14 +2,19 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
-- [ ] BNO080 publisher
+- [ ] new custom differential drive controller
+- [ ] start with custom c++ node + micro-ros for low level. later, use serial direct to speed it up https://github.com/osrf/ros2_serial_example
+- [ ] PID controller for motor
+- [x] second IMU / compass BNO080/BNO085 9-DOF
+- [ ] add second IMU to robot_localization
+- [ ] mount IMU
+- [ ] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
 - [ ] lidar odom? https://github.com/PRBonn/kiss-icp
-- [ ] second IMU / compass BNO080/BNO085 9-DOF
+- [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
+- [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
 - [ ] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU
 - [ ] I2C scanner server?
-- [ ] new custom differential drive controller
-- [ ] PID controller for motor
 - [ ] add mounting holes for jetson mount
 - [ ] tighten holes (especially motor mounts)
 - [ ] 2 more holes for all motor wires
