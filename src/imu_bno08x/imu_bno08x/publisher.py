@@ -38,6 +38,8 @@ DIAGNOSTIC_TOPIC = "imu_bno08x/status"
 # STABILITY_TOPIC = "imu_bno08x/stability"
 IMU_FRAME = "imu_link"
 
+SAVE_CALIBRATION = False
+
 
 class ImuNode(Node):
     def __init__(self):
@@ -81,6 +83,7 @@ class ImuNode(Node):
 
     def publish_imu(self):
         self.calibration_status = self.bno.calibration_status
+        self.calibration_status = 1
 
         msg = Imu()
         msg.header.frame_id = IMU_FRAME
@@ -88,7 +91,12 @@ class ImuNode(Node):
 
         # Increase the covariance for the orientation if the calibration status is low
         # Status: 0=Unreliable 1=Accuracy Low 2=Accuracy Medium 3=Accuracy High 
-        cov = 0.001 + ((3 - self.calibration_status) * .05)
+        cov = int(5 - self.calibration_status)
+        cov = (cov * cov * .02) - .079 # Weigh lower accuracy even less
+        # 0 unreliable -> 0.421
+        # 1 low        -> 0.241
+        # 2 medium     -> 0.100
+        # 3 high       -> 0.001
 
         # Orientation
         quat_i, quat_j, quat_k, quat_real = self.bno.quaternion
@@ -162,7 +170,8 @@ class ImuNode(Node):
             if not self.saved_calibration:
                 # Calibration status is good. Let's persist it.
                 self.get_logger().info("accuracy calibration is good. Saving.")
-                self.bno.save_calibration_data()
+                if SAVE_CALIBRATION:
+                    self.bno.save_calibration_data()
                 self.saved_calibration = True
         if self.calibration_status == 2:
             status_msg.level = b"\x00"
