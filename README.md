@@ -2,6 +2,7 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] Baud rate 1000000 for raspberry pi pico
 - [ ] new custom differential drive controller
 - [ ] start with custom c++ node + micro-ros for low level. later, use serial direct to speed it up https://github.com/osrf/ros2_serial_example
 - [ ] PID controller for motor
