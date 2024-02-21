@@ -36,18 +36,15 @@
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <deepdrive_msgs/msg/sensor_state.hpp>
 
-#include "deepdrive_node/control_table.hpp"
 #include "deepdrive_node/devices/devices.hpp"
 #include "deepdrive_node/devices/motor_power.hpp"
 #include "deepdrive_node/devices/reset.hpp"
 #include "deepdrive_node/devices/sound.hpp"
-#include "deepdrive_node/dynamixel_sdk_wrapper.hpp"
 #include "deepdrive_node/odometry.hpp"
 #include "deepdrive_node/sensors/battery_state.hpp"
 #include "deepdrive_node/sensors/imu.hpp"
 #include "deepdrive_node/sensors/joint_state.hpp"
 #include "deepdrive_node/sensors/sensor_state.hpp"
-#include "deepdrive_node/sensors/sensors.hpp"
 
 namespace deepdrive
 {

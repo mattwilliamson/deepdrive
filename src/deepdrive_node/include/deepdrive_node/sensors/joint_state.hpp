@@ -22,7 +22,6 @@
 #include <memory>
 #include <string>
 
-#include "deepdrive_node/sensors/sensors.hpp"
 
 namespace deepdrive
 {

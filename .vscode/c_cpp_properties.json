@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/ros_ws/install/deepdrive_fake_node/include/**",
+                "/ros_ws/install/deepdrive_msgs/include/**",
+                "/ros_ws/install/deepdrive_gazebo/include/**",
+                "/uros_ws/install/micro_ros_agent/include/**",
+                "/uros_ws/install/micro_ros_msgs/include/**",
+                "/opt/ros/humble/include/**",
+                "/ros_ws/src/deepdrive_node/include/**",
+                "/ros_ws/src/deepdrive_simulations/deepdrive_fake_node/include/**",
+                "/ros_ws/src/deepdrive_simulations/deepdrive_gazebo/include/**",
+                "/usr/include/**",
+                "/ros_ws/src/deepdrive_node/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
+}

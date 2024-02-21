@@ -7,17 +7,17 @@ FROM osrf/ros:${ROS_DISTRO}-desktop-full
 
 # docker pull ros:humble-ros-core-jammy
 
-RUN apt update && \
-    apt-get install -y software-properties-common curl && \
-    add-apt-repository universe && \
-    apt-get update && \
-    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros2-latest-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros2-latest-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+# RUN apt update && \
+#     apt-get install -y software-properties-common curl && \
+#     add-apt-repository universe && \
+#     apt-get update && \
+#     curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros2-latest-archive-keyring.gpg && \
+#     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros2-latest-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 
-# TODO: Cleanup. i.e. nano, install vim
-# TODO: Learn tmuxinator
-# Install git, supervisor, VNC, & X11 packages
+# # TODO: Cleanup. i.e. nano, install vim
+# # TODO: Learn tmuxinator
+# # Install git, supervisor, VNC, & X11 packages
 RUN apt-get update && \
     apt-get install -y \
         cmake \
@@ -162,9 +162,11 @@ VOLUME /tmp
 ENV GAZEBO_MODEL_PATH=$ROS2_WS/src/:$GAZEBO_MODEL_PATH
 ENV DEEPDRIVE_MODEL=deepdrive
 
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 # CMD [ "bash" ]
 
-COPY src ./src/
+# COPY src ./src/
 
 
 # RUN bash -c "source $ROS_ROOT/setup.bash && colcon build --symlink-install"

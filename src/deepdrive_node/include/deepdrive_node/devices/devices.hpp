@@ -23,8 +23,6 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "deepdrive_node/control_table.hpp"
-#include "deepdrive_node/dynamixel_sdk_wrapper.hpp"
 
 
 namespace deepdrive

@@ -1,4 +1,7 @@
-.vscode
 venv
 bags
+src/bag
 __pycache__
+**/build
+install
+log

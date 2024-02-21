@@ -1,0 +1,37 @@
+{
+  "cmake.sourceDirectory": "/ros_ws/src/deepdrive",
+  "cmake.environment": {
+    "PICO_SDK_PATH": "/Users/matt/Dropbox/Robotics/pico-sdk"
+  },
+  "C_Cpp.workspaceSymbols": "All",
+  "python.autoComplete.extraPaths": [
+    "/ros_ws/build/imu_bno08x",
+    "/ros_ws/install/imu_bno08x/lib/python3.10/site-packages",
+    "/ros_ws/build/deepdrive_vision",
+    "/ros_ws/install/deepdrive_vision/lib/python3.10/site-packages",
+    "/ros_ws/build/deepdrive_teleop",
+    "/ros_ws/install/deepdrive_teleop/lib/python3.10/site-packages",
+    "/ros_ws/build/deepdrive_hardware",
+    "/ros_ws/install/deepdrive_hardware/lib/python3.10/site-packages",
+    "/uros_ws/install/micro_ros_msgs/local/lib/python3.10/dist-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/ros_ws/build/imu_bno08x",
+    "/ros_ws/install/imu_bno08x/lib/python3.10/site-packages",
+    "/ros_ws/build/deepdrive_vision",
+    "/ros_ws/install/deepdrive_vision/lib/python3.10/site-packages",
+    "/ros_ws/build/deepdrive_teleop",
+    "/ros_ws/install/deepdrive_teleop/lib/python3.10/site-packages",
+    "/ros_ws/build/deepdrive_hardware",
+    "/ros_ws/install/deepdrive_hardware/lib/python3.10/site-packages",
+    "/uros_ws/install/micro_ros_msgs/local/lib/python3.10/dist-packages",
+    "/opt/ros/humble/lib/python3.10/site-packages",
+    "/opt/ros/humble/local/lib/python3.10/dist-packages"
+  ],
+  "ros.distro": "humble",
+  "ros.rosSetupScript": "/ros_ws/install/setup.bash",
+  "ros.isolateEnvironment": false,
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x86"
+}

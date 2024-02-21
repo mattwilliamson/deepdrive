@@ -71,6 +71,29 @@ dockersimshell: dockersim
 		--device=/dev/bus/usb:/dev/bus/usb \
 		${ROS_PACKAGE}-sim
 
+# Use this to develop on mac with docker
+.PHONY: dockerdev
+dockerdev: 
+	docker build --platform linux/arm64/v8 -t ${ROS_PACKAGE}-dev -f Dockerfile.dev .
+
+.PHONY: dockerdevshell
+dockerdevshell: dockerdev
+	xhost +local:docker
+	docker run \
+		--platform linux/arm64/v8 \
+		--network=host \
+		-it \
+		--name deepdrive-dev \
+		-v ${PWD}:${ROS_ROOT}/ \
+		--privileged \
+		-e DISPLAY=${DISPLAY} \
+		-e PYTHONBUFFERED=1 \
+		-v /etc/timezone:/etc/timezone:ro \
+		-v /etc/localtime:/etc/localtime:ro \
+		-v /tmp \
+		-v "/root/.gazebo/" \
+		--device=/dev/bus/usb:/dev/bus/usb \
+		${ROS_PACKAGE}-dev bash
 
 
 # Host networking not currently working for x11 (novnc)
