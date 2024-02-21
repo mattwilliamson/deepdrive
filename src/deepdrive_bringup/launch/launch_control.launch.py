@@ -96,14 +96,6 @@ def generate_launch_description():
         # remappings=[("/imu_bno08x/data", "/imu/")],
     )
 
-    control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        parameters=[robot_description, robot_controllers],
-        output="both",
-        remappings=[("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel")],
-    )
-    
     robot_state_pub_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -120,34 +112,6 @@ def generate_launch_description():
         output="log",
         arguments=["-d", rviz_config_file],
         condition=IfCondition(gui),
-    )
-
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
-    )
-
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["diff_drive_controller", "--controller-manager", "/controller_manager"],
-    )
-
-    # Delay rviz start after `joint_state_broadcaster`
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
-    )
-
-    # Delay start of robot_controller after `joint_state_broadcaster`
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
-        )
     )
 
     # Fuse IMU to odometry
@@ -198,13 +162,7 @@ def generate_launch_description():
     #     parameters=[twist_mux_params, {"use_sim_time": use_sim_time}],
     #     remappings=[("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped")],
     # )
-
-    # <node pkg="imu_transformer" type="imu_transformer_node" name="imu_data_transformer" output="screen">
-    #     <remap from="imu_in" to="imu_raw"/>
-    #     <remap from="imu_out" to="imu"/>
-    #     <param name="target_frame" value="base_link"/>
-    # </node>
-
+    
     # https://github.com/ros-perception/imu_pipeline/blob/ros2/imu_transformer/launch/ned_to_enu.launch.xml
     #   <node pkg="tf2_ros" exec="static_transform_publisher" name="tf_imu_ned_enu"
     # args="0 0 0 1.5708 0 3.1416 imu_link_ned imu_link" output="screen"/>
@@ -230,11 +188,7 @@ def generate_launch_description():
     )
 
     nodes = [
-        control_node,
         robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         robot_localization_node,
         imu_publisher_node,
         imu_transformer_node,

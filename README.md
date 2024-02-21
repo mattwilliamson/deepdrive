@@ -13,6 +13,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
 - [ ] lidar odom? https://github.com/PRBonn/kiss-icp
 - [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
+- [ ] nvidia jetson visual odom?
 - [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
 - [ ] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU

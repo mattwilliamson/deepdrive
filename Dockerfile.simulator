@@ -52,8 +52,8 @@ RUN apt-get update && \
         ros-${ROS_DISTRO}-hls-lfcd-lds-driver \
         ros-${ROS_DISTRO}-rqt* \
         ros-${ROS_DISTRO}-joint-state-publisher-gui \
+        ros-${ROS_DISTRO}-imu-pipeline \
         ros-dev-tools \
-        ros-${ROS_DISTRO}-ros2-control ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-gazebo-ros2-control \
         joystick jstest-gtk evtest \
         x11-apps \
         xtl-dev \
@@ -157,6 +157,9 @@ WORKDIR $ROS2_WS
 
 # COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
 # RUN pip3 install -r src/deepdrive_vision/requirements.txt
+
+COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
+RUN pip3 install -r src/imu_bno08x/requirements.txt
 
 VOLUME /tmp
 ENV GAZEBO_MODEL_PATH=$ROS2_WS/src/:$GAZEBO_MODEL_PATH

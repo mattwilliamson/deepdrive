@@ -1,0 +1,3 @@
+[submodule "src/ros2_differential_drive"]
+	path = src/ros2_differential_drive
+	url = git@github.com:mattwilliamson/ros2_differential_drive.git

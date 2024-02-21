@@ -77,65 +77,11 @@
 
   <xacro:include filename="$(find deepdrive_description)/urdf/camera.xacro" />
 
-  <!-- ros2_control -->
-  <xacro:macro name="ros2_wheel_joint" params="name">
-    <joint name="wheel_${name}_joint">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position" />
-      <state_interface name="velocity" />
-    </joint>
-  </xacro:macro>
-
-  <ros2_control name="deepdrive" type="system">
-
-    <!-- Gazebo simulation -->
-    <xacro:if value="$(arg sim_mode)">
-      <hardware>
-        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-      </hardware>
-    </xacro:if>
-
-    <!-- Physical Robot -->
-    <xacro:unless value="$(arg sim_mode)">
-      <hardware>
-        <plugin>deepdrive_control/DeepdriveSystemHardware</plugin>
-        <param name="mock_hardware">false</param>
-        <param name="use_wheel_encoder">true</param>
-        <param name="encoder_ticks_per_rev">20</param>
-        <param name="pin_left_enable">32</param>
-        <param name="pin_left_forward">38</param>
-        <param name="pin_left_backward">37</param>
-        <param name="pin_left_encoder">11</param>
-        <param name="pin_right_enable">33</param>
-        <param name="pin_right_forward">35</param>
-        <param name="pin_right_backward">36</param>
-        <param name="pin_right_encoder">12</param>
-        <param name="pwm_hz">50</param>
-        <!-- should match controller.yaml update rate -->
-        <param name="command_rate">50</param>
-      </hardware>
-    </xacro:unless>
-
-    <xacro:ros2_wheel_joint name="back_right" />
-    <xacro:ros2_wheel_joint name="front_left" />
-    <xacro:ros2_wheel_joint name="back_left" />
-    <xacro:ros2_wheel_joint name="front_right" />
-
-  </ros2_control>
-
   <xacro:if value="$(arg sim_mode)">
-    <gazebo>
-      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-        <parameters>$(find deepdrive_description)/config/controllers.yaml</parameters>
-      </plugin>
-    </gazebo>
 
 
     <!-- This one works in gazebo without ros2_control -->
-    <!-- <gazebo>
+    <gazebo>
     <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
       <num_wheel_pairs>2</num_wheel_pairs>
       <left_joint>wheel_front_left_joint</left_joint>
@@ -155,7 +101,7 @@
       <publish_odom_tf>true</publish_odom_tf>
       <publish_wheel_tf>true</publish_wheel_tf>
     </plugin>
-  </gazebo> -->
+  </gazebo>
 
 
 

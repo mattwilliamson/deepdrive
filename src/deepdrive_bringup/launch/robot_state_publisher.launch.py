@@ -13,7 +13,7 @@ def generate_launch_description():
         executable='robot_state_publisher',
         parameters=[{'robot_description': Command(['xacro ', LaunchConfiguration('model')])}],
         remappings=[
-            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
+            # ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
         ],
     )
 

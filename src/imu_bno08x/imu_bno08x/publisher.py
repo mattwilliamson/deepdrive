@@ -56,8 +56,8 @@ class ImuNode(Node):
         # i2c = I2C(1)
         # self.bno = BNO08X_I2C(i2c, address=0x4a)
         # This works for the Jetson Orin Nano
-        # i2c = busio.I2C(board.SCL, board.SDA)
-        i2c = busio.I2C(board.SCL, board.SDA, frequency=800000)
+        i2c = busio.I2C(board.SCL, board.SDA)
+        # i2c = busio.I2C(board.SCL, board.SDA, frequency=800000)
         self.bno = BNO08X_I2C(i2c, address=I2C_ADDRESS)
 
         self.bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
