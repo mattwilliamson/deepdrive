@@ -44,8 +44,7 @@ public:
     const std::string & frame_id = "base_link");
 
   void publish(
-    const rclcpp::Time & now,
-    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) override;
+    const rclcpp::Time & now) override;
 
 private:
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr pub_;

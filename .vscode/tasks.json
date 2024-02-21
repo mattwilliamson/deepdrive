@@ -258,7 +258,27 @@
       ],
       "group": "build",
       "label": "colcon: build"
+    },
+    {
+      "type": "colcon",
+      "args": [
+        "build",
+        "--symlink-install",
+        "--event-handlers",
+        "console_cohesion+",
+        "--base-paths",
+        "/ros_ws",
+        "--cmake-args",
+        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        "--packages-select=deepdrive_node"
+      ],
+      "problemMatcher": [
+        "$catkin-gcc"
+      ],
+      "group": "build",
+      "label": "colcon: build 'deepdrive_node'"
     }
+
   ],
   "inputs": [
     {

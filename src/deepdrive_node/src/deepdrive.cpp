@@ -28,7 +28,7 @@ Deepdrive::Deepdrive(const std::string & usb_port)
   RCLCPP_INFO(get_logger(), "Init Deepdrive Node Main");
   node_handle_ = std::shared_ptr<::rclcpp::Node>(this, [](::rclcpp::Node *) {});
 
-  init_dynamixel_sdk_wrapper(usb_port);
+  // init_dynamixel_sdk_wrapper(usb_port);
   check_device_status();
 
   add_motors();
@@ -177,7 +177,7 @@ void Deepdrive::add_devices()
 {
   RCLCPP_INFO(this->get_logger(), "Add Devices");
   devices_["motor_power"] =
-    new devices::MotorPower(node_handle_, dxl_sdk_wrapper_, "motor_power");
+    // new devices::MotorPower(node_handle_, dxl_sdk_wrapper_, "motor_power");
   // devices_["reset"] =
   //   new devices::Reset(node_handle_, dxl_sdk_wrapper_, "reset");
   // devices_["sound"] =
@@ -201,13 +201,13 @@ void Deepdrive::publish_timer(const std::chrono::milliseconds timeout)
     timeout,
     [this]() -> void
     {
-      rclcpp::Time now = this->now();
+      // rclcpp::Time now = this->now();
 
-      dxl_sdk_wrapper_->read_data_set();
+      // dxl_sdk_wrapper_->read_data_set();
 
-      for (const auto & sensor : sensors_) {
-        sensor->publish(now, dxl_sdk_wrapper_);
-      }
+      // for (const auto & sensor : sensors_) {
+      //   sensor->publish(now, dxl_sdk_wrapper_);
+      // }
     }
   );
 }
@@ -221,11 +221,11 @@ void Deepdrive::heartbeat_timer(const std::chrono::milliseconds timeout)
       static uint8_t count = 0;
       std::string msg;
 
-      dxl_sdk_wrapper_->set_data_to_device(
-        extern_control_table.heartbeat.addr,
-        extern_control_table.heartbeat.length,
-        &count,
-        &msg);
+      // dxl_sdk_wrapper_->set_data_to_device(
+      //   extern_control_table.heartbeat.addr,
+      //   extern_control_table.heartbeat.length,
+      //   &count,
+      //   &msg);
 
       RCLCPP_DEBUG(this->get_logger(), "hearbeat count : %d, msg : %s", count, msg.c_str());
 
@@ -256,7 +256,7 @@ void Deepdrive::parameter_event_callback()
           changed_parameter.name.c_str());
 
         if (changed_parameter.name == "motors.profile_acceleration") {
-          std::string sdk_msg;
+          // std::string sdk_msg;
 
           motors_.profile_acceleration =
             rclcpp::Parameter::from_parameter_msg(changed_parameter).as_double();
@@ -264,23 +264,23 @@ void Deepdrive::parameter_event_callback()
           motors_.profile_acceleration =
             motors_.profile_acceleration / motors_.profile_acceleration_constant;
 
-          union Data {
-            int32_t dword[2];
-            uint8_t byte[4 * 2];
-          } data;
+          // union Data {
+          //   int32_t dword[2];
+          //   uint8_t byte[4 * 2];
+          // } data;
 
-          data.dword[0] = static_cast<int32_t>(motors_.profile_acceleration);
-          data.dword[1] = static_cast<int32_t>(motors_.profile_acceleration);
+          // data.dword[0] = static_cast<int32_t>(motors_.profile_acceleration);
+          // data.dword[1] = static_cast<int32_t>(motors_.profile_acceleration);
 
-          uint16_t start_addr = extern_control_table.profile_acceleration_left.addr;
-          uint16_t addr_length =
-            (extern_control_table.profile_acceleration_right.addr -
-            extern_control_table.profile_acceleration_left.addr) +
-            extern_control_table.profile_acceleration_right.length;
+          // uint16_t start_addr = extern_control_table.profile_acceleration_left.addr;
+          // uint16_t addr_length =
+          //   (extern_control_table.profile_acceleration_right.addr -
+          //   extern_control_table.profile_acceleration_left.addr) +
+          //   extern_control_table.profile_acceleration_right.length;
 
-          uint8_t * p_data = &data.byte[0];
+          // uint8_t * p_data = &data.byte[0];
 
-          dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
+          // dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
 
           RCLCPP_INFO(
             this->get_logger(),
@@ -304,27 +304,27 @@ void Deepdrive::cmd_vel_callback()
     {
       std::string sdk_msg;
 
-      union Data {
-        int32_t dword[6];
-        uint8_t byte[4 * 6];
-      } data;
+      // union Data {
+      //   int32_t dword[6];
+      //   uint8_t byte[4 * 6];
+      // } data;
 
-      data.dword[0] = static_cast<int32_t>(msg->linear.x * 100);
-      data.dword[1] = 0;
-      data.dword[2] = 0;
-      data.dword[3] = 0;
-      data.dword[4] = 0;
-      data.dword[5] = static_cast<int32_t>(msg->angular.z * 100);
+      // data.dword[0] = static_cast<int32_t>(msg->linear.x * 100);
+      // data.dword[1] = 0;
+      // data.dword[2] = 0;
+      // data.dword[3] = 0;
+      // data.dword[4] = 0;
+      // data.dword[5] = static_cast<int32_t>(msg->angular.z * 100);
 
-      uint16_t start_addr = extern_control_table.cmd_velocity_linear_x.addr;
-      uint16_t addr_length =
-      (extern_control_table.cmd_velocity_angular_z.addr -
-      extern_control_table.cmd_velocity_linear_x.addr) +
-      extern_control_table.cmd_velocity_angular_z.length;
+      // uint16_t start_addr = extern_control_table.cmd_velocity_linear_x.addr;
+      // uint16_t addr_length =
+      // (extern_control_table.cmd_velocity_angular_z.addr -
+      // extern_control_table.cmd_velocity_linear_x.addr) +
+      // extern_control_table.cmd_velocity_angular_z.length;
 
-      uint8_t * p_data = &data.byte[0];
+      // uint8_t * p_data = &data.byte[0];
 
-      dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
+      // dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
 
       RCLCPP_DEBUG(
         this->get_logger(),

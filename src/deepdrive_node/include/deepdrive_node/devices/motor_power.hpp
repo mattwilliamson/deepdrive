@@ -37,7 +37,6 @@ public:
 
   explicit MotorPower(
     std::shared_ptr<rclcpp::Node> & nh,
-    // std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper,
     const std::string & server_name = "motor_power");
 
   void command(const void * request, void * response) override;

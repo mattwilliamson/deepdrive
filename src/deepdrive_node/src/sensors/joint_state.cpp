@@ -37,7 +37,6 @@ JointState::JointState(
 
 void JointState::publish(
   const rclcpp::Time & now
-  // std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper
   )
 {
   // auto msg = std::make_unique<sensor_msgs::msg::JointState>();

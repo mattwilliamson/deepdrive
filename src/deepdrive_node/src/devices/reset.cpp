@@ -23,9 +23,8 @@ using deepdrive::devices::Reset;
 
 Reset::Reset(
   std::shared_ptr<rclcpp::Node> & nh,
-  std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper,
   const std::string & server_name)
-: Devices(nh, dxl_sdk_wrapper)
+: Devices(nh)
 {
   RCLCPP_INFO(nh_->get_logger(), "Succeeded to create reset server");
   srv_ = nh_->create_service<std_srvs::srv::Trigger>(
@@ -47,11 +46,13 @@ void Reset::command(const void * request, void * response)
 
   uint8_t reset = 1;
 
-  res->success = dxl_sdk_wrapper_->set_data_to_device(
-    extern_control_table.imu_re_calibration.addr,
-    extern_control_table.imu_re_calibration.length,
-    &reset,
-    &res->message);
+  // res->success = dxl_sdk_wrapper_->set_data_to_device(
+  //   extern_control_table.imu_re_calibration.addr,
+  //   extern_control_table.imu_re_calibration.length,
+  //   &reset,
+  //   &res->message);
+
+  res->success = true;
 
   RCLCPP_INFO(nh_->get_logger(), "Start Calibration of Gyro");
   rclcpp::sleep_for(std::chrono::seconds(5));
