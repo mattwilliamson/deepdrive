@@ -17,6 +17,8 @@ setup(
             glob(os.path.join("launch", "*.launch.py")),
         ),
         (os.path.join(SHARE_DIR, "config"), glob(os.path.join("config", "*.yaml"))),
+        (os.path.join(SHARE_DIR, "rviz"), glob(os.path.join("rviz", "*.rviz"))),
+        (os.path.join(SHARE_DIR, "urdf"), glob(os.path.join("urdf", "*.urdf"))),
     ],
     install_requires=[
         "setuptools",
