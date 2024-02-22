@@ -5,6 +5,7 @@ source /ros_ws/install/setup.sh
 ros2 run imu_bno08x imu_bno08x_publisher
 
 ros2 launch imu_bno08x imu.launch.py
+ros2 launch imu_bno08x description.launch.py
 ros2 launch imu_bno08x display.launch.py
 ```
 

@@ -2,10 +2,7 @@ from launch import LaunchDescription
 from ament_index_python.packages import get_package_share_directory
 import launch_ros.actions
 import os
-import yaml
 from launch.substitutions import EnvironmentVariable
-import pathlib
-import launch.actions
 from launch.actions import DeclareLaunchArgument
 
 
@@ -25,6 +22,7 @@ def generate_launch_description():
                 name="imu_bno08x_publisher",
                 output="screen",
                 parameters=[params],
+                respawn=True,
                 remappings=[
                     ("/imu_bno08x/data", "/imu"),
                     ("/imu_bno08x/mag", "/mag"),

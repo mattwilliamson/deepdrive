@@ -12,10 +12,7 @@ setup(
     data_files=[
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
         ("share/" + package_name, ["package.xml"]),
-        (
-            os.path.join(SHARE_DIR, "launch"),
-            glob(os.path.join("launch", "*.launch.py")),
-        ),
+        (os.path.join(SHARE_DIR, "launch"), glob(os.path.join("launch", "*.launch.py"))),
         (os.path.join(SHARE_DIR, "config"), glob(os.path.join("config", "*.yaml"))),
         (os.path.join(SHARE_DIR, "rviz"), glob(os.path.join("rviz", "*.rviz"))),
         (os.path.join(SHARE_DIR, "urdf"), glob(os.path.join("urdf", "*.urdf"))),
@@ -35,6 +32,7 @@ setup(
     entry_points={
         "console_scripts": [
             "imu_bno08x_publisher = imu_bno08x.publisher:main",
+            "dummy_odom = imu_bno08x.dummy_odom:main",
         ],
     },
 )
