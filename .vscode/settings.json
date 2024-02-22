@@ -1,5 +1,5 @@
 {
-  "cmake.sourceDirectory": "/ros_ws/src/deepdrive",
+  "cmake.sourceDirectory": "/home/matt/src/deepdrive/src/deepdrive",
   "cmake.environment": {
     "PICO_SDK_PATH": "/Users/matt/Dropbox/Robotics/pico-sdk"
   },
