@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+    <name>differential_drive</name>
+    <version>0.1.0</version>
+    <description>
+        The differential_drive packageProvides some basic tools for interfacing a differential-drive
+        robot with the ROS navigation stack. The intent is to make this
+        independent of specific robot implementation.
+    </description>
+
+    <maintainer email="jfstepha@gmail.com">Jon Stephan</maintainer>
+
+    <license>GPLv3</license>
+
+    <url type="repository">https://github.com/jstepha/differential_drive</url>
+    <url type="website">https://code.google.com/p/differential-drive/</url>
+
+    <author email="jfstepha@gmail.com">Jon Stephan</author>
+    <author email="markrose@acm.org">Mark Rose</author>
+
+    <depend>rclpy</depend>
+    <depend>std_msgs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>tf2</depend>
+
+
+    <!-- The export tag contains other, unspecified, tags -->
+    <export>
+        <build_type>ament_python</build_type>
+    </export>
+
+</package>
