@@ -4,9 +4,17 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 ## TODO:
 - [ ] Baud rate 1000000 for raspberry pi pico / micro-ros agent
 - [ ] Battery state publisher from pico
+- [ ] current/volt sensor
 - [ ] new custom differential drive controller
 - [ ] start with custom c++ node + micro-ros for low level. later, use serial direct to speed it up https://github.com/osrf/ros2_serial_example
 - [ ] PID controller for motor
+- [ ] depthimage-to-laserscan?
+- [ ] twist-mux 
+- [ ] calibrate imu covariance
+- [ ] compressed_image_transport
+- [ ] find_object_2d
+- [ ] how to annotate rooms?
+- [ ] behavior trees? https://py-trees-ros.readthedocs.io/en/devel/about.html
 - [x] second IMU / compass BNO080/BNO085 9-DOF
 - [ ] add second IMU to robot_localization
 - [ ] mount IMU

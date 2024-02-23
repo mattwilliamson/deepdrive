@@ -7,7 +7,7 @@
             },
             "includePath": [
                 "/ros_ws/install/deepdrive_fake_node/include/**",
-                "/ros_ws/install/deepdrive_msgs/include/**",
+                // "/ros_ws/install/deepdrive_msgs/include/**",
                 "/ros_ws/install/deepdrive_gazebo/include/**",
                 "/uros_ws/install/micro_ros_agent/include/**",
                 "/uros_ws/install/micro_ros_msgs/include/**",
