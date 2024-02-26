@@ -33,5 +33,11 @@
   "ros.distro": "humble",
   "ros.rosSetupScript": "/ros_ws/install/setup.bash",
   "ros.isolateEnvironment": false,
-  "C_Cpp.default.intelliSenseMode": "linux-gcc-x86"
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
+  "files.associations": {
+    ".env*": "dotenv",
+    "pwm.h": "c",
+    "stdlib.h": "c",
+    "pico.h": "c"
+  }
 }

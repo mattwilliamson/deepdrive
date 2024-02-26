@@ -7,14 +7,12 @@
     Package for Deepdrive fake node. With this package, simple tests can be done without a robot.
     You can do simple tests using this package on rviz without real robots.
   </description>
-  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <maintainer email="matt@aimatt.com">Matt Williamson</maintainer>
   <license>Apache 2.0</license>
-  <url type="website">http://deepdrive.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/deepdrive_simulations</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/deepdrive_simulations/issues</url>
-  <author email="pyo@robotis.com">Pyo</author>
-  <author email="thlim@robotis.com">Darby Lim</author>
-  <author>Ryan Shim</author>
+  <url type="website">http://aimatt.com</url>
+  <url type="repository">https://github.com/mattwilliamson/deepdrive</url>
+  <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
+  <author email="matt@aimatt.com">Matt Williamson</author>
   <depend>ament_cmake</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
@@ -24,6 +22,7 @@
   <depend>tf2_msgs</depend>
   <!-- <depend>deepdrive_msgs</depend> -->
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>deepdrive_description</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

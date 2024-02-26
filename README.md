@@ -1,5 +1,5 @@
 # DeepDrive
-Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
+Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
 - [ ] Baud rate 1000000 for raspberry pi pico / micro-ros agent
@@ -138,20 +138,17 @@ ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py port:=/dev/ttyTHS0
 
 ## Working Test
 ```sh
-export TURTLEBOT3_MODEL=waffle
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
 ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 ```sh
-export TURTLEBOT3_MODEL=waffle
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
 ros2 launch deepdrive_nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 
 ### Vizualize URDF
 ```sh
+xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 urdf-viz src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 ```
 

@@ -6,13 +6,12 @@
   <description>
     3D models of the Deepdrive for simulation and visualization
   </description>
-  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <maintainer email="matt@aimatt.com">Matt Williamson</maintainer>
   <license>Apache 2.0</license>
-  <url type="website">http://deepdrive.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/deepdrive</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/deepdrive/issues</url>
-  <author email="thlim@robotis.com">Darby Lim</author>
-  <author email="pyo@robotis.com">Pyo</author>
+  <url type="website">http://aimatt.com</url>
+  <url type="repository">https://github.com/mattwilliamson/deepdrive</url>
+  <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
+  <author email="matt@aimatt.com">Matt Williamson</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>urdf</depend>
   <export>

@@ -12,9 +12,9 @@ class PidVelocity(Node):
     """
     A class used to control the velocity of a motor using a PID controller.
 
-    This class subscribes to the 'wheel_vtarget' topic which provides the target velocities for the wheels, 
-    and the 'wheel' topic for rotary encoder feedback. It uses a PID controller to adjust the motor speed 
-    to reach the target velocity. The PID controller uses the parameters Kp, Ki, and Kd which can be set 
+    This class subscribes to the 'wheel_vtarget' topic which provides the target velocities for the wheels,
+    and the 'wheel' topic for rotary encoder feedback. It uses a PID controller to adjust the motor speed
+    to reach the target velocity. The PID controller uses the parameters Kp, Ki, and Kd which can be set
     as node parameters.
 
     Attributes
@@ -52,11 +52,9 @@ class PidVelocity(Node):
     out_min : int
         The minimum output value for the motor.
     """
-    
+
     def __init__(self):
         super().__init__("pid_velocity")
-        self.nodename = "pid_velocity"
-        self.get_logger().info(f"{self.nodename} started")
 
         ### initialize variables
         self.target = 0
@@ -72,34 +70,34 @@ class PidVelocity(Node):
         self.wheel_mult = 0
         self.prev_encoder = 0
 
-        ### get parameters #### 
-        self.Kp = self.declare_parameter('Kp', 10.).value
-        self.Ki = self.declare_parameter('Ki', 10.).value
-        self.Kd = self.declare_parameter('Kd', 0.001).value
-        self.out_min = self.declare_parameter('out_min', -255).value
-        self.out_max = self.declare_parameter('out_max', 255).value
-        self.rate = self.declare_parameter('rate', 30).value
-        self.rolling_pts = self.declare_parameter('rolling_pts', 2).value
-        self.timeout_ticks = self.declare_parameter('timeout_ticks', 4).value
-        self.ticks_per_meter = self.declare_parameter('ticks_meter', 20).value
-        self.vel_threshold = self.declare_parameter('vel_threshold', 0.001).value
-        self.encoder_min = self.declare_parameter('encoder_min', -32768).value
-        self.encoder_max = self.declare_parameter('encoder_max', 32768).value
-        self.encoder_low_wrap = self.declare_parameter('wheel_low_wrap', (
-                    self.encoder_max - self.encoder_min) * 0.3 + self.encoder_min).value
-        self.encoder_high_wrap = self.declare_parameter('wheel_high_wrap', (
-                    self.encoder_max - self.encoder_min) * 0.7 + self.encoder_min).value
+        ### get parameters ####
+        self.Kp = self.declare_parameter("Kp", 10.0).value
+        self.Ki = self.declare_parameter("Ki", 10.0).value
+        self.Kd = self.declare_parameter("Kd", 0.001).value
+        self.out_min = self.declare_parameter("out_min", -255).value
+        self.out_max = self.declare_parameter("out_max", 255).value
+        self.rate = self.declare_parameter("rate", 30).value
+        self.rolling_pts = self.declare_parameter("rolling_pts", 2).value
+        self.timeout_ticks = self.declare_parameter("timeout_ticks", 4).value
+        self.ticks_per_meter = self.declare_parameter("ticks_meter", 20).value
+        self.vel_threshold = self.declare_parameter("vel_threshold", 0.001).value
+        self.encoder_min = self.declare_parameter("encoder_min", -32768).value
+        self.encoder_max = self.declare_parameter("encoder_max", 32768).value
+        self.encoder_low_wrap = self.declare_parameter(
+            "wheel_low_wrap", (self.encoder_max - self.encoder_min) * 0.3 + self.encoder_min
+        ).value
+        self.encoder_high_wrap = self.declare_parameter(
+            "wheel_high_wrap", (self.encoder_max - self.encoder_min) * 0.7 + self.encoder_min
+        ).value
         self.prev_vel = [0.0] * self.rolling_pts
         self.wheel_latest = 0.0
         self.prev_pid_time = self.get_clock().now()
-        self.get_logger().debug("%s got Kp:%0.3f Ki:%0.3f Kd:%0.3f tpm:%0.3f" % (
-            self.nodename, self.Kp, self.Ki, self.Kd, self.ticks_per_meter))
 
-        #### subscribers/publishers 
-        self.create_subscription(Int16, 'wheel', self.wheel_callback, 10)
-        self.create_subscription(Float32, 'wheel_vtarget', self.target_callback, 10)
-        self.pub_motor = self.create_publisher(Float32, 'motor_cmd', 10)
-        self.pub_vel = self.create_publisher(Float32, 'wheel_vel', 10)
+        #### subscribers/publishers
+        self.create_subscription(Int16, "wheel", self.wheel_callback, 10)
+        self.create_subscription(Float32, "wheel_vtarget", self.target_callback, 10)
+        self.pub_motor = self.create_publisher(Float32, "motor_cmd", 10)
+        self.pub_vel = self.create_publisher(Float32, "wheel_vel", 10)
 
     def spin(self):
         self.r = self.create_rate(self.rate)
@@ -132,21 +130,16 @@ class PidVelocity(Node):
     def calc_velocity(self):
         self.dt_duration = self.get_clock().now() - self.then
         self.dt = self.dt_duration.to_sec()
-        self.get_logger().debug("-D- %s caclVelocity dt=%0.3f wheel_latest=%0.3f wheel_prev=%0.3f" % (
-            self.nodename, self.dt, self.wheel_latest, self.wheel_prev))
 
         if self.wheel_latest == self.wheel_prev:
             # we haven't received an updated wheel lately
             cur_vel = (1 / self.ticks_per_meter) / self.dt  # if we got a tick right now, this would be the velocity
             if abs(cur_vel) < self.vel_threshold:
                 # if the velocity is < threshold, consider our velocity 0
-                self.get_logger().debug("-D- %s below threshold cur_vel=%0.3f vel=0" % (self.nodename, cur_vel))
                 self.appendVel(0)
                 self.calcRollingVel()
             else:
-                self.get_logger().debug("-D- %s above threshold cur_vel=%0.3f" % (self.nodename, cur_vel))
                 if abs(cur_vel) < self.vel:
-                    self.get_logger().debug("-D- %s cur_vel < self.vel" % self.nodename)
                     # we know we're slower than what we're currently publishing as a velocity
                     self.append_vel(cur_vel)
                     self.calc_rolling_vel()
@@ -156,7 +149,6 @@ class PidVelocity(Node):
             cur_vel = (self.wheel_latest - self.wheel_prev) / self.dt
             self.append_vel(cur_vel)
             self.calc_rolling_vel()
-            self.get_logger().debug("-D- %s **** wheel updated vel=%0.3f **** " % (self.nodename, self.vel))
             self.wheel_prev = self.wheel_latest
             self.then = self.get_clock().now()
 
@@ -193,9 +185,6 @@ class PidVelocity(Node):
         if self.target == 0:
             self.motor = 0
 
-        self.get_logger().debug("vel:%0.2f tar:%0.2f err:%0.2f int:%0.2f der:%0.2f ## motor:%d " %
-                       (self.vel, self.target, self.error, self.integral, self.derivative, self.motor))
-
     def wheel_callback(self, msg):
         enc = msg.data
         if enc < self.encoder_low_wrap and self.prev_encoder > self.encoder_high_wrap:
@@ -204,8 +193,9 @@ class PidVelocity(Node):
         if enc > self.encoder_high_wrap and self.prev_encoder < self.encoder_low_wrap:
             self.wheel_mult = self.wheel_mult - 1
 
-        self.wheel_latest = 1.0 * (
-                enc + self.wheel_mult * (self.encoder_max - self.encoder_min)) / self.ticks_per_meter
+        self.wheel_latest = (
+            1.0 * (enc + self.wheel_mult * (self.encoder_max - self.encoder_min)) / self.ticks_per_meter
+        )
         self.prev_encoder = enc
 
     def target_callback(self, msg):
@@ -224,5 +214,6 @@ def main(args=None):
     pid_velocity.destroy_node()
     rclpy.shutdown()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
