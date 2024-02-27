@@ -48,7 +48,7 @@ private:
 
   void add_sensors();
   void add_devices();
-  void add_motors();
+  // void add_motors();
   void add_wheels();
 
   void run();

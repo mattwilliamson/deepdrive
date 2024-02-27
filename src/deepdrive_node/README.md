@@ -15,6 +15,15 @@ ros2 run deepdrive_node deepdrive_node
 ros2 launch deepdrive_node deepdrive_node.launch.py
 ```
 
+## Tests
+```sh
+colcon test --packages-select deepdrive_node
+```
+
+TODO:
+- [ ] timer for odom output
+- [ ] start with one queue for each wheel?
+
 
 Talks to Raspberry PI pico via micro ros to control motors and read some sensors.
 

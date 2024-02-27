@@ -11,7 +11,7 @@ Deepdrive::Deepdrive() : Node("deepdrive_node", rclcpp::NodeOptions().use_intra_
   RCLCPP_INFO(get_logger(), "Init Deepdrive Node Main");
   node_handle_ = std::shared_ptr<::rclcpp::Node>(this, [](::rclcpp::Node *) {});
 
-  add_motors();
+  // add_motors();
   add_wheels();
 
   run();
@@ -27,23 +27,6 @@ Deepdrive::Motors *Deepdrive::get_motors()
   return &motors_;
 }
 
-void Deepdrive::add_motors()
-{
-  RCLCPP_INFO(this->get_logger(), "Add Motors");
-
-  this->declare_parameter<float>("motors.profile_acceleration_constant");
-  this->declare_parameter<float>("motors.profile_acceleration");
-
-  this->get_parameter_or<float>(
-      "motors.profile_acceleration_constant",
-      motors_.profile_acceleration_constant,
-      214.577);
-
-  this->get_parameter_or<float>(
-      "motors.profile_acceleration",
-      motors_.profile_acceleration,
-      0.0);
-}
 
 void Deepdrive::add_wheels()
 {

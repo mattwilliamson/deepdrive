@@ -38,7 +38,7 @@ add_library(${PROJECT_NAME}_lib
   "src/diff_drive_controller.cpp"
   "src/odometry.cpp"
   "src/deepdrive.cpp"
-
+  "src/pid.cpp"
   "src/joint_state.cpp"
 )
 
@@ -80,3 +80,19 @@ install(TARGETS ${EXECUTABLE_NAME}
 ################################################################################
 ament_export_include_directories(include)
 ament_package()
+
+
+################################################################################
+# Tests
+################################################################################
+if(BUILD_TESTING)
+  find_package(ament_cmake_gmock REQUIRED)
+  find_package(rclcpp REQUIRED)
+
+  ament_add_gmock(test_pid
+    test/test_pid.cpp
+  )
+  target_link_libraries(test_pid
+    ${PROJECT_NAME}_lib
+  )
+endif()
