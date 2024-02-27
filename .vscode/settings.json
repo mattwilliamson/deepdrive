@@ -106,6 +106,9 @@
     "streambuf": "cpp",
     "thread": "cpp",
     "typeinfo": "cpp",
-    "cstdbool": "cpp"
+    "cstdbool": "cpp",
+    "*.ipp": "cpp",
+    "any": "cpp",
+    "future": "cpp"
   }
 }

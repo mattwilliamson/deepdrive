@@ -20,12 +20,11 @@ public:
     PIDController(double dt, double max, double min, double Kp, double Kd, double Ki);
 
     /**
-     * @brief Calculates the control output based on the setpoint and process variable.
-     * @param setpoint The desired value for the process variable.
+     * @brief Calculates the control output based on the process variable.
      * @param pv The current value of the process variable.
      * @return The control output.
      */
-    double calculate(double setpoint, double pv);
+    double calculate(double pv);
 
     /**
      * @brief Resets the internal state of the PID controller.
@@ -34,17 +33,42 @@ public:
     void reset();
 
     /**
+     * @brief Setter for the setpoint.
+     * @param setpoint The new value for the setpoint.
+     */
+    void setSetpoint(double setpoint);
+
+    /**
+     * @brief Setter for the proportional gain (Kp).
+     * @param Kp The new value for the proportional gain.
+     */
+    void setKp(double Kp);
+
+    /**
+     * @brief Setter for the derivative gain (Kd).
+     * @param Kd The new value for the derivative gain.
+     */
+    void setKd(double Kd);
+
+    /**
+     * @brief Setter for the integral gain (Ki).
+     * @param Ki The new value for the integral gain.
+     */
+    void setKi(double Ki);
+
+    /**
      * @brief Destructor for PIDController class.
      */
     ~PIDController();
 
 private:
-    double dt_;   // loop interval time
-    double max_;  // maximum value of manipulated variable
-    double min_;  // minimum value of manipulated variable
-    double Kp_;   // proportional gain
-    double Kd_;   // derivative gain
-    double Ki_;   // integral gain
+    double setpoint_;   // desired value for the output
+    double dt_;         // loop interval time
+    double max_;        // maximum value of output
+    double min_;        // minimum value of output
+    double Kp_;         // proportional gain
+    double Kd_;         // derivative gain
+    double Ki_;         // integral gain
     double pre_error_;
     double integral_;
 };

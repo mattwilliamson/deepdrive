@@ -11,7 +11,7 @@ namespace deepdrive {
     /**
      * Implementation
      */
-    PIDController::PIDController( double dt, double max, double min, double Kp, double Kd, double Ki ) :
+    PIDController::PIDController(double dt, double max, double min, double Kp, double Kd, double Ki) :
             dt_(dt),
             max_(max),
             min_(min),
@@ -19,15 +19,21 @@ namespace deepdrive {
             Kd_(Kd),
             Ki_(Ki),
             pre_error_(0),
-            integral_(0)
+            integral_(0),
+            setpoint_(0) // Initialize setpoint to 0
     {
     }
 
-    double PIDController::calculate( double setpoint, double pv )
+    void PIDController::setSetpoint(double setpoint)
+    {
+        setpoint_ = setpoint;
+    }
+
+    double PIDController::calculate(double pv)
     {
 
         //error
-        double error = setpoint - pv;
+        double error = setpoint_ - pv;
 
         // Proportional portion
         double Pout = Kp_ * error;
@@ -57,8 +63,8 @@ namespace deepdrive {
 
     void PIDController::reset()
     {
-        pre_error_ = 0;
-        integral_ = 0;
+        pre_error_ = 0.0;
+        integral_ = 0.0;
     }
 
 
