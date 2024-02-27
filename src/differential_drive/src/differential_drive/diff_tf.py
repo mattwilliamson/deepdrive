@@ -10,8 +10,8 @@ from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 from tf2_ros import TransformBroadcaster
 from std_msgs.msg import Int16
+from rclpy.constants import S_TO_NS
 
-NS_TO_SEC = 1000000000
 
 
 class DiffTf(Node):
@@ -24,7 +24,8 @@ class DiffTf(Node):
     Parameters:
         rate_hz (float): The rate at which to publish the transform.
         ticks_meter (float): The number of wheel encoder ticks per meter of travel.
-        base_width (float): The wheel base width in meters.
+        wheel_radius (float): The radius of the wheel in meters.
+        base_width (float): The wheel base width in meters. Make this bigger to account for slippage.
         base_frame_id (str): The name of the base frame of the robot.
         odom_frame_id (str): The name of the odometry reference frame.
         encoder_min (int): The minimum value of the wheel encoder.
@@ -68,11 +69,15 @@ class DiffTf(Node):
 
         # The number of wheel encoder ticks per meter of travel
         self.ticks_meter = float(self.declare_parameter("ticks_meter", 50).value)
+
+        # The radius of the wheel in meters
+        self.wheel_radius = float(self.declare_parameter("wheel_radius", 0.1).value)
+
         # The wheel base width in meters
         self.base_width = float(self.declare_parameter("base_width", 0.245).value)
 
         # the name of the base frame of the robot
-        self.base_frame_id = self.declare_parameter("base_frame_id", "base_link").value
+        self.base_frame_id = self.declare_parameter("base_frame_id", "base_footprint").value
         # the name of the odometry reference frame
         self.odom_frame_id = self.declare_parameter("odom_frame_id", "odom").value
 
@@ -87,8 +92,8 @@ class DiffTf(Node):
             (self.encoder_max - self.encoder_min) * 0.7 + self.encoder_min,
         ).value
         # the names of the wheel frames
-        self.left_wheel_frames = self.declare_parameter("left_wheel_frames", []).value
-        self.right_wheel_frames = self.declare_parameter("right_wheel_frames", []).value
+        self.left_wheel_frames = self.declare_parameter("left_wheel_frames", ["left_wheel"]).value
+        self.right_wheel_frames = self.declare_parameter("right_wheel_frames", ["right_wheel"]).value
 
         # internal data
         self.enc_left = None  # Wheel encoder readings
@@ -112,11 +117,16 @@ class DiffTf(Node):
         self.odom_pub = self.create_publisher(Odometry, "odom", 10)
         self.odom_broadcaster = TransformBroadcaster(self)
 
+        self.get_logger().info(
+            f"left_wheel_frames: {self.left_wheel_frames}, right_wheel_frames: {self.right_wheel_frames}"
+        )
+
     def update(self):
+        # TODO: need to publish joint_states for robot_state_publisher?
         now = self.get_clock().now()
         elapsed = now - self.then
         self.then = now
-        elapsed = elapsed.nanoseconds / NS_TO_SEC
+        elapsed = elapsed.nanoseconds / float(S_TO_NS)
 
         # Calculate odometry
         if self.enc_left == None:
@@ -155,8 +165,8 @@ class DiffTf(Node):
 
         transform_stamped_msg = TransformStamped()
         transform_stamped_msg.header.stamp = self.get_clock().now().to_msg()
-        transform_stamped_msg.header.frame_id = self.base_frame_id
-        transform_stamped_msg.child_frame_id = self.odom_frame_id
+        transform_stamped_msg.header.frame_id = self.odom_frame_id
+        transform_stamped_msg.child_frame_id = self.base_frame_id
         transform_stamped_msg.transform.translation.x = self.x
         transform_stamped_msg.transform.translation.y = self.y
         transform_stamped_msg.transform.translation.z = 0.0
@@ -180,7 +190,37 @@ class DiffTf(Node):
         odom.twist.twist.angular.z = self.dr
         self.odom_pub.publish(odom)
 
-    def calculate_wheel_rotation(self):
+        # Publish wheels spinning
+        # if self.left_wheel_frames and self.right_wheel_frames:
+        #     self.calculate_wheel_rotation(d_left, d_right)
+
+    def calculate_wheel_rotation(self, d_left, d_right):
+        """
+        Calculates and broadcasts the wheel rotation transforms.
+
+        This method iterates over the left and right wheel frames, creates a `TransformStamped` message,
+        and broadcasts the transform using the `odom_broadcaster`.
+
+        The transform contains the translation and rotation information, with all values set to zero
+        except for the `w` component of the rotation quaternion, which is set to 1.0.
+
+        Args:
+            d_left (float): The distance traveled by the left wheel.
+            d_right (float): The distance traveled by the right wheel.
+
+        Returns:
+            None
+        """
+
+        # TODO: Get list of joints instead of frames and calculate relative rotation instead of absolute
+        # https://docs.ros.org/en/foxy/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Broadcaster-Py.html
+
+        circumference = 2 * pi * self.wheel_radius
+        left_rotation = d_left / circumference
+        right_rotation = d_right / circumference
+        left_rotation_rad = left_rotation * 2 * pi
+        right_rotation_rad = right_rotation * 2 * pi
+
         for left_wheel_frame in self.left_wheel_frames:
             transform_stamped_msg = TransformStamped()
             transform_stamped_msg.header.stamp = self.get_clock().now().to_msg()
@@ -189,10 +229,10 @@ class DiffTf(Node):
             transform_stamped_msg.transform.translation.x = 0.0
             transform_stamped_msg.transform.translation.y = 0.0
             transform_stamped_msg.transform.translation.z = 0.0
-            transform_stamped_msg.transform.rotation.x = 0.0
+            transform_stamped_msg.transform.rotation.x = sin(left_rotation_rad / 2)
             transform_stamped_msg.transform.rotation.y = 0.0
             transform_stamped_msg.transform.rotation.z = 0.0
-            transform_stamped_msg.transform.rotation.w = 1.0
+            transform_stamped_msg.transform.rotation.w = cos(left_rotation_rad / 2)
 
             self.odom_broadcaster.sendTransform(transform_stamped_msg)
 
@@ -204,13 +244,12 @@ class DiffTf(Node):
             transform_stamped_msg.transform.translation.x = 0.0
             transform_stamped_msg.transform.translation.y = 0.0
             transform_stamped_msg.transform.translation.z = 0.0
-            transform_stamped_msg.transform.rotation.x = 0.0
+            transform_stamped_msg.transform.rotation.x = sin(right_rotation_rad / 2)
             transform_stamped_msg.transform.rotation.y = 0.0
             transform_stamped_msg.transform.rotation.z = 0.0
-            transform_stamped_msg.transform.rotation.w = 1.0
+            transform_stamped_msg.transform.rotation.w = cos(right_rotation_rad / 2)
 
             self.odom_broadcaster.sendTransform(transform_stamped_msg)
-
 
     def lwheel_callback(self, msg):
         enc = msg.data

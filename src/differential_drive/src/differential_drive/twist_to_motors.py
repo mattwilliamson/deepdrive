@@ -5,6 +5,8 @@ from rclpy.node import Node
 from std_msgs.msg import Float32
 from geometry_msgs.msg import Twist
 
+# TODO: Add acceleration
+
 
 class TwistToMotors(Node):
     """
@@ -20,6 +22,9 @@ class TwistToMotors(Node):
         dr (float): The angular velocity component of the Twist message.
         ticks_since_target (int): The number of ticks since the last target was received.
 
+    Parameters:
+        base_width (float): The base width of the robot. Default is 0.2.
+        rate_hz (float): The rate at which the left and right wheel velocity targets are calculated. Default is 50.
 
     Topics:
         Subscribes to:
@@ -46,6 +51,16 @@ class TwistToMotors(Node):
         self.create_timer(1.0 / self.rate_hz, self.calculate_left_and_right_target)
 
     def calculate_left_and_right_target(self):
+        """
+        Calculates the left and right wheel velocity targets based on the linear and angular components
+        of the Twist message. Publishes the targets to the 'lwheel_vtarget' and 'rwheel_vtarget' topics.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         right = Float32()
         left = Float32()
 
@@ -58,6 +73,16 @@ class TwistToMotors(Node):
         self.ticks_since_target += 1
 
     def twist_callback(self, msg):
+        """
+        Callback function for the 'twist' topic subscription. Updates the linear and angular velocity
+        components based on the received Twist message.
+
+        Args:
+            msg (Twist): The received Twist message.
+
+        Returns:
+            None
+        """
         self.ticks_since_target = 0
         self.dx = msg.linear.x
         self.dr = msg.angular.z

@@ -6,7 +6,7 @@ from rclpy.node import Node
 from std_msgs.msg import Int16
 from std_msgs.msg import Float32
 from numpy import array
-
+from rclpy.constants import S_TO_NS
 
 class PidVelocity(Node):
     """
@@ -56,26 +56,24 @@ class PidVelocity(Node):
     def __init__(self):
         super().__init__("pid_velocity")
 
-        ### initialize variables
-        self.target = 0
-        self.motor = 0
-        self.vel = 0
-        self.integral = 0
-        self.error = 0
-        self.derivative = 0
-        self.previous_error = 0
-        self.wheel_prev = 0
-        self.wheel_latest = 0
+        self.target = 0.
+        self.motor = 0.
+        self.vel = 0.
+        self.integral = 0.
+        self.error = 0.
+        self.derivative = 0.
+        self.previous_error = 0.
+        self.wheel_prev = 0.
+        self.wheel_latest = 0.
         self.then = self.get_clock().now()
-        self.wheel_mult = 0
-        self.prev_encoder = 0
+        self.wheel_mult = 0.
+        self.prev_encoder = 0.
 
-        ### get parameters ####
         self.Kp = self.declare_parameter("Kp", 10.0).value
         self.Ki = self.declare_parameter("Ki", 10.0).value
         self.Kd = self.declare_parameter("Kd", 0.001).value
-        self.out_min = self.declare_parameter("out_min", -255).value
-        self.out_max = self.declare_parameter("out_max", 255).value
+        self.out_min = self.declare_parameter("out_min", -32768).value
+        self.out_max = self.declare_parameter("out_max", 32768).value
         self.rate = self.declare_parameter("rate", 30).value
         self.rolling_pts = self.declare_parameter("rolling_pts", 2).value
         self.timeout_ticks = self.declare_parameter("timeout_ticks", 4).value
@@ -93,23 +91,18 @@ class PidVelocity(Node):
         self.wheel_latest = 0.0
         self.prev_pid_time = self.get_clock().now()
 
-        #### subscribers/publishers
         self.create_subscription(Int16, "wheel", self.wheel_callback, 10)
         self.create_subscription(Float32, "wheel_vtarget", self.target_callback, 10)
-        self.pub_motor = self.create_publisher(Float32, "motor_cmd", 10)
+        self.pub_motor = self.create_publisher(Int16, "motor_cmd", 10)
         self.pub_vel = self.create_publisher(Float32, "wheel_vel", 10)
-
-    def spin(self):
-        self.r = self.create_rate(self.rate)
+        
         self.then = self.get_clock().now()
         self.ticks_since_target = self.timeout_ticks
         self.wheel_prev = self.wheel_latest
         self.then = self.get_clock().now()
-        while rclpy.ok():
-            self.spin_once()
-            self.r.sleep()
+        self.create_timer(1.0 / self.rate, self.update)
 
-    def spin_once(self):
+    def update(self):
         self.previous_error = 0.0
         self.prev_vel = [0.0] * self.rolling_pts
         self.integral = 0.0
@@ -117,42 +110,43 @@ class PidVelocity(Node):
         self.derivative = 0.0
         self.vel = 0.0
 
-        # only do the loop if we've recently recieved a target velocity message
-        while rclpy.ok() and self.ticks_since_target < self.timeout_ticks:
+        self.get_logger().debug(f"update ticks_since_target: {self.ticks_since_target} timeout_ticks: {self.timeout_ticks}")
+
+        # Perform the loop only if we have received a target velocity message recently
+        if rclpy.ok() and self.ticks_since_target < self.timeout_ticks:
             self.calc_velocity()
             self.do_pid()
-            self.pub_motor.publish(self.motor)
-            self.r.sleep()
+            self.pub_motor.publish(Int16(data=int(self.motor)))
             self.ticks_since_target += 1
-            if self.ticks_since_target == self.timeout_ticks:
-                self.pub_motor.publish(0)
+            if self.ticks_since_target >= self.timeout_ticks:
+                self.pub_motor.publish(Int16(data=0))
 
     def calc_velocity(self):
         self.dt_duration = self.get_clock().now() - self.then
-        self.dt = self.dt_duration.to_sec()
+        self.dt = self.dt_duration.nanoseconds / float(S_TO_NS)
 
         if self.wheel_latest == self.wheel_prev:
-            # we haven't received an updated wheel lately
-            cur_vel = (1 / self.ticks_per_meter) / self.dt  # if we got a tick right now, this would be the velocity
+            # If we haven't received an updated wheel count recently, we estimate the current velocity by assuming that we just received a tick at this moment.
+            cur_vel = (1.0 / self.ticks_per_meter) / self.dt
             if abs(cur_vel) < self.vel_threshold:
-                # if the velocity is < threshold, consider our velocity 0
-                self.appendVel(0)
-                self.calcRollingVel()
+                # If the velocity is below the threshold, consider our velocity 0
+                self.append_vel(0.0)
+                self.calc_rolling_vel()
             else:
                 if abs(cur_vel) < self.vel:
-                    # we know we're slower than what we're currently publishing as a velocity
+                    # We know we're slower than what we're currently publishing as a velocity
                     self.append_vel(cur_vel)
                     self.calc_rolling_vel()
 
         else:
-            # we received a new wheel value
+            # We received a new wheel value
             cur_vel = (self.wheel_latest - self.wheel_prev) / self.dt
             self.append_vel(cur_vel)
             self.calc_rolling_vel()
             self.wheel_prev = self.wheel_latest
             self.then = self.get_clock().now()
 
-        self.pub_vel.publish(self.vel)
+        self.pub_vel.publish(Float32(data=float(self.vel)))
 
     def append_vel(self, val):
         self.prev_vel.append(val)
@@ -163,13 +157,19 @@ class PidVelocity(Node):
         self.vel = p.mean()
 
     def do_pid(self):
+        """
+        Performs PID control to calculate the motor output based on the target velocity and current velocity.
+
+        Returns:
+            None
+        """
+
         pid_dt_duration = self.get_clock().now() - self.prev_pid_time
-        pid_dt = pid_dt_duration.to_sec()
+        pid_dt = pid_dt_duration.nanoseconds / float(S_TO_NS)
         self.prev_pid_time = self.get_clock().now()
 
         self.error = self.target - self.vel
         self.integral = self.integral + (self.error * pid_dt)
-        # rospy.loginfo("i = i + (e * dt):  %0.3f = %0.3f + (%0.3f * %0.3f)" % (self.integral, self.integral, self.error, pid_dt))
         self.derivative = (self.error - self.previous_error) / pid_dt
         self.previous_error = self.error
 
@@ -186,6 +186,15 @@ class PidVelocity(Node):
             self.motor = 0
 
     def wheel_callback(self, msg):
+        """
+        Callback function for wheel encoder data.
+
+        Args:
+            msg: The wheel encoder data message.
+
+        Returns:
+            None
+        """
         enc = msg.data
         if enc < self.encoder_low_wrap and self.prev_encoder > self.encoder_high_wrap:
             self.wheel_mult = self.wheel_mult + 1
@@ -199,6 +208,15 @@ class PidVelocity(Node):
         self.prev_encoder = enc
 
     def target_callback(self, msg):
+        """
+        Callback function for handling target messages.
+
+        Args:
+            msg: The target message containing the desired target value.
+
+        Returns:
+            None
+        """
         self.target = msg.data
         self.ticks_since_target = 0
 
@@ -207,7 +225,7 @@ def main(args=None):
     rclpy.init(args=args)
     try:
         pid_velocity = PidVelocity()
-        pid_velocity.spin()
+        rclpy.spin(pid_velocity)
     except rclpy.exceptions.ROSInterruptException:
         pass
 

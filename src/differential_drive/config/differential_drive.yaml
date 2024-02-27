@@ -3,10 +3,17 @@ diff_tf:
     rate: 10
     ticks_meter: 320
     base_width: 0.245
-    base_frame_id: base_link
+    base_frame_id: base_footprint
     odom_frame_id: odom
     encoder_min: -32768
     encoder_max: 32768
+    radius: 0.033
+    left_wheel_frames:
+      - wheel_front_left_link
+      - wheel_back_left_link
+    right_wheel_frames: 
+      - wheel_front_right_link
+      - wheel_back_right_link
     # wheel_low_wrap 
     # wheel_high_wrap
 
@@ -16,10 +23,3 @@ twist_to_motors:
     rate: 50
     timeout_ticks: 2
 
-virtual_joystick:
-  ros__parameters:
-    publish_rate: 10
-    x_min: -1.5
-    x_max: 1.5
-    r_min: 10.0
-    r_max: 10.0

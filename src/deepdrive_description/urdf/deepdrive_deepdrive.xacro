@@ -6,7 +6,7 @@
 
   <xacro:property name="wheel_base" value="0.175" />
   <xacro:property name="wheel_radius" value="0.035" />
-  <!-- <xacro:property name="use_mock_hardware" value="0.035" /> -->
+  <!-- <xacro:property name="use_mock_hardware" value="true" /> -->
 
   <xacro:include filename="$(find deepdrive_description)/urdf/common_properties.xacro"/>
   <xacro:include filename="$(find deepdrive_description)/urdf/wheels.xacro"/>
@@ -76,18 +76,6 @@
   <xacro:include filename="$(find deepdrive_description)/urdf/lidar.xacro" />
 
   <xacro:include filename="$(find deepdrive_description)/urdf/camera.xacro" />
-
-  <!-- ros2_control -->
-  <xacro:macro name="ros2_wheel_joint" params="name">
-    <joint name="wheel_${name}_joint">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position" />
-      <state_interface name="velocity" />
-    </joint>
-  </xacro:macro>
 
   <xacro:if value="$(arg sim_mode)">
     <gazebo>

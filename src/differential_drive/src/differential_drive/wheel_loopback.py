@@ -4,7 +4,11 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
 from std_msgs.msg import Int16
+from rclpy.constants import S_TO_NS
+from rclpy.duration import Duration
 
+def d_to_s(duration: Duration) -> float:
+    return float(duration.nanoseconds) / S_TO_NS
 
 class WheelLoopback(Node):
     """
@@ -17,7 +21,7 @@ class WheelLoopback(Node):
     - rate: The rate at which the wheel loopback node operates (default: 200).
     - timeout_secs: The timeout in seconds for detecting the absence of motor commands (default: 0.5).
     - ticks_meter: The number of ticks per meter for calculating the wheel position (default: 50).
-    - velocity_scale: The scaling factor for converting motor commands to wheel velocity (default: 255).
+    - velocity_scale: The scaling factor for converting motor commands to wheel velocity (default: 32768).
 
     Subscriptions:
     - motor: The motor command topic.
@@ -39,59 +43,50 @@ class WheelLoopback(Node):
 
     def __init__(self):
         super().__init__("wheel_loopback")
-        self.nodename = "wheel_loopback"
-        self.get_logger().info("%s started" % self.nodename)
+        self.get_logger().info("started")
 
         self.rate = self.declare_parameter("rate", 200).value
         self.timeout_secs = self.declare_parameter("timeout_secs", 0.5).value
         self.ticks_meter = float(self.declare_parameter("ticks_meter", 50).value)
-        self.velocity_scale = float(self.declare_parameter("velocity_scale", 255).value)
-        self.latest_motor = 0
-        self.wheel = 0
+        # Might not need velocity scale
+        self.velocity_scale = float(self.declare_parameter("velocity_scale", 1.0).value)
+        self.latest_motor = 0.
+        self.wheel = 0.
+        self.velocity = 0.
+
+        self.secs_since_target = self.timeout_secs
+        self.then = self.get_clock().now()
+        self.latest_msg_time = self.get_clock().now()
 
         self.create_subscription(Int16, "motor", self.motor_callback, 10)
         self.pub_wheel = self.create_publisher(Int16, "wheel", 10)
 
-    def spin(self):
-        r = self.create_rate(self.rate)
-        self.secs_since_target = self.timeout_secs
-        self.then = self.get_clock().now()
-        self.latest_msg_time = self.get_clock().now()
-        self.get_logger().info("-D- spinning")
+        self.create_timer(1.0 / self.rate, self.update)
 
-        while rclpy.ok():
-            while rclpy.ok() and self.secs_since_target < self.timeout_secs:
-                self.spin_once()
-                r.sleep()
-                self.secs_since_target = self.get_clock().now() - self.latest_msg_time
-                self.secs_since_target = self.secs_since_target.to_msg().sec
+        # Initial publish just to start things off
+        self.pub_wheel.publish(Int16(data=0))
+        
 
-            self.secs_since_target = self.get_clock().now() - self.latest_msg_time
-            self.secs_since_target = self.secs_since_target.to_msg().sec
-            self.velocity = 0
-            r.sleep()
+    def update(self):
+        # self.get_logger().info(f"update self.velocity: {self.velocity} secs_since_target: {self.secs_since_target} timeout_secs: {self.timeout_secs}")
 
-    def spin_once(self):
-        self.velocity = self.latest_motor / self.velocity_scale
-        if abs(self.velocity) > 0:
-            self.seconds_per_tick = abs(1 / (self.velocity * self.ticks_meter))
-            elapsed = self.get_clock().now() - self.then
-            elapsed = elapsed.to_msg().sec
-            self.get_logger().info(
-                "spin_once: vel=%0.3f sec/tick=%0.3f elapsed:%0.3f" % (self.velocity, self.seconds_per_tick, elapsed)
-            )
-
-            if elapsed > self.seconds_per_tick:
-                self.get_logger().info("incrementing wheel")
-                if self.velocity > 0:
-                    self.wheel += 1
-                else:
-                    self.wheel -= 1
-                self.pub_wheel.publish(self.wheel)
+        if self.secs_since_target < self.timeout_secs:
+            self.velocity = self.latest_motor * self.velocity_scale
+            
+            if abs(self.velocity) > 0:
+                ticks_per_second = self.velocity * self.ticks_meter
+                elapsed = d_to_s(self.get_clock().now() - self.then)
+                self.wheel += ticks_per_second * elapsed
+                self.pub_wheel.publish(Int16(data=int(self.wheel)))
                 self.then = self.get_clock().now()
+        else:
+            # Timeout
+            self.secs_since_target = d_to_s(self.get_clock().now() - self.latest_msg_time)
+            self.velocity = 0.
+            self.pub_wheel.publish(Int16(data=0))
 
     def motor_callback(self, msg):
-        self.latest_motor = msg.data
+        self.latest_motor = float(msg.data)
         self.latest_msg_time = self.get_clock().now()
 
 
@@ -99,7 +94,7 @@ def main(args=None):
     rclpy.init(args=args)
     try:
         wheel_loopback = WheelLoopback()
-        wheel_loopback.spin()
+        rclpy.spin(wheel_loopback)
     except rclpy.exceptions.ROSInterruptException:
         pass
 
