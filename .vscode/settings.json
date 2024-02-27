@@ -38,6 +38,8 @@
     ".env*": "dotenv",
     "pwm.h": "c",
     "stdlib.h": "c",
-    "pico.h": "c"
+    "pico.h": "c",
+    "chrono": "cpp",
+    "regex": "cpp"
   }
 }
