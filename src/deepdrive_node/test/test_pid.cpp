@@ -27,7 +27,6 @@ void PIDControllerTest::TearDown() { pc_.reset(); }
 // Test just the proportional portion of the PID controller
 TEST_F(PIDControllerTest, TestPOnly)
 {
-    pc_->setTimeInterval(.1);
     pc_->setKp(.2);
     pc_->setKi(0);
     pc_->setKd(0);
@@ -36,17 +35,17 @@ TEST_F(PIDControllerTest, TestPOnly)
 
     // The output should only change with the setpoint
     pc_->setSetpoint(10.0);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 2);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 2);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 2);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 0), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 0), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 0), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 0), 2);
 
     pc_->setSetpoint(20.0);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 4);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 4);
-    EXPECT_DOUBLE_EQ(pc_->calculate(10), 2);
-    EXPECT_DOUBLE_EQ(pc_->calculate(10), 2);
-    EXPECT_DOUBLE_EQ(pc_->calculate(20), 0);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 0), 4);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 0), 4);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 10), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 10), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(.1, 20), 0);
 
     // Overshoot
     EXPECT_DOUBLE_EQ(pc_->calculate(22), -0.4);
@@ -63,7 +62,6 @@ TEST_F(PIDControllerTest, TestPOnly)
 // Test just the proportional and integrals of the PID controller
 TEST_F(PIDControllerTest, TestPI)
 {
-    pc_->setTimeInterval(.2);
     pc_->setMin(-100);
     pc_->setMax(100);
     pc_->setKp(.2);
@@ -72,22 +70,23 @@ TEST_F(PIDControllerTest, TestPI)
 
     // Make sure the output grows as the error grows
     pc_->setSetpoint(100.0);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 22);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 24);
-    EXPECT_DOUBLE_EQ(pc_->calculate(0), 26);
+    double dt = .2;
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 0), 22);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 0), 24);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 0), 26);
 
     // Start closing in on the setpoint
-    EXPECT_DOUBLE_EQ(pc_->calculate(80), 10.4);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 80), 10.4);
 
     // The error is still accrued, so we should overshoot
-    EXPECT_DOUBLE_EQ(pc_->calculate(90), 8.6);
-    EXPECT_DOUBLE_EQ(pc_->calculate(100), 6.6);
-    EXPECT_DOUBLE_EQ(pc_->calculate(110), 4.4);
-    EXPECT_DOUBLE_EQ(pc_->calculate(120), 2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 90), 8.6);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 100), 6.6);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 110), 4.4);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 120), 2);
 
     // Start bouncing back
-    EXPECT_DOUBLE_EQ(pc_->calculate(130), -0.6);
-    EXPECT_DOUBLE_EQ(pc_->calculate(130), -1.2);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 130), -0.6);
+    EXPECT_DOUBLE_EQ(pc_->calculate(dt, 130), -1.2);
 }
 
 // Test all 3 params
@@ -95,7 +94,6 @@ TEST_F(PIDControllerTest, TestPID)
 {
     double max = 100;
 
-    pc_->setTimeInterval(1);
     pc_->setMin(-max);
     pc_->setMax(max);
     pc_->setKp(.1);

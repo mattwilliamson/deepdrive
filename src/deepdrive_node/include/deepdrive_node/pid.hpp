@@ -14,28 +14,13 @@ namespace deepdrive
     public:
         /**
          * @brief Constructor for PIDController class.
-         * @param dt The loop interval time.
          * @param min The minimum value of the manipulated variable.
          * @param max The maximum value of the manipulated variable.
          * @param Kp The proportional gain.
          * @param Ki The integral gain.
          * @param Kd The derivative gain.
          */
-        PIDController(double dt, double min, double max, double Kp, double Ki, double Kd);
-
-        /**
-         * @brief Overloaded constructor for PIDController class.
-         * @param Kp The proportional gain.
-         * @param Ki The integral gain.
-         * @param Kd The derivative gain.
-         */
-        PIDController(double dt, double Kp, double Ki, double Kd)
-            : dt_(dt), 
-            min_(std::numeric_limits<double>::lowest()), 
-            max_(std::numeric_limits<double>::max()), 
-            Kp_(Kp), Ki_(Ki), Kd_(Kd)
-        {
-        }
+        PIDController(double min, double max, double Kp, double Ki, double Kd);
 
         /**
          * @brief Overloaded constructor for PIDController class.
@@ -44,12 +29,19 @@ namespace deepdrive
          * @param Kd The derivative gain.
          */
         PIDController(double Kp, double Ki, double Kd)
-            : dt_(1.0), 
-            min_(std::numeric_limits<double>::lowest()), 
-            max_(std::numeric_limits<double>::max()), 
-            Kp_(Kp), Ki_(Ki), Kd_(Kd)
+            : min_(std::numeric_limits<double>::lowest()),
+              max_(std::numeric_limits<double>::max()),
+              Kp_(Kp), Ki_(Ki), Kd_(Kd)
         {
         }
+
+        /**
+         * @brief Calculates the control output based on the process variable.
+         * @param dt The time difference between the current and previous time.
+         * @param pv The current value of the process variable.
+         * @return The control output.
+         */
+        double calculate(double dt, double pv);
 
         /**
          * @brief Calculates the control output based on the process variable.
@@ -101,19 +93,12 @@ namespace deepdrive
         void setMax(double max);
 
         /**
-         * @brief Setter for the time interval (dt).
-         * @param dt The new value for the time interval.
-         */
-        void setTimeInterval(double dt);
-
-        /**
          * @brief Destructor for PIDController class.
          */
         ~PIDController();
 
     private:
         double setpoint_; // desired value for the output
-        double dt_;       // loop interval time
         double min_;      // minimum value of output
         double max_;      // maximum value of output
         double Kp_;       // proportional gain
