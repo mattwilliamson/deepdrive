@@ -1,77 +1,127 @@
 #ifndef DEEPDRIVE_NODE__PID_HPP_
 #define DEEPDRIVE_NODE__PID_HPP_
 
-namespace deepdrive {
+#include <limits>
 
-/**
- * @brief A PID controller class for controlling a process variable based on a setpoint.
- */
-class PIDController {
-public:
-    /**
-     * @brief Constructor for PIDController class.
-     * @param dt The loop interval time.
-     * @param max The maximum value of the manipulated variable.
-     * @param min The minimum value of the manipulated variable.
-     * @param Kp The proportional gain.
-     * @param Kd The derivative gain.
-     * @param Ki The integral gain.
-     */
-    PIDController(double dt, double max, double min, double Kp, double Kd, double Ki);
+namespace deepdrive
+{
 
     /**
-     * @brief Calculates the control output based on the process variable.
-     * @param pv The current value of the process variable.
-     * @return The control output.
+     * @brief A PID controller class for controlling a process variable based on a setpoint.
      */
-    double calculate(double pv);
+    class PIDController
+    {
+    public:
+        /**
+         * @brief Constructor for PIDController class.
+         * @param dt The loop interval time.
+         * @param min The minimum value of the manipulated variable.
+         * @param max The maximum value of the manipulated variable.
+         * @param Kp The proportional gain.
+         * @param Ki The integral gain.
+         * @param Kd The derivative gain.
+         */
+        PIDController(double dt, double min, double max, double Kp, double Ki, double Kd);
 
-    /**
-     * @brief Resets the internal state of the PID controller.
-     * @details A good time to reset the PID controller is when the motors are stopped.
-     */
-    void reset();
+        /**
+         * @brief Overloaded constructor for PIDController class.
+         * @param Kp The proportional gain.
+         * @param Ki The integral gain.
+         * @param Kd The derivative gain.
+         */
+        PIDController(double dt, double Kp, double Ki, double Kd)
+            : dt_(dt), 
+            min_(std::numeric_limits<double>::lowest()), 
+            max_(std::numeric_limits<double>::max()), 
+            Kp_(Kp), Ki_(Ki), Kd_(Kd)
+        {
+        }
 
-    /**
-     * @brief Setter for the setpoint.
-     * @param setpoint The new value for the setpoint.
-     */
-    void setSetpoint(double setpoint);
+        /**
+         * @brief Overloaded constructor for PIDController class.
+         * @param Kp The proportional gain.
+         * @param Ki The integral gain.
+         * @param Kd The derivative gain.
+         */
+        PIDController(double Kp, double Ki, double Kd)
+            : dt_(1.0), 
+            min_(std::numeric_limits<double>::lowest()), 
+            max_(std::numeric_limits<double>::max()), 
+            Kp_(Kp), Ki_(Ki), Kd_(Kd)
+        {
+        }
 
-    /**
-     * @brief Setter for the proportional gain (Kp).
-     * @param Kp The new value for the proportional gain.
-     */
-    void setKp(double Kp);
+        /**
+         * @brief Calculates the control output based on the process variable.
+         * @param pv The current value of the process variable.
+         * @return The control output.
+         */
+        double calculate(double pv);
 
-    /**
-     * @brief Setter for the derivative gain (Kd).
-     * @param Kd The new value for the derivative gain.
-     */
-    void setKd(double Kd);
+        /**
+         * @brief Resets the internal state of the PID controller.
+         * @details A good time to reset the PID controller is when the motors are stopped.
+         */
+        void reset();
 
-    /**
-     * @brief Setter for the integral gain (Ki).
-     * @param Ki The new value for the integral gain.
-     */
-    void setKi(double Ki);
+        /**
+         * @brief Setter for the setpoint.
+         * @param setpoint The new value for the setpoint.
+         */
+        void setSetpoint(double setpoint);
 
-    /**
-     * @brief Destructor for PIDController class.
-     */
-    ~PIDController();
+        /**
+         * @brief Setter for the proportional gain (Kp).
+         * @param Kp The new value for the proportional gain.
+         */
+        void setKp(double Kp);
 
-private:
-    double setpoint_;   // desired value for the output
-    double dt_;         // loop interval time
-    double max_;        // maximum value of output
-    double min_;        // minimum value of output
-    double Kp_;         // proportional gain
-    double Kd_;         // derivative gain
-    double Ki_;         // integral gain
-    double pre_error_;
-    double integral_;
-};
+        /**
+         * @brief Setter for the integral gain (Ki).
+         * @param Ki The new value for the integral gain.
+         */
+        void setKi(double Ki);
+
+        /**
+         * @brief Setter for the derivative gain (Kd).
+         * @param Kd The new value for the derivative gain.
+         */
+        void setKd(double Kd);
+
+        /**
+         * @brief Setter for the minimum value of output.
+         * @param min The new value for the minimum value of output.
+         */
+        void setMin(double min);
+
+        /**
+         * @brief Setter for the maximum value of output.
+         * @param max The new value for the maximum value of output.
+         */
+        void setMax(double max);
+
+        /**
+         * @brief Setter for the time interval (dt).
+         * @param dt The new value for the time interval.
+         */
+        void setTimeInterval(double dt);
+
+        /**
+         * @brief Destructor for PIDController class.
+         */
+        ~PIDController();
+
+    private:
+        double setpoint_; // desired value for the output
+        double dt_;       // loop interval time
+        double min_;      // minimum value of output
+        double max_;      // maximum value of output
+        double Kp_;       // proportional gain
+        double Ki_;       // integral gain
+        double Kd_;       // derivative gain
+        double pre_error_;
+        double integral_;
+    };
 
 } // namespace deepdrive
 

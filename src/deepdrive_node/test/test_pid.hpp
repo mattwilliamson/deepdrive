@@ -9,18 +9,17 @@
 
 #include "gmock/gmock.h"
 
-
-class PIDControllerTest : public ::testing::Test {
+class PIDControllerTest : public ::testing::Test
+{
 public:
-  static void SetUpTestCase();
-  static void TearDownTestCase();
+    static void SetUpTestCase();
+    static void TearDownTestCase();
 
-  void SetUp();
-  void TearDown();
+    void SetUp();
+    void TearDown();
 
 protected:
-    std::unique_ptr<deepdrive::PIDController> pid_controller_;
+    std::unique_ptr<deepdrive::PIDController> pc_;
 };
 
-
-#endif  // TEST_PID_HPP_
+#endif // TEST_PID_HPP_

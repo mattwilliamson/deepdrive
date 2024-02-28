@@ -19,7 +19,8 @@
                 "/ros_ws/src/deepdrive_node/include/**",
                 "src/deepdrive_micro/libmicroros/include/**",
                 "/usr/src/pico-sdk/**",
-                "/usr/src/pico-sdk/src/rp2_common/hardware_pwm/include/**"
+                "/usr/src/pico-sdk/src/rp2_common/hardware_pwm/include/**",
+                "/opt/ros/humble/src/gmock_vendor/include/**",
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",
