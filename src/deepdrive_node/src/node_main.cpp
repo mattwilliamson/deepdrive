@@ -15,6 +15,7 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
+  // Each node has a separate callback group which results in it executing in parallel
   rclcpp::executors::SingleThreadedExecutor executor;
 
   auto deepdrive = std::make_shared<deepdrive::Deepdrive>();
@@ -27,6 +28,7 @@ int main(int argc, char * argv[])
   executor.add_node(diff_drive_controller);
   // executor.add_node(odometry);
   // executor.add_node(joint_state_publisher);
+  // executor.add_node(motors);
   executor.spin();
 
   rclcpp::shutdown();

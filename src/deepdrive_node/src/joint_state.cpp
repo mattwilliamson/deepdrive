@@ -10,10 +10,11 @@ using deepdrive::JointState;
 
 JointState::JointState(
   std::shared_ptr<rclcpp::Node> & nh,
-  const std::string & topic_name,
+  const std::string & joint_state_topic,
+  const std::string & pulse_topic,
   const std::string & frame_id)
 {
-  // pub_ = nh->create_publisher<sensor_msgs::msg::JointState>(topic_name, this->qos_);
+  pub_ = nh->create_publisher<sensor_msgs::msg::JointState>(joint_state_topic, this->qos_);
 
   RCLCPP_INFO(nh_->get_logger(), "Succeeded to create joint state publisher");
 }
@@ -54,6 +55,9 @@ void JointState::publish(
 
   msg->name.push_back("wheel_left_joint");
   msg->name.push_back("wheel_right_joint");
+
+    // <joint name="wheel_front_left_joint" type="continuous">
+    // <parent link="base_link"/>
 
   msg->position.push_back(TICK_TO_RAD * last_diff_position[0]);
   msg->position.push_back(TICK_TO_RAD * last_diff_position[1]);

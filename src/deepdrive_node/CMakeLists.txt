@@ -40,6 +40,7 @@ add_library(${PROJECT_NAME}_lib
   "src/deepdrive.cpp"
   "src/pid.cpp"
   "src/joint_state.cpp"
+  "src/motors.cpp"
 )
 
 set(DEPENDENCIES

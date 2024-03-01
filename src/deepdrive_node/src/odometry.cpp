@@ -14,21 +14,14 @@ Odometry::Odometry(
 : nh_(nh),
   wheels_separation_(wheels_separation),
   wheels_radius_(wheels_radius),
-  publish_tf_(false),
-  imu_angle_(0.0f)
+  publish_tf_(false)
 {
   RCLCPP_INFO(nh_->get_logger(), "Init Odometry");
 
   nh_->declare_parameter<std::string>("odometry.frame_id");
   nh_->declare_parameter<std::string>("odometry.child_frame_id");
 
-  nh_->declare_parameter<bool>("odometry.use_imu");
   nh_->declare_parameter<bool>("odometry.publish_tf");
-
-  nh_->get_parameter_or<bool>(
-    "odometry.use_imu",
-    use_imu_,
-    false);
 
   nh_->get_parameter_or<bool>(
     "odometry.publish_tf",
@@ -92,7 +85,7 @@ void Odometry::publish(const rclcpp::Time & now)
   odom_msg->twist.twist.linear.x = robot_vel_[0];
   odom_msg->twist.twist.angular.z = robot_vel_[2];
 
-  // TODO(Will Son): Find more accurate covariance.
+  // TODO: Find more accurate covariance.
   // odom_msg->pose.covariance[0] = 0.05;
   // odom_msg->pose.covariance[7] = 0.05;
   // odom_msg->pose.covariance[14] = 1.0e-9;
@@ -128,7 +121,7 @@ void Odometry::publish(const rclcpp::Time & now)
 void Odometry::update_joint_state(
   const std::shared_ptr<sensor_msgs::msg::JointState const> & joint_state)
 {
-  static std::array<double, 2> last_joint_positions = {0.0f, 0.0f};
+  static std::array<double, 4> last_joint_positions = {0.0f, 0.0f, 0.0f, 0.0f};
 
   diff_joint_positions_[0] = joint_state->position[0] - last_joint_positions[0];
   diff_joint_positions_[1] = joint_state->position[1] - last_joint_positions[1];
@@ -170,13 +163,8 @@ bool Odometry::calculate_odometry(const rclcpp::Duration & duration)
 
   delta_s = wheels_radius_ * (wheel_r + wheel_l) / 2.0;
 
-  if (use_imu_) {
-    theta = imu_angle_;
-    delta_theta = theta - last_theta;
-  } else {
-    theta = wheels_radius_ * (wheel_r - wheel_l) / wheels_separation_;
-    delta_theta = theta;
-  }
+  theta = wheels_radius_ * (wheel_r - wheel_l) / wheels_separation_;
+  delta_theta = theta;
 
   // compute odometric pose
   robot_pose_[0] += delta_s * cos(robot_pose_[2] + (delta_theta / 2.0));

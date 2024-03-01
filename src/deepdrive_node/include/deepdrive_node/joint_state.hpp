@@ -1,5 +1,5 @@
-#ifndef DEEPDRIVE_NODE__SENSORS__JOINT_STATE_HPP_
-#define DEEPDRIVE_NODE__SENSORS__JOINT_STATE_HPP_
+#ifndef DEEPDRIVE_NODE__JOINT_STATE_HPP_
+#define DEEPDRIVE_NODE__JOINT_STATE_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
@@ -9,7 +9,7 @@
 
 namespace deepdrive
 {
-constexpr uint8_t JOINT_NUM = 2;
+constexpr uint8_t JOINT_NUM = 4;
 
 constexpr double RPM_TO_MS = 0.229 * 0.0034557519189487725;
 
@@ -21,7 +21,8 @@ class JointState
 public:
   explicit JointState(
     std::shared_ptr<rclcpp::Node> & nh,
-    const std::string & topic_name = "joint_states",
+    const std::string & joint_state_topic = "joint_states",
+    const std::string & pulse_topic = "/pulses/reading",
     const std::string & frame_id = "base_link");
 
   void publish(
@@ -34,4 +35,4 @@ private:
   rclcpp::QoS qos_ = rclcpp::QoS(rclcpp::KeepLast(10));
 };
 }  // namespace deepdrive
-#endif  // DEEPDRIVE_NODE__SENSORS__JOINT_STATE_HPP_
+#endif  // DEEPDRIVE_NODE__JOINT_STATE_HPP_

@@ -15,7 +15,6 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 
 
@@ -37,10 +36,6 @@ private:
 
   void joint_state_callback(const sensor_msgs::msg::JointState::SharedPtr joint_state_msg);
 
-  void joint_state_and_imu_callback(
-    const std::shared_ptr<sensor_msgs::msg::JointState const> & joint_state_msg,
-    const std::shared_ptr<sensor_msgs::msg::Imu const> & imu_msg);
-
   void publish(const rclcpp::Time & now);
 
   std::shared_ptr<rclcpp::Node> nh_;
@@ -58,11 +53,9 @@ private:
   std::string frame_id_of_odometry_;
   std::string child_frame_id_of_odometry_;
 
-  bool use_imu_;
   bool publish_tf_;
 
   std::array<double, 2> diff_joint_positions_;
-  double imu_angle_;
 
   std::array<double, 3> robot_pose_;
   std::array<double, 3> robot_vel_;
