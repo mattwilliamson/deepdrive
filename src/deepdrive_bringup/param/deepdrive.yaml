@@ -14,8 +14,6 @@ deepdrive_hardware:
     motors:
       profile_acceleration_constant: 214.577
 
-      # [rev/min2]
-      # ref) http://emanual.robotis.com/docs/en/dxl/x/xl430-w250/#profile-acceleration
       profile_acceleration: 0.0
 
     sensors:

@@ -1,15 +1,22 @@
 # DeepDrive
-Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
+Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
 - [ ] add fan plug to pcb
 - [ ] Baud rate 1000000 for raspberry pi pico / micro-ros agent
 - [ ] Battery state publisher from pico
+- [ ] current/volt sensor
 - [ ] new custom differential drive controller
-- [ ] start with custom c++ node + micro-ros for low level. later, use serial direct to speed it up https://github.com/osrf/ros2_serial_example
 - [ ] PID controller for motor
+- [ ] depthimage-to-laserscan?
+- [ ] twist-mux 
+- [ ] calibrate imu covariance
+- [ ] compressed_image_transport
+- [ ] find_object_2d
+- [ ] how to annotate rooms?
+- [ ] behavior trees? https://py-trees-ros.readthedocs.io/en/devel/about.html https://github.com/BehaviorTree/BehaviorTree.CPP
 - [x] second IMU / compass BNO080/BNO085 9-DOF
-- [ ] add second IMU to robot_localization
+- [x] add second IMU to robot_localization
 - [ ] mount IMU
 - [ ] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
 - [ ] lidar odom? https://github.com/PRBonn/kiss-icp
@@ -17,15 +24,12 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
 - [ ] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU
-- [ ] I2C scanner server?
 - [ ] add mounting holes for jetson mount
 - [ ] tighten holes (especially motor mounts)
 - [ ] 2 more holes for all motor wires
-- [ ] new N20 motors
-- [ ] battery level
+- [ ] new motors
 - [ ] fuse
 - [ ] stall detection based on rotary encoders
-- [ ] slightly longer wheel encoder shaft
 - [ ] cooling fan
 - [ ] add power button & voltage mount
 - [ ] calibrate motor pwm speed
@@ -40,17 +44,14 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-deve
 - [ ] separate workspace for depthai?
 - [ ] add led ring
 - [ ] cooling holes
-- [ ] param/deepdrive.yaml
+- [ ] param/deepdrive.yaml ros params for wheelbase, serial port, etc
 - [ ] oak d lite camera simulated
 - [x] URDF deepdrive_deepdrive.urdf
 - [ ] Add depthai and cache models
 - [x] add wide angle camera
-- [ ] https://github.com/BehaviorTree/BehaviorTree.CPP
-- [ ] ros params for wheelbase, serial port, etc
 - [ ] gps
 - [ ] diagnostics for motor controller
 - [ ] cooling fan
-- [ ] camera urdf overwriting robot_description: https://discuss.luxonis.com/d/2221-launching-oak-d-pro-without-overwriting-existing-robot-description/3
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
@@ -131,20 +132,17 @@ ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py port:=/dev/ttyTHS0
 
 ## Working Test
 ```sh
-export TURTLEBOT3_MODEL=waffle
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
 ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 ```sh
-export TURTLEBOT3_MODEL=waffle
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
 ros2 launch deepdrive_nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 
 ### Vizualize URDF
 ```sh
+xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 urdf-viz src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 ```
 

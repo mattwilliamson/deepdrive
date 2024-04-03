@@ -172,20 +172,12 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
-    urdf = os.path.join(description_dir, 'urdf', 'deepdrive_deepdrive.xacro')
-    with open(urdf, 'r') as infp:
-        robot_description = infp.read()
-
-    start_robot_state_publisher_cmd = Node(
-        condition=IfCondition(use_robot_state_pub),
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        namespace=namespace,
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time,
-                     'robot_description': robot_description}],
-        remappings=remappings)
+    start_robot_state_publisher_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(description_dir, 'robot_state_publisher.launch.py')
+        ),
+        launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
 
     start_gazebo_spawner_cmd = Node(
         package='gazebo_ros',

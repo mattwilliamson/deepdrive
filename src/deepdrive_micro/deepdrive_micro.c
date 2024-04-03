@@ -20,22 +20,78 @@
 #include "pico/cyw43_arch.h"
 #endif
 
-const uint PIN_MOTOR_A = 0;
-const uint PIN_MOTOR_B = 1;
-const uint PIN_PULSE_A = 2;
+typedef struct {
+  char *topic;
+  uint pulses;
+  std_msgs__msg__Int16 cmd_left;
+  uint16_t pwm_output; // Added property for PWM output
+  uint pin; // Added property for pin number
+  // Add more fields here as needed
+  rcl_subscription_t subscription;
+  void (*callback)(const void *msg); // Callback function pointer
+  // Add more fields here as needed
+} Motor;
+
+Motor motors[MOTOR_COUNT] = {
+  {"front/left", 0, {0}, 0, 1, /* Initialize other fields as needed */, NULL},
+  {"front/right", 0, {0}, 0, 2, /* Initialize other fields as needed */, NULL},
+  {"back/left", 0, {0}, 0, 3, /* Initialize other fields as needed */, NULL},
+  {"back/right", 0, {0}, 0, 4, /* Initialize other fields as needed */, NULL},
+};
+
+void motor_callback(const void *msg, void *context) {
+  int motor_index = *(int *)context;
+  // Rest of the function code...
+
+  const std_msgs__msg__Int16 *m = (const std_msgs__msg__Int16 *)msg;
+  Motor *motor = &motors[motor_index];
+  // Set the pwm_output field for the motor
+  motor->pwm_output = m->data;
+}
+
+
+void initialize_motors() {
+  for (int i = 0; i < MOTOR_COUNT; i++) {
+    Motor *motor = &motors[i];
+    // Assign the pin number to the motor struct
+    motor->pin = i;
+    // Initialize the subscription for each motor
+    rcl_subscription_options_t subscription_options =
+        rcl_subscription_get_default_options();
+    rcl_ret_t ret = rcl_subscription_init(
+        &motor->subscription, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int16),
+        motor->topic, &subscription_options);
+    // Handle the initialization error if needed
+    // Set the callback function for each motor
+    motor->callback = motor_callback; // Assign the callback function
+    ret = rclc_executor_add_subscription_with_context(
+      &executor,
+      &motor->subscription,
+      &msg,
+      motor->callback,
+      (void *)&i,
+      RCLC_EXECUTOR_ALWAYS);
+    // Handle the setting of callback error if needed
+    // Initialize other motor fields as needed
+  }
+}
+
 uint8_t on = 0;
-int8_t direction = 1;
 uint pulses = 0;
-int speed = 65000;
+int cmd_left = 65000;
 const uint max_speed = 65000;
 bool led_on = true;
+
+#define MOTOR_COUNT 4
+char *topics[] = {"front/left", "front/right", "back/left", "back/right"};
 
 rcl_publisher_t publisher;
 std_msgs__msg__Int32 msg;
 
 // Set up subscriber
-rcl_subscription_t subscriber;
-std_msgs__msg__Int32 cmd;
+rcl_subscription_t sub_left_motor;
+rcl_subscription_t sub_right_motor;
+std_msgs__msg__Int32 cmd_left;
 
 void blink_error() {
 #if LIB_PICO_CYW43_ARCH
@@ -87,7 +143,7 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time) {
 #endif
 
   // msg.data = pulses;
-  msg.data = speed;
+  msg.data = cmd_left;
   if (RCL_RET_OK != rcl_publish(&publisher, &msg, NULL)) {
     blink_error();
   }
@@ -96,12 +152,12 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time) {
   on = !on;
   gpio_put(PIN_MOTOR_A, 0);
   // gpio_put(PIN_MOTOR_B, on);
-  // speed is max uint16_t or INT_MAX?
-  // Set PWM level to speed
-  if (speed > max_speed) {
-    speed = max_speed;
+  // cmd_left is max uint16_t or INT_MAX?
+  // Set PWM level to cmd_left
+  if (cmd_left > max_speed) {
+    cmd_left = max_speed;
   }
-  pwm_set_gpio_level(PIN_MOTOR_B, speed);
+  pwm_set_gpio_level(PIN_MOTOR_B, cmd_left);
 
   if (RMW_RET_OK != rmw_uros_ping_agent(100, 1)) {
     // Lost connection to agent. Stop motors.
@@ -114,10 +170,16 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time) {
 }
 
 // Subscriber callback
-void subscription_callback(const void *msgin) {
+void sub_left_motor_cb(const void *msgin) {
   // Cast received message to used type
   const std_msgs__msg__Int32 *m = (const std_msgs__msg__Int32 *)msgin;
-  speed = m->data;
+  cmd_left = m->data;
+}
+
+void sub_right_motor_cb(const void *msgin) {
+  // Cast received message to used type
+  const std_msgs__msg__Int32 *m = (const std_msgs__msg__Int32 *)msgin;
+  cmd_right = m->data;
 }
 
 int main() {
@@ -205,9 +267,10 @@ int main() {
   RCCHECK(rclc_node_init_default(&node, "deepdrive_micro_node", "", &support));
 
   // Publisher
+  // TODO: publish to all 4 topics
   RCCHECK(rclc_publisher_init_default(
       &publisher, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-      "deepdrive_micro/pulses"));
+      "/diff_drive/{x}/{y}/pulses"));
 
   // Timer
   RCCHECK(rclc_timer_init_default(&timer, &support, RCL_MS_TO_NS(100),
@@ -217,13 +280,22 @@ int main() {
   RCCHECK(rclc_executor_add_timer(&executor, &timer));
 
   // Subscriber
-  // ros2 topic pub --once deepdrive_micro/cmd std_msgs/msg/Int32 "{data:
+  // ros2 topic pub --once deepdrive_micro/cmd_left std_msgs/msg/Int32 "{data:
   // 65000}"
+
+  // Subscriber for motor control left side
   RCCHECK(rclc_subscription_init_best_effort(
-      &subscriber, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-      "deepdrive_micro/cmd"));
-  RCCHECK(rclc_executor_add_subscription(&executor, &subscriber, &cmd,
-                                         &subscription_callback, ON_NEW_DATA));
+      &sub_left_motor, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+      "/diff_drive/back/left/pwm"));
+  RCCHECK(rclc_executor_add_subscription(&executor, &sub_left_motor, &cmd_left,
+                                         &sub_left_motor_cb, ON_NEW_DATA));
+
+  // Subscriber for motor control right side
+  RCCHECK(rclc_subscription_init_best_effort(
+      &sub_right_motor, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+      "/diff_drive/back/right/pwm"));
+  RCCHECK(rclc_executor_add_subscription(&executor, &sub_left_motor, &cmd_left,
+                                         &sub_right_motor_cb, ON_NEW_DATA));
 
   // while (true) {
   //   rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
@@ -231,7 +303,7 @@ int main() {
   rclc_executor_spin(&executor);
 
   RCCHECK(rcl_publisher_fini(&publisher, &node));
-  RCCHECK(rcl_subscription_fini(&subscriber, &node));
+  RCCHECK(rcl_subscription_fini(&sub_left_motor, &node));
   RCCHECK(rcl_node_fini(&node));
 
   return 0;

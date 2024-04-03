@@ -28,6 +28,7 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
     launch_file_dir = os.path.join(get_package_share_directory('deepdrive_gazebo'), 'launch')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
+    description_dir = os.path.join(get_package_share_directory('deepdrive_description'), 'launch')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     x_pose = LaunchConfiguration('x_pose', default='-2.0')
@@ -54,7 +55,7 @@ def generate_launch_description():
 
     robot_state_publisher_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(launch_file_dir, 'robot_state_publisher.launch.py')
+            os.path.join(description_dir, 'robot_state_publisher.launch.py')
         ),
         launch_arguments={'use_sim_time': use_sim_time}.items()
     )

@@ -7,7 +7,7 @@
             },
             "includePath": [
                 "/ros_ws/install/deepdrive_fake_node/include/**",
-                "/ros_ws/install/deepdrive_msgs/include/**",
+                // "/ros_ws/install/deepdrive_msgs/include/**",
                 "/ros_ws/install/deepdrive_gazebo/include/**",
                 "/uros_ws/install/micro_ros_agent/include/**",
                 "/uros_ws/install/micro_ros_msgs/include/**",
@@ -16,7 +16,11 @@
                 "/ros_ws/src/deepdrive_simulations/deepdrive_fake_node/include/**",
                 "/ros_ws/src/deepdrive_simulations/deepdrive_gazebo/include/**",
                 "/usr/include/**",
-                "/ros_ws/src/deepdrive_node/include/**"
+                "/ros_ws/src/deepdrive_node/include/**",
+                "src/deepdrive_micro/libmicroros/include/**",
+                "/usr/src/pico-sdk/**",
+                "/usr/src/pico-sdk/src/rp2_common/hardware_pwm/include/**",
+                "/opt/ros/humble/src/gmock_vendor/include/**",
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",
