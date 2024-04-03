@@ -234,6 +234,7 @@ COPY .session.yml /root/.session.yml
 COPY .tmux.conf /root/.tmux.conf
 
 
+RUN apt-get update && apt-get install -y openocd gdb-multiarch binutils-multiarch
 
 # ----------------------------------------------------------------------------
 
@@ -256,4 +257,4 @@ COPY src ./src/
 VOLUME /tmp
 
 
-RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
+# RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"

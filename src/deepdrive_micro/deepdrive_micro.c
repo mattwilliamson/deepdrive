@@ -129,6 +129,35 @@ int main() {
   cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
 #endif
 
+  gpio_put(14, 1);
+
+  blink_error();
+
+  uint PIN_OUT = 6;
+  stdio_init_all();
+  gpio_set_function(PIN_OUT, GPIO_FUNC_PWM);
+  auto slice   = pwm_gpio_to_slice_num(PIN_OUT);
+  auto channel = pwm_gpio_to_channel(PIN_OUT);
+  pwm_set_clkdiv(slice, 256.0f);  /// Setting the divider to slow down the clock
+  pwm_set_wrap(slice, 9804);      /// setting the Wrap time to 9764 (20 ms)
+  pwm_set_enabled(slice, true);
+
+
+    for (uint i = 0; i < 10; ++i)
+    {
+
+        pwm_set_chan_level(slice, channel, 490);  /// Setting the duty period (0.6 ms)
+        sleep_ms(2000);
+        pwm_set_chan_level(slice, channel, 735);  /// Setting the duty period (1.5 ms)
+        sleep_ms(2000);
+        pwm_set_chan_level(slice, channel, 1176);  /// Setting the duty period (2.4 ms)
+        sleep_ms(2000);
+    }
+
+
+
+  led_loop();
+
   msg.data = 0;
 
   rmw_uros_set_custom_transport(

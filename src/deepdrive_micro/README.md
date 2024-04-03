@@ -27,12 +27,14 @@ sudo mount /mnt/sda1
 ## Build & Flash
 
 ```sh
-cbuild --cmake-args -DPICO_BOARD=pico_w --packages-select deepdrive_micro
+make dockershell
+colcon build --cmake-args -DPICO_BOARD=pico_w --packages-select deepdrive_micro
 
 # Copy it to src so the host machine has access
 cp build/deepdrive_micro/deepdrive_micro.uf2 src/deepdrive_micro
 
 # Copy it to rpi pico
+sudo mount /mnt/sda1
 sudo cp src/deepdrive_micro/deepdrive_micro.uf2 /mnt/sda1
 ```
 

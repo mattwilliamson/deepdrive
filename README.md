@@ -2,6 +2,7 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
 
 ## TODO:
+- [ ] add fan plug to pcb
 - [ ] Baud rate 1000000 for raspberry pi pico / micro-ros agent
 - [ ] Battery state publisher from pico
 - [ ] new custom differential drive controller

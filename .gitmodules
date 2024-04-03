@@ -1,0 +1,3 @@
+[submodule "src/deepdrive_micro/pico-sdk"]
+	path = src/deepdrive_micro/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git
