@@ -261,15 +261,19 @@ ros2 launch deepdrive_nav2_bringup bringup_launch.py slam:=False use_sim_time:=F
 # Electronics
 
 ## Lidar
-LDS-01
-hls_lfcd_lds_driver
+https://github.com/Myzhar/ldrobot-lidar-ros2
+ttyUSB0
+
 
 Connect 5v, gnd, pin 8 and pin 10 for serial
 
 ```sh
 sudo apt-get install -y screen
-sudo chmod a+rw /dev/ttyTHS0
-screen -L /dev/ttyTHS0 230400
+sudo chmod a+rw /dev/ttyUSB0
+screen -L /dev/ttyUSB0 230400
+
+ros2 launch ldlidar_node ldlidar.launch.py
+
 ```
 
 

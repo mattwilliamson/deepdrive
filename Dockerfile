@@ -251,8 +251,8 @@ WORKDIR $ROS2_WS
 COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
 RUN pip3 install -r src/imu_bno08x/requirements.txt
 
-COPY src/differential_drive/requirements.txt src/differential_drive/requirements.txt
-RUN pip3 install -r src/differential_drive/requirements.txt
+# COPY src/differential_drive/requirements.txt src/differential_drive/requirements.txt
+# RUN pip3 install -r src/differential_drive/requirements.txt
 
 COPY src ./src/
 
