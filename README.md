@@ -124,10 +124,7 @@ ros2 run deepdrive_teleop teleop_keyboard
 
 ## LIDAR
 ```sh
-sudo chmod a+rw /dev/ttyTHS0
-screen -L /dev/ttyTHS0 230400
-ros2 run tf2_ros static_transform_publisher 0 0 0 0 3.14159 3.14159 oak-d-base-frame laser
-ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py port:=/dev/ttyTHS0
+ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
 ```
 
 ## Working Test
@@ -261,6 +258,7 @@ ros2 launch deepdrive_nav2_bringup bringup_launch.py slam:=False use_sim_time:=F
 # Electronics
 
 ## Lidar
+LD19
 https://github.com/Myzhar/ldrobot-lidar-ros2
 ttyUSB0
 
@@ -269,10 +267,13 @@ Connect 5v, gnd, pin 8 and pin 10 for serial
 
 ```sh
 sudo apt-get install -y screen
-sudo chmod a+rw /dev/ttyUSB0
-screen -L /dev/ttyUSB0 230400
+sudo chmod a+rw /dev/ttyUSB1
+screen -L /dev/ttyUSB1 230400
 
-ros2 launch ldlidar_node ldlidar.launch.py
+src/ldrobot-lidar-ros2/ldlidar_node/params/ldlidar.yaml
+
+ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
+
 
 ```
 

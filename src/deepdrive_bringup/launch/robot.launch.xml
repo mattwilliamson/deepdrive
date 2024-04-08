@@ -21,7 +21,7 @@
     <!-- <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" name="joint_state_publisher_gui"/> -->
 
     <!-- LIDAR -->
-    <include if="$(var use_lidar)" file="$(find-pkg-share deepdrive_bringup)/launch/lidar.launch.xml" />
+    <include if="$(var use_lidar)" file="$(find-pkg-share deepdrive_lidar)/launch/ldlidar_with_mgr.launch.py" />
     
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_laser" args="0 0 0 3.14159 0 0 base_link laser" output="screen" /> -->
 
