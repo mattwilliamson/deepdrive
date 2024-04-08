@@ -206,7 +206,7 @@ def generate_launch_description():
             foxglove_bridge,
             # control_node,
             robot_state_publisher_node,
-            # robot_state_pub_node,
+        # robot_state_pub_node,
             joint_state_broadcaster_spawner,
             # robot_controller_spawner
             delay_rviz_after_joint_state_broadcaster_spawner,

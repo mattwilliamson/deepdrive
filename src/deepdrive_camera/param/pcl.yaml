@@ -10,9 +10,15 @@
     left:
       r_focus: 1
       r_set_man_focus: true
+      i_low_bandwidth: true
+      i_low_bandwidth_quality: 50
     rgb:
       r_focus: 1
       r_set_man_focus: true
+      i_low_bandwidth: true
+      i_low_bandwidth_quality: 50
     right:
       r_focus: 1
       r_set_man_focus: true
+      i_low_bandwidth: true
+      i_low_bandwidth_quality: 50
