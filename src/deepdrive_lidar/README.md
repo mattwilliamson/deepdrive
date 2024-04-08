@@ -24,12 +24,11 @@ ros2 launch ldlidar_node ldlidar_rviz2.launch.py
 ## Installation
 ### On Host Machine
 
-**FOR NOW JUST USE DEFAULT MAPPING AND SKIP THE FOLLOWING WHICH MAPS IT TO A STATIC PATH UNDER /dev/**
-
-
-
 ```sh
 sudo apt install libudev-dev
+cd src/ldrobot-lidar-ros2/scripts/
 ./create_udev_rules.sh
+
+screen -L /dev/ldlidar 230400
 ```
 

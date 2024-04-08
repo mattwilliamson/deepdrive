@@ -260,15 +260,15 @@ ros2 launch deepdrive_nav2_bringup bringup_launch.py slam:=False use_sim_time:=F
 ## Lidar
 LD19
 https://github.com/Myzhar/ldrobot-lidar-ros2
-ttyUSB0
+/dev/ttyUSB0 or /dev/ldlidar
 
 
 Connect 5v, gnd, pin 8 and pin 10 for serial
 
 ```sh
 sudo apt-get install -y screen
-sudo chmod a+rw /dev/ttyUSB1
-screen -L /dev/ttyUSB1 230400
+sudo chmod a+rw /dev/ttyUSB0
+screen -L /dev/ttyUSB0 230400
 
 src/ldrobot-lidar-ros2/ldlidar_node/params/ldlidar.yaml
 

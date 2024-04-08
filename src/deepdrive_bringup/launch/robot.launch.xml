@@ -1,5 +1,5 @@
 <launch>
-    <arg name="lidar_port" default="/dev/ttyTHS0"/>
+    <arg name="lidar_port" default="/dev/ldlidar"/>
     <arg name="use_gui" default="FALSE"/>
     <arg name="use_sim_time" default="false"/>
     <arg name="use_lidar" default="TRUE"/>
