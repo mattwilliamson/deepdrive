@@ -196,7 +196,7 @@ RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
     ros2 run micro_ros_setup create_agent_ws.sh && \
     ros2 run micro_ros_setup build_agent.sh
 
-# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 baudrate=115200
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 
 # Compile example:
 # git clone https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git -b $ROS_DISTRO src/micro_ros_raspberrypi_pico_sdk
@@ -279,3 +279,9 @@ VOLUME /tmp
 
 
 # RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
+RUN bash -c "source $ROS_ROOT/install/setup.bash && \
+    colcon build --symlink-install --packages-skip=deepdrive_node"
+
+# RUN bash -c "source $ROS_ROOT/install/setup.bash && \
+#     xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > \
+#         src/deepdrive_description/urdf/deepdrive_deepdrive.urdf"

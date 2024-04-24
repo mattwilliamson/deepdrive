@@ -135,7 +135,7 @@ def generate_launch_description():
         DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'camera.yaml')),
         DeclareLaunchArgument("use_rviz", default_value='false'),
         DeclareLaunchArgument("rviz_config", default_value=os.path.join(depthai_prefix, "config", "rviz", "rgbd.rviz")),
-        DeclareLaunchArgument("rsp_use_composition", default_value='true'),
+        DeclareLaunchArgument("rsp_use_composition", default_value='false'),
         DeclareLaunchArgument("pass_tf_args_as_params", default_value='false', description='Enables TF publishing from camera calibration file.'),
         DeclareLaunchArgument("imu_from_descr", default_value='false', description='Enables IMU publishing from URDF.'),
         DeclareLaunchArgument("override_cam_model", default_value='false', description='Overrides camera model from calibration file.'),

@@ -1,34 +1,34 @@
 <launch>
     <arg name="use_gui" default="FALSE"/>
     <arg name="camera_model" default="OAK-D-LITE"/>
-    
+
 
     <!-- Camera -->
     <!-- This one gives us a pointcloud successfully -->
     <include file="$(find-pkg-share deepdrive_camera)/launch/pointcloud.launch.py">
 
-    <!-- This one successfully publishes on odom and map topics as well as point clouds -->
-    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
+        <!-- This one successfully publishes on odom and map topics as well as point clouds -->
+        <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
 
-    <!-- Try to detect object with onboard AI model on oak d lite -->
-    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
-    
-    <arg name="name" value="camera_depth"/>
-    <arg name="parent_frame" value="base_link"/>
-    <!-- <arg name="imu_from_descr" value="false"/> -->
-    
-    <!-- camera_depth_rgb_camera_optical_frame -->
-    <!-- camera/odometry -->
+        <!-- Try to detect object with onboard AI model on oak d lite -->
+        <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
 
-    <arg name="cam_pos_x" value="0.0"/>
-    <arg name="cam_pos_y" value="0.0"/>
-    <arg name="cam_pos_z" value="0.0"/>
-    <arg name="cam_roll" value="0.0"/>
-    <arg name="cam_pitch" value="0.0"/>
-    <arg name="cam_yaw" value="0.0"/>
-        
-    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py"> -->
-    
+        <arg name="name" value="camera_depth"/>
+        <arg name="parent_frame" value="base_camera_depth_joint"/>
+        <!-- <arg name="imu_from_descr" value="false"/> -->
+
+        <!-- camera_depth_rgb_camera_optical_frame -->
+        <!-- camera/odometry -->
+
+        <arg name="cam_pos_x" value="0.0"/>
+        <arg name="cam_pos_y" value="0.0"/>
+        <arg name="cam_pos_z" value="0.0"/>
+        <arg name="cam_roll" value="0.0"/>
+        <arg name="cam_pitch" value="0.0"/>
+        <arg name="cam_yaw" value="0.0"/>
+
+        <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py"> -->
+
         <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
         <arg name="enableRviz" value="$(var use_gui)"/>
 
@@ -49,13 +49,13 @@
         <arg name="rgbResolution" value="1080p"/>
         <arg name="confidence" value="200" />
         <arg name="stereo_fps" value="15" />
-        <arg name="enableMarkerPublish" value="true" />
+        <arg name="enableMarkerPublish" value="false" />
         <!-- <arg name="enableMarkerPublish" value="true" /> -->
         <arg name="enableSpatialDetection" value="true" />
         <!-- <arg name="enableSpatialDetection" value="true" /> -->
         <arg name="imuMode" value="0" />
         <!-- 0 -> COPY, 1 -> LINEAR_INTERPOLATE_GYRO, 2 -> LINEAR_INTERPOLATE_ACCEL -->
-        
+
     </include>
 
 </launch>

@@ -6,7 +6,7 @@
     <joint name="base_camera_depth_joint" type="fixed">
         <parent link="base_link"/>
         <child link="camera_depth"/>
-        <origin xyz="0.08 0.0 0.035" rpy="0 0 0"/>
+        <origin xyz="0.14 -0.045 0.09" rpy="0 0 0"/>
     </joint>
     <link name="camera_depth"/>
     <xacro:camera_depth mount_point="camera_depth"/>
@@ -16,72 +16,14 @@
     <joint name="base_camera_wide_joint" type="fixed">
         <parent link="base_link"/>
         <child link="camera_wide"/>
-        <origin xyz="0.09 0.001 0.016" rpy="0 0 0"/>
+        <origin xyz="0.125 0.030 0.081" rpy="0 0 0"/>
+        <!-- <origin xyz="0.125 0.03 0.08" rpy="${-pi/2} 0 ${-pi/2}"/> -->
         <!-- <origin xyz="0.064 -0.065 0.094" rpy="0 0 0"/> -->
         <!-- 0 1.57 0 -->
         <!-- .017 .053 -.052 -->
     </joint>
     <link name="camera_wide"/>
     <xacro:camera_wide mount_point="camera_wide"/>
-
-
-    <!-- <joint name="camera_joint" type="fixed">
-        <origin xyz="0.064 -0.065 0.094" rpy="0 0 0"/>
-        <parent link="base_link"/>
-        <child link="camera_link"/>
-    </joint> -->
-    
-<!-- 
-    <link name="camera_link">
-        <visual>
-            <origin xyz=".01 .065 -.025" rpy="1.57 0 1.57"/>
-            <geometry>
-                <mesh filename="package://deepdrive_description/meshes/sensors/oakdlite.stl" />
-            </geometry>
-            <material name="black"/>
-        </visual>
-        <collision>
-            <origin xyz="0.003 0.065 0.007" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.012 0.132 0.020"/>
-            </geometry>
-        </collision>
-
-    </link>
-
-    <joint name="camera_rgb_joint" type="fixed">
-        <origin xyz="0.005 0.018 0.013" rpy="0 0 0"/>
-        <parent link="camera_link"/>
-        <child link="camera_rgb_frame"/>
-    </joint>
-    <link name="camera_rgb_frame"/>
-
-    <joint name="camera_rgb_optical_joint" type="fixed">
-        <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-        <parent link="camera_rgb_frame"/>
-        <child link="camera_rgb_optical_frame"/>
-    </joint>
-    <link name="camera_rgb_optical_frame"/>
-
-    <joint name="camera_depth_joint" type="fixed">
-        <origin xyz="0.005 0.028 0.013" rpy="0 0 0"/>
-        <parent link="camera_link"/>
-        <child link="camera_depth_frame"/>
-    </joint>
-    <link name="camera_depth_frame"/>
-
-    <joint name="camera_depth_optical_joint" type="fixed">
-        <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-        <parent link="camera_depth_frame"/>
-        <child link="camera_depth_optical_frame"/>
-    </joint>
-    <link name="camera_depth_optical_frame"/> -->
-
-
-
-
-
-    <!-- Gazebo plugin for center RGB camera -->
 
 
 

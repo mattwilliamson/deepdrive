@@ -1,8 +1,11 @@
 import launch
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import Node
 import launch_ros
 import os
+import launch_ros.descriptions
+
 
 
 def generate_launch_description():
@@ -12,26 +15,17 @@ def generate_launch_description():
     default_model_path = os.path.join(pkg_share, "urdf/deepdrive_deepdrive.xacro")
     use_sim_time = LaunchConfiguration("use_sim_time", default="false")
 
-    # Get URDF via xacro
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution([FindPackageShare("deepdrive_description"), "urdf", "deepdrive_deepdrive.xacro"]),
-            " ",
-            "sim_mode:=",
-            use_sim_time,
-        ]
-    )
-    robot_description = {"robot_description": robot_description_content}
-
-    robot_state_publisher_node = launch_ros.actions.Node(
+    robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        parameters=[{"use_sim_time": use_sim_time}, robot_description],
-        # remappings=[
-        # ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
-        # ],
+        output="both",
+        # parameters=[robot_description],
+        parameters=[
+            {'robot_description': launch_ros.descriptions.ParameterValue(
+                launch.substitutions.Command(['xacro ', LaunchConfiguration("model")]), value_type=str) 
+            }
+        ]
+
     )
 
     return launch.LaunchDescription(

@@ -27,6 +27,7 @@
 
     <!-- Camera -->
     <include file="$(find-pkg-share deepdrive_camera)/launch/camera.launch.xml" />
+    <include file="$(find-pkg-share deepdrive_camera)/launch/wide_angle_camera.launch.xml" />
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_footprint_oak" args="0 0 0 0 0 0 camera_link oak" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_base" args="0 0 0 0 0 0 oak-d-base-frame oak" output="screen" /> -->
     <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="oak_imu" args="0 0 0 0 0 0 base_link oak-d-base-frame" output="screen" /> -->
@@ -42,9 +43,11 @@
     <!-- <node pkg="deepdrive_hardware" exec="motor_controller" name="motor_controller" output="screen" /> -->
 
     <!-- Robot state publisher -->
-    <!-- <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py" /> -->
-
-    <include file="$(find-pkg-share deepdrive_bringup)/launch/launch_control.launch.py" />
+    <include file="$(find-pkg-share deepdrive_bringup)/launch/robot_state_publisher.launch.py">
+        <arg name="use_sim_time" value="$(var use_sim_time)"/>
+    </include>
+    
+    <include file="$(find-pkg-share deepdrive_bringup)/launch/localization.launch.xml">
 
     <!-- <include file="$(find-pkg-share deepdrive_nav2_bringup)/launch/slam_launch.py"> -->
         <!-- <arg name="use_sim_time" value="$(var use_sim_time)"/> -->

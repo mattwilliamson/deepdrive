@@ -62,15 +62,16 @@ def generate_launch_description():
     with open(urdf, 'r') as infp:
         robot_desc = infp.read()
 
+    # TODO: Make this a param
     # Robot State Publisher node
-    rsp_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='ldlidar_state_publisher',
-        output='screen',
-        parameters=[{'robot_description': robot_desc}],
-        arguments=[urdf]
-    )
+    # rsp_node = Node(
+    #     package='robot_state_publisher',
+    #     executable='robot_state_publisher',
+    #     name='ldlidar_state_publisher',
+    #     output='screen',
+    #     parameters=[{'robot_description': robot_desc}],
+    #     arguments=[urdf]
+    # )
 
     # Define LaunchDescription variable
     ld = LaunchDescription()
@@ -79,7 +80,7 @@ def generate_launch_description():
     ld.add_action(declare_node_name_cmd)
 
     # Launch Nav2 Lifecycle Manager
-    ld.add_action(rsp_node)
+    # ld.add_action(rsp_node)
 
     # LDLidar Lifecycle node
     ld.add_action(ldlidar_node)

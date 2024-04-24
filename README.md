@@ -2,12 +2,17 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
-- [ ] add fan plug to pcb
-- [ ] Baud rate 1000000 for raspberry pi pico / micro-ros agent
+- [ ] IMU Frame
+- [ ] Fix transforms for oak d lite
+- [ ] lidar odom? https://github.com/PRBonn/kiss-icp
+- [ ] m-explore
+- [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
+- [ ] ROS ISAAC VSLAM
+- [ ] Run ROS ISAAC in separate container because they have all the docker images and such
 - [ ] Battery state publisher from pico
-- [ ] current/volt sensor
-- [ ] new custom differential drive controller
-- [ ] PID controller for motor
+- [x] current/volt sensor
+- [x] new custom differential drive controller
+- [x] PID controller for motor
 - [ ] depthimage-to-laserscan?
 - [ ] twist-mux 
 - [ ] calibrate imu covariance
@@ -19,39 +24,35 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 - [x] add second IMU to robot_localization
 - [ ] mount IMU
 - [ ] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
-- [ ] lidar odom? https://github.com/PRBonn/kiss-icp
-- [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
 - [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
-- [ ] new micro-ros based differential drive controller
+- [x] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU
-- [ ] add mounting holes for jetson mount
-- [ ] tighten holes (especially motor mounts)
-- [ ] 2 more holes for all motor wires
-- [ ] new motors
+- [x] add mounting holes for jetson mount
+- [x] tighten holes (especially motor mounts)
+- [x] 2 more holes for all motor wires
+- [x] new motors
 - [ ] fuse
 - [ ] stall detection based on rotary encoders
-- [ ] cooling fan
-- [ ] add power button & voltage mount
-- [ ] calibrate motor pwm speed
+- [x] cooling fan
+- [x] add power button & voltage mount
+- [x] calibrate motor pwm speed
 - [ ] composable nodes for hardware and cameras?
 - [x] add wheel encoders to stl
-- [ ] Fix mount since it covers camera cables
+- [x] Fix mount since it covers camera cables
 - [ ] lcd display?
-- [ ] m-explore
 - [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
 - [ ] slam 2d/3d slam-toolbox/rtabmap
 - [ ] separate workspace for depthai?
-- [ ] add led ring
-- [ ] cooling holes
+- [x] add led ring
+- [x] cooling holes
 - [ ] param/deepdrive.yaml ros params for wheelbase, serial port, etc
 - [ ] oak d lite camera simulated
 - [x] URDF deepdrive_deepdrive.urdf
 - [ ] Add depthai and cache models
 - [x] add wide angle camera
 - [ ] gps
-- [ ] diagnostics for motor controller
-- [ ] cooling fan
+- [x] diagnostics for motor controller
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
@@ -64,7 +65,8 @@ make dockersimshell
 
 ros2 launch deepdrive_gazebo deepdrive_house.launch.py
 ros2 run deepdrive_teleop teleop_keyboard
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+# ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
 
 ros2 launch deepdrive_description display.launch.py
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -111,7 +113,7 @@ DEEPDRIVE_MODEL
 
 Latest testing working:
 ```sh
-ros2 launch deepdrive_bringup launch_control.launch.py
+ros2 launch deepdrive_bringup robot.launch.py
 ros2 run deepdrive_teleop teleop_keyboard
 ```
 

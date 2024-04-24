@@ -58,7 +58,7 @@ ros2 launch deepdrive_bringup launch_control.launch.py
 # Start teleop
 # ros2 run teleop_twist_joy teleop_node --ros-args -p axis_linear.x:=1 -p axis_angular.yaw:=0
 ros2 run joy joy_node --ros-args --params-file src/deepdrive_bringup/config/joystick.yaml
-ros2 run teleop_twist_joy teleop_node --ros-args --params-file src/deepdrive_bringup/config/joystick.yaml -r /cmd_vel:=/diff_drive_controller/cmd_vel_unstamped
+ros2 run teleop_twist_joy teleop_node --ros-args --params-file src/deepdrive_bringup/config/joystick.yaml -r /cmd_vel:=/deepdrive_micro/cmd_vel
 ```
 
 

@@ -5,14 +5,14 @@
 
         <!-- Wide angle camera -->
         <joint name="${mount_point}_joint" type="fixed">
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
             <parent link="${mount_point}"/>
             <child link="${mount_point}_link"/>
         </joint>
 
         <link name="${mount_point}_link">
             <visual>
-                <origin xyz="-0.01 -0.015 0.001" rpy="${pi/2} 0 ${pi/2}"/>
+                <origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
                 <geometry>
                     <mesh filename="package://deepdrive_description/meshes/sensors/camera_wide.stl" scale=".001 .001 .001"/>
                 </geometry>
@@ -27,7 +27,8 @@
         </link>
 
         <joint name="${mount_point}_optical_joint" type="fixed">
-            <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <!-- <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/> -->
             <parent link="${mount_point}"/>
             <child link="${mount_point}_optical_frame"/>
         </joint>
