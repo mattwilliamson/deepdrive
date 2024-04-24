@@ -6,19 +6,19 @@
   <description>
     ROS 2 launch scripts for starting the Deepdrive camera
   </description>
-  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <maintainer email="matt@aimatt.com">Matt Williamson</maintainer>
   <license>Apache 2.0</license>
-  <url type="website">http://deepdrive.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/deepdrive</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/deepdrive/issues</url>
-  <author email="thlim@robotis.com">Darby Lim</author>
-  <author email="pyo@robotis.com">Pyo</author>
+  <url type="website">http://aimatt.com</url>
+  <url type="repository">https://github.com/mattwilliamson/deepdrive</url>
+  <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
+  <author email="matt@aimatt.com">Matt Williamson</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <exec_depend>depthai_ros_driver</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>deepdrive_description</exec_depend>
   <exec_depend>deepdrive_hardware</exec_depend>
+  <exec_depend>gscam</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

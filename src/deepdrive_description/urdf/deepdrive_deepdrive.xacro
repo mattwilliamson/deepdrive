@@ -4,9 +4,9 @@
 
   <xacro:arg name="sim_mode" default="false"/>
 
-  <xacro:property name="wheel_base" value="0.175" />
-  <xacro:property name="wheel_radius" value="0.035" />
-  <!-- <xacro:property name="use_mock_hardware" value="0.035" /> -->
+  <xacro:property name="wheel_base" value="0.24" />
+  <xacro:property name="wheel_radius" value="0.0445" />
+  <!-- <xacro:property name="use_mock_hardware" value="true" /> -->
 
   <xacro:include filename="$(find deepdrive_description)/urdf/common_properties.xacro"/>
   <xacro:include filename="$(find deepdrive_description)/urdf/wheels.xacro"/>
@@ -20,13 +20,14 @@
     <origin xyz="0 0 0.010" rpy="0 0 0"/>
   </joint>
 
+  <!-- Frame/Chassis -->
   <link name="base_link">
     <visual>
-      <origin xyz="-0.064 0 0.0" rpy="0 0 1.57"/>
+      <origin xyz="-0.064 0 0.0" rpy="0 0 ${pi/2}"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/bases/deepdrive_chassis.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/bases/chassis.stl" scale=".001 .001 .001"/>
       </geometry>
-      <material name="grey"/>
+      <material name="dark"/>
     </visual>
 
     <collision>
@@ -48,13 +49,35 @@
   </gazebo>
 
 
+  <!-- Body-->
+  <joint name="body_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="body_link" />
+    <origin xyz="0 0 0.0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="body_link">
+    <visual>
+      <origin xyz="-0.064 0 0.0" rpy="0 0 ${pi/2}"/>
+      <geometry>
+        <mesh filename="package://deepdrive_description/meshes/bases/body.stl" scale=".001 .001 .001"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <!-- Wheels -->
   <xacro:wheel name="front_right" lr="1" fb="1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
   <xacro:wheel name="back_right" lr="1" fb="-1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
   <xacro:wheel name="front_left" lr="-1" fb="1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
   <xacro:wheel name="back_left" lr="-1" fb="-1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
 
 
-
+  <!-- IMU -->
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
@@ -63,17 +86,19 @@
 
   <link name="imu_link"/>
 
-   <!-- <joint name="oak_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="camera_depth_imu_frame"/>
-    <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
-  </joint> -->
-
-  <!-- <link name="camera_depth_imu_frame"/> -->
-
 
   <!-- LIDAR -->
+  <joint name="ldlidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="ldlidar_base"/>
+    <origin xyz="-0.05 0.001 0.120" rpy="0 0 0"/>
+  </joint>
+
+  <!-- <link name="imu_link"/> -->
+
   <xacro:include filename="$(find deepdrive_description)/urdf/lidar.xacro" />
+  
+  
 
   <xacro:include filename="$(find deepdrive_description)/urdf/camera.xacro" />
 
@@ -82,26 +107,37 @@
 
     <!-- This one works in gazebo without ros2_control -->
     <gazebo>
-    <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
-      <num_wheel_pairs>2</num_wheel_pairs>
-      <left_joint>wheel_front_left_joint</left_joint>
-      <right_joint>wheel_front_right_joint</right_joint>
-      <left_joint>wheel_back_left_joint</left_joint>
-      <right_joint>wheel_back_right_joint</right_joint>
-      <wheel_separation>${wheel_base}</wheel_separation>
-      <wheel_diameter>${wheel_radius*2}</wheel_diameter>
+      <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
+        <update_rate>50</update_rate>
+        <num_wheel_pairs>2</num_wheel_pairs>
+        <left_joint>wheel_front_left_joint</left_joint>
+        <right_joint>wheel_front_right_joint</right_joint>
+        <left_joint>wheel_back_left_joint</left_joint>
+        <right_joint>wheel_back_right_joint</right_joint>
+        
+        <!-- The distance from the center of one wheel to the other, in meters, defaults to 0.34 m -->
+        <wheel_separation>${wheel_base}</wheel_separation>
 
-      <max_wheel_torque>200</max_wheel_torque>
-      <max_wheel_acceleration>10.0</max_wheel_acceleration>
+        <!-- Diameter of the wheels, in meters, defaults to 0.15 m -->
+        <wheel_diameter>${wheel_radius*2}</wheel_diameter>
 
-      <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_footprint</robot_base_frame>
+        <!-- Maximum torque which the wheels can produce, in Nm, defaults to 5 Nm -->
+        <max_wheel_torque>5</max_wheel_torque>
 
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>true</publish_odom_tf>
-      <publish_wheel_tf>true</publish_wheel_tf>
-    </plugin>
-  </gazebo>
+        <!-- Wheel acceleration, in rad/s^2, defaults to 0.0 rad/s^2 -->
+        <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+        <command_topic>cmd_vel</command_topic>
+        <odometry_topic>odom</odometry_topic>
+
+        <odometry_frame>odom</odometry_frame>
+        <robot_base_frame>base_footprint</robot_base_frame>
+
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
+      </plugin>
+    </gazebo>
 
 
 
@@ -115,7 +151,7 @@
           <initial_orientation_as_reference>false</initial_orientation_as_reference>
         </plugin>
         <always_on>true</always_on>
-        <update_rate>100</update_rate>
+        <update_rate>50</update_rate>
         <visualize>true</visualize>
         <imu>
           <angular_velocity>

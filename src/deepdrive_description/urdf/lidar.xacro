@@ -1,48 +1,31 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <joint name="scan_joint" type="fixed">
-        <parent link="base_link"/>
-        <child link="base_scan"/>
-        <origin xyz="-0.064 0 0.125" rpy="0 0 0"/>
-    </joint>
-
-    <link name="base_scan">
+    <link name="ldlidar_base">
         <visual>
-            <origin xyz="-.076 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://deepdrive_description/meshes/sensors/lds.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="package://ldlidar_node/urdf/model/LD19.stl" scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="black"/>
+            <material name="ldlidar_mat">
+                <color rgba="0.8 0.8 0.8 0.8"/>
+            </material>
         </visual>
-
-        <collision>
-            <origin xyz="-.076 0 0" rpy="0 0 0"/>
-            <geometry>
-                <cylinder length="0.0315" radius="0.055"/>
-            </geometry>
-        </collision>
-
-        <inertial>
-            <mass value="0.114" />
-            <origin xyz="0 0 0" />
-            <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
-        </inertial>
     </link>
 
-    <joint name="laser_joint" type="fixed">
-        <parent link="base_scan"/>
-        <child link="laser"/>
-        <origin xyz="0.0 0 0.058" rpy="0 0 ${pi}"/>
+    <joint name="ldlidar_link_joint" type="fixed">
+        <parent link="ldlidar_base"/>
+        <child link="ldlidar_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
-    <link name="laser"/>
+    <link name="ldlidar_link" />
+    
 
-
-    <gazebo reference="laser">
+    <gazebo reference="ldlidar_link">
         <material>Gazebo/Black</material>
 
-        <sensor name="laser" type="ray">
+        <sensor name="ldlidar_link" type="ray">
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>false</visualize>
             <update_rate>10</update_rate>
@@ -64,7 +47,7 @@
                     <argument>~/out:=scan</argument>
                 </ros>
                 <output_type>sensor_msgs/LaserScan</output_type>
-                <frame_name>laser</frame_name>
+                <frame_name>ldlidar_link</frame_name>
             </plugin>
         </sensor>
     </gazebo>

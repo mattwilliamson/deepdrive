@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -57,33 +59,13 @@ def generate_launch_description():
     )
     use_sim_time = LaunchConfiguration("use_sim_time")
     imu_target_frame = LaunchConfiguration("imu_target_frame")
+    description_dir = os.path.join(get_package_share_directory('deepdrive_description'), 'launch')
 
     # Initialize Arguments
     gui = LaunchConfiguration("gui")
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
 
-    # Get URDF via xacro
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [FindPackageShare("deepdrive_description"), "urdf", "deepdrive_deepdrive.xacro"]
-            ),
-            " ",
-            "sim_mode:=",
-            use_mock_hardware,
-        ]
-    )
-    robot_description = {"robot_description": robot_description_content}
 
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("deepdrive_description"),
-            "config",
-            "controllers.yaml",
-        ]
-    )
     rviz_config_file = PathJoinSubstitution(
         [FindPackageShare("deepdrive_description"), "rviz", "model.rviz"]
     )
@@ -96,14 +78,12 @@ def generate_launch_description():
         # remappings=[("/imu_bno08x/data", "/imu/")],
     )
 
-    robot_state_pub_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="both",
-        parameters=[robot_description],
-        remappings=[
-            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
-        ],
+    
+    robot_state_pub_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(description_dir, 'robot_state_publisher.launch.py')
+        ),
+        launch_arguments={'use_sim_time': use_sim_time}.items()
     )
     rviz_node = Node(
         package="rviz2",
@@ -188,6 +168,7 @@ def generate_launch_description():
     )
 
     nodes = [
+        # control_node,
         robot_state_pub_node,
         robot_localization_node,
         imu_publisher_node,

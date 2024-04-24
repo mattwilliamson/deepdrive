@@ -10,7 +10,7 @@
         <joint name="wheel_${name}_joint" type="continuous">
             <parent link="base_link"/>
             <child link="wheel_${name}_link"/>
-            <origin xyz="${wheel_front_offset/2 + (fb * (wheel_base / 2))} ${-lr * wheel_base/2} 0.0" rpy="0 0 ${lr*1.57}"/>
+        <origin xyz="${wheel_front_offset/2 + (fb * (wheel_base / 2))} ${-lr * wheel_base/2} 0.0" rpy="0 0 ${lr*(pi/2)}"/>
             <axis xyz="${lr} 0 0"/>
             <!-- <dynamics damping="0.8"/> -->
             <!-- <limit effort="100" velocity="0.5"/> -->
@@ -29,9 +29,9 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
-                    <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale="1 1 1"/>
+                    <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale=".001 .001 .001"/>
                 </geometry>
-                <material name="blue"/>
+                <material name="dark"/>
             </visual>
 
             <collision>
@@ -49,7 +49,7 @@
         </link>
 
         <gazebo reference="wheel_${name}_link">
-            <material>Gazebo/Blue</material>
+            <material>Gazebo/Grey</material>
         </gazebo>
 
         <joint name="tire_${name}_joint" type="fixed">
@@ -63,7 +63,7 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
-                    <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale="1 1 1"/>
+                    <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale=".001 .001 .001"/>
                 </geometry>
                 <material name="black"/>
             </visual>

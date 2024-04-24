@@ -4,7 +4,7 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="deepdrive_deepdrive">
-  <!-- <xacro:property name="use_mock_hardware" value="0.035" /> -->
+  <!-- <xacro:property name="use_mock_hardware" value="true" /> -->
   <!-- Init colour -->
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
@@ -24,6 +24,9 @@
   <material name="grey">
     <color rgba="0.5 0.5 0.5 1.0"/>
   </material>
+  <material name="lightgrey">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
   <material name="orange">
     <color rgba="1.0 0.4235294117647059 0.0392156862745098 1.0"/>
   </material>
@@ -42,13 +45,14 @@
     <child link="base_link"/>
     <origin rpy="0 0 0" xyz="0 0 0.010"/>
   </joint>
+  <!-- Frame/Chassis -->
   <link name="base_link">
     <visual>
-      <origin rpy="0 0 1.57" xyz="-0.064 0 0.0"/>
+      <origin rpy="0 0 1.5707963267948966" xyz="-0.064 0 0.0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/bases/deepdrive_chassis.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/bases/chassis.stl" scale=".001 .001 .001"/>
       </geometry>
-      <material name="grey"/>
+      <material name="dark"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="-0.064 0 0.047"/>
@@ -65,10 +69,28 @@
   <gazebo reference="base_link">
     <material>Gazebo/Grey</material>
   </gazebo>
+  <!-- Body-->
+  <joint name="body_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="body_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0"/>
+  </joint>
+  <link name="body_link">
+    <visual>
+      <origin rpy="0 0 1.5707963267948966" xyz="-0.064 0 0.0"/>
+      <geometry>
+        <mesh filename="package://deepdrive_description/meshes/bases/body.stl" scale=".001 .001 .001"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+  <gazebo reference="base_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
   <joint name="wheel_front_right_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_front_right_link"/>
-    <origin rpy="0 0 1.57" xyz="0.022499999999999992 -0.0875 0.0"/>
+    <origin rpy="0 0 1.5707963267948966" xyz="0.05499999999999999 -0.12 0.0"/>
     <axis xyz="1 0 0"/>
     <!-- <dynamics damping="0.8"/> -->
     <!-- <limit effort="100" velocity="0.5"/> -->
@@ -85,14 +107,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale=".001 .001 .001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="dark"/>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.025" radius="0.035"/>
+        <cylinder length="0.025" radius="0.0445"/>
       </geometry>
     </collision>
     <inertial>
@@ -102,7 +124,7 @@
     </inertial>
   </link>
   <gazebo reference="wheel_front_right_link">
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/Grey</material>
   </gazebo>
   <joint name="tire_front_right_joint" type="fixed">
     <parent link="wheel_front_right_link"/>
@@ -114,7 +136,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale=".001 .001 .001"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -144,7 +166,7 @@
   <joint name="wheel_back_right_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_back_right_link"/>
-    <origin rpy="0 0 1.57" xyz="-0.1525 -0.0875 0.0"/>
+    <origin rpy="0 0 1.5707963267948966" xyz="-0.185 -0.12 0.0"/>
     <axis xyz="1 0 0"/>
     <!-- <dynamics damping="0.8"/> -->
     <!-- <limit effort="100" velocity="0.5"/> -->
@@ -161,14 +183,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale=".001 .001 .001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="dark"/>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.025" radius="0.035"/>
+        <cylinder length="0.025" radius="0.0445"/>
       </geometry>
     </collision>
     <inertial>
@@ -178,7 +200,7 @@
     </inertial>
   </link>
   <gazebo reference="wheel_back_right_link">
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/Grey</material>
   </gazebo>
   <joint name="tire_back_right_joint" type="fixed">
     <parent link="wheel_back_right_link"/>
@@ -190,7 +212,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale=".001 .001 .001"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -220,7 +242,7 @@
   <joint name="wheel_front_left_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_front_left_link"/>
-    <origin rpy="0 0 -1.57" xyz="0.022499999999999992 0.0875 0.0"/>
+    <origin rpy="0 0 -1.5707963267948966" xyz="0.05499999999999999 0.12 0.0"/>
     <axis xyz="-1 0 0"/>
     <!-- <dynamics damping="0.8"/> -->
     <!-- <limit effort="100" velocity="0.5"/> -->
@@ -237,14 +259,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale=".001 .001 .001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="dark"/>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.025" radius="0.035"/>
+        <cylinder length="0.025" radius="0.0445"/>
       </geometry>
     </collision>
     <inertial>
@@ -254,7 +276,7 @@
     </inertial>
   </link>
   <gazebo reference="wheel_front_left_link">
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/Grey</material>
   </gazebo>
   <joint name="tire_front_left_joint" type="fixed">
     <parent link="wheel_front_left_link"/>
@@ -266,7 +288,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale=".001 .001 .001"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -296,7 +318,7 @@
   <joint name="wheel_back_left_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_back_left_link"/>
-    <origin rpy="0 0 -1.57" xyz="-0.1525 0.0875 0.0"/>
+    <origin rpy="0 0 -1.5707963267948966" xyz="-0.185 0.12 0.0"/>
     <axis xyz="-1 0 0"/>
     <!-- <dynamics damping="0.8"/> -->
     <!-- <limit effort="100" velocity="0.5"/> -->
@@ -313,14 +335,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/rim.stl" scale=".001 .001 .001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="dark"/>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.025" radius="0.035"/>
+        <cylinder length="0.025" radius="0.0445"/>
       </geometry>
     </collision>
     <inertial>
@@ -330,7 +352,7 @@
     </inertial>
   </link>
   <gazebo reference="wheel_back_left_link">
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/Grey</material>
   </gazebo>
   <joint name="tire_back_left_joint" type="fixed">
     <parent link="wheel_back_left_link"/>
@@ -342,7 +364,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale="1 1 1"/>
+        <mesh filename="package://deepdrive_description/meshes/wheels/tire.stl" scale=".001 .001 .001"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -369,53 +391,40 @@
             <kd value="1.0" />
             <fdir1 value="1 0 0"/> -->
   </gazebo>
+  <!-- IMU -->
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
     <origin rpy="0 0 0" xyz="0.0 0 0.068"/>
   </joint>
   <link name="imu_link"/>
-  <!-- <joint name="oak_joint" type="fixed">
+  <!-- LIDAR -->
+  <joint name="ldlidar_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="oak"/>
-    <origin xyz="0.0 0 0.068" rpy="0 0 0"/>
+    <child link="ldlidar_base"/>
+    <origin rpy="0 0 0" xyz="-0.05 0.001 0.120"/>
   </joint>
-
-  <link name="oak"/> -->
-  <joint name="scan_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_scan"/>
-    <origin rpy="0 0 0" xyz="-0.064 0 0.125"/>
-  </joint>
-  <link name="base_scan">
+  <!-- <link name="imu_link"/> -->
+  <link name="ldlidar_base">
     <visual>
-      <origin rpy="0 0 0" xyz="-.076 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/sensors/lds.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://ldlidar_node/urdf/model/LD19.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="black"/>
+      <material name="ldlidar_mat">
+        <color rgba="0.8 0.8 0.8 0.8"/>
+      </material>
     </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-.076 0 0"/>
-      <geometry>
-        <cylinder length="0.0315" radius="0.055"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.114"/>
-      <origin xyz="0 0 0"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
-    </inertial>
   </link>
-  <joint name="laser_joint" type="fixed">
-    <parent link="base_scan"/>
-    <child link="laser"/>
-    <origin rpy="0 0 3.141592653589793" xyz="0.0 0 0.058"/>
+  <joint name="ldlidar_link_joint" type="fixed">
+    <parent link="ldlidar_base"/>
+    <child link="ldlidar_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="laser"/>
-  <gazebo reference="laser">
+  <link name="ldlidar_link"/>
+  <gazebo reference="ldlidar_link">
     <material>Gazebo/Black</material>
-    <sensor name="laser" type="ray">
+    <sensor name="ldlidar_link" type="ray">
       <pose> 0 0 0 0 0 0 </pose>
       <visualize>false</visualize>
       <update_rate>10</update_rate>
@@ -437,7 +446,7 @@
           <argument>~/out:=scan</argument>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>laser</frame_name>
+        <frame_name>ldlidar_link</frame_name>
       </plugin>
     </sensor>
   </gazebo>
@@ -447,7 +456,7 @@
   <joint name="base_camera_depth_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_depth"/>
-    <origin rpy="0 0 0" xyz="0.08 0.0 0.035"/>
+    <origin rpy="0 0 0" xyz="0.14 -0.045 0.09"/>
   </joint>
   <link name="camera_depth"/>
   <!-- Depth camera -->
@@ -458,7 +467,7 @@
   </joint>
   <link name="camera_depth_link">
     <visual>
-      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="-0.01 0.00 0.030"/>
+      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://deepdrive_description/meshes/sensors/oakdlite.stl"/>
       </geometry>
@@ -476,13 +485,20 @@
       <inertia ixx="5.542104166666667e-06" ixy="0.0" ixz="0.0" iyy="4.3651854166666664e-05" iyz="0.0" izz="4.6080416666666663e-05"/>
     </inertial>
   </link>
+  <joint name="camera_depth_imu_link" type="fixed">
+    <parent link="camera_depth_link"/>
+    <child link="camera_depth_imu_frame"/>
+    <origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0.0 0 0.0"/>
+  </joint>
+  <link name="camera_depth_imu_frame"/>
   <!-- RGB -->
   <joint name="camera_depth_optical_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0.1 0 0.2"/>
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
     <parent link="camera_depth"/>
     <child link="camera_depth_optical_frame"/>
   </joint>
   <link name="camera_depth_optical_frame"/>
+  <!-- Gazebo -->
   <sensor name="camera_depth_rgb" type="camera">
     <!-- Seems to be ignored -->
     <pose>0 0 0 0 0 0</pose>
@@ -512,11 +528,31 @@
   </sensor>
   <!-- Depth/Stereo -->
   <joint name="camera_depth_depth_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="camera_depth"/>
     <child link="camera_depth_depth_frame"/>
   </joint>
   <link name="camera_depth_depth_frame"/>
+  <!-- TODO: Not sure why these are popping up in foxglove, but just hack them for now -->
+  <joint name="camera_depth_right_camera_optical_frame_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="camera_depth_optical_frame"/>
+    <child link="camera_depth_right_camera_optical_frame"/>
+  </joint>
+  <link name="camera_depth_right_camera_optical_frame"/>
+  <joint name="camera_depth_left_camera_optical_frame_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="camera_depth_optical_frame"/>
+    <child link="camera_depth_left_camera_optical_frame"/>
+  </joint>
+  <link name="camera_depth_left_camera_optical_frame"/>
+  <joint name="camera_depth_rgb_camera_optical_frame_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="camera_depth_optical_frame"/>
+    <child link="camera_depth_rgb_camera_optical_frame"/>
+  </joint>
+  <link name="camera_depth_rgb_camera_optical_frame"/>
+  <!-- end hack -->
   <gazebo reference="camera_depth_link">
     <material>Gazebo/Black</material>
     <sensor name="camera_depth_depth" type="depth">
@@ -550,7 +586,8 @@
   <joint name="base_camera_wide_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_wide"/>
-    <origin rpy="0 0 0" xyz="0.09 0.001 0.016"/>
+    <origin rpy="0 0 0" xyz="0.125 0.030 0.081"/>
+    <!-- <origin xyz="0.125 0.03 0.08" rpy="${-pi/2} 0 ${-pi/2}"/> -->
     <!-- <origin xyz="0.064 -0.065 0.094" rpy="0 0 0"/> -->
     <!-- 0 1.57 0 -->
     <!-- .017 .053 -.052 -->
@@ -564,7 +601,7 @@
   </joint>
   <link name="camera_wide_link">
     <visual>
-      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="-0.01 -0.015 0.001"/>
+      <origin rpy="0 0 1.5707963267948966" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://deepdrive_description/meshes/sensors/camera_wide.stl" scale=".001 .001 .001"/>
       </geometry>
@@ -578,7 +615,8 @@
     </collision>
   </link>
   <joint name="camera_wide_optical_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <!-- <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/> -->
     <parent link="camera_wide"/>
     <child link="camera_wide_optical_frame"/>
   </joint>
@@ -630,106 +668,4 @@
       </plugin>
     </sensor>
   </gazebo>
-  <!-- <joint name="camera_joint" type="fixed">
-        <origin xyz="0.064 -0.065 0.094" rpy="0 0 0"/>
-        <parent link="base_link"/>
-        <child link="camera_link"/>
-    </joint> -->
-  <!-- 
-    <link name="camera_link">
-        <visual>
-            <origin xyz=".01 .065 -.025" rpy="1.57 0 1.57"/>
-            <geometry>
-                <mesh filename="package://deepdrive_description/meshes/sensors/oakdlite.stl" />
-            </geometry>
-            <material name="black"/>
-        </visual>
-        <collision>
-            <origin xyz="0.003 0.065 0.007" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.012 0.132 0.020"/>
-            </geometry>
-        </collision>
-
-    </link>
-
-    <joint name="camera_rgb_joint" type="fixed">
-        <origin xyz="0.005 0.018 0.013" rpy="0 0 0"/>
-        <parent link="camera_link"/>
-        <child link="camera_rgb_frame"/>
-    </joint>
-    <link name="camera_rgb_frame"/>
-
-    <joint name="camera_rgb_optical_joint" type="fixed">
-        <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-        <parent link="camera_rgb_frame"/>
-        <child link="camera_rgb_optical_frame"/>
-    </joint>
-    <link name="camera_rgb_optical_frame"/>
-
-    <joint name="camera_depth_joint" type="fixed">
-        <origin xyz="0.005 0.028 0.013" rpy="0 0 0"/>
-        <parent link="camera_link"/>
-        <child link="camera_depth_frame"/>
-    </joint>
-    <link name="camera_depth_frame"/>
-
-    <joint name="camera_depth_optical_joint" type="fixed">
-        <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-        <parent link="camera_depth_frame"/>
-        <child link="camera_depth_optical_frame"/>
-    </joint>
-    <link name="camera_depth_optical_frame"/> -->
-  <!-- Gazebo plugin for center RGB camera -->
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>deepdrive_control/DeepdriveSystemHardware</plugin>
-      <param name="mock_hardware">false</param>
-      <param name="use_wheel_encoder">true</param>
-      <param name="encoder_ticks_per_rev">20</param>
-      <param name="pin_left_enable">32</param>
-      <param name="pin_left_forward">38</param>
-      <param name="pin_left_backward">37</param>
-      <param name="pin_left_encoder">11</param>
-      <param name="pin_right_enable">33</param>
-      <param name="pin_right_forward">35</param>
-      <param name="pin_right_backward">36</param>
-      <param name="pin_right_encoder">12</param>
-      <param name="pwm_hz">50</param>
-      <!-- should match controller.yaml update rate -->
-      <param name="command_rate">50</param>
-    </hardware>
-    <joint name="wheel_back_right_joint">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="wheel_front_left_joint">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="wheel_back_left_joint">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="wheel_front_right_joint">
-      <command_interface name="velocity">
-        <param name="min">-1</param>
-        <param name="max">1</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
 </robot>

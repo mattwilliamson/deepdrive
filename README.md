@@ -1,56 +1,58 @@
 # DeepDrive
-Heavily borrowed from https://github.com/ROBOTIS-GIT/turtlebot3/tree/humble-devel
+Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
-- [ ] Baud rate 1000000 for raspberry pi pico / micro-ros agent
+- [ ] IMU Frame
+- [ ] Fix transforms for oak d lite
+- [ ] lidar odom? https://github.com/PRBonn/kiss-icp
+- [ ] m-explore
+- [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
+- [ ] ROS ISAAC VSLAM
+- [ ] Run ROS ISAAC in separate container because they have all the docker images and such
 - [ ] Battery state publisher from pico
-- [ ] new custom differential drive controller
-- [ ] start with custom c++ node + micro-ros for low level. later, use serial direct to speed it up https://github.com/osrf/ros2_serial_example
-- [ ] PID controller for motor
+- [x] current/volt sensor
+- [x] new custom differential drive controller
+- [x] PID controller for motor
+- [ ] depthimage-to-laserscan?
+- [ ] twist-mux 
+- [ ] calibrate imu covariance
+- [ ] compressed_image_transport
+- [ ] find_object_2d
+- [ ] how to annotate rooms?
+- [ ] behavior trees? https://py-trees-ros.readthedocs.io/en/devel/about.html https://github.com/BehaviorTree/BehaviorTree.CPP
 - [x] second IMU / compass BNO080/BNO085 9-DOF
-- [ ] add second IMU to robot_localization
+- [x] add second IMU to robot_localization
 - [ ] mount IMU
 - [ ] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
-- [ ] lidar odom? https://github.com/PRBonn/kiss-icp
-- [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
-- [ ] nvidia jetson visual odom?
 - [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
-- [ ] new micro-ros based differential drive controller
+- [x] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU
-- [ ] I2C scanner server?
-- [ ] add mounting holes for jetson mount
-- [ ] tighten holes (especially motor mounts)
-- [ ] 2 more holes for all motor wires
-- [ ] new N20 motors
-- [ ] battery level
+- [x] add mounting holes for jetson mount
+- [x] tighten holes (especially motor mounts)
+- [x] 2 more holes for all motor wires
+- [x] new motors
 - [ ] fuse
 - [ ] stall detection based on rotary encoders
-- [ ] slightly longer wheel encoder shaft
-- [ ] cooling fan
-- [ ] add power button & voltage mount
-- [ ] calibrate motor pwm speed
+- [x] cooling fan
+- [x] add power button & voltage mount
+- [x] calibrate motor pwm speed
 - [ ] composable nodes for hardware and cameras?
 - [x] add wheel encoders to stl
-- [ ] Fix mount since it covers camera cables
+- [x] Fix mount since it covers camera cables
 - [ ] lcd display?
-- [ ] m-explore
 - [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
 - [ ] slam 2d/3d slam-toolbox/rtabmap
 - [ ] separate workspace for depthai?
-- [ ] add led ring
-- [ ] cooling holes
-- [ ] param/deepdrive.yaml
+- [x] add led ring
+- [x] cooling holes
+- [ ] param/deepdrive.yaml ros params for wheelbase, serial port, etc
 - [ ] oak d lite camera simulated
 - [x] URDF deepdrive_deepdrive.urdf
 - [ ] Add depthai and cache models
 - [x] add wide angle camera
-- [ ] https://github.com/BehaviorTree/BehaviorTree.CPP
-- [ ] ros params for wheelbase, serial port, etc
 - [ ] gps
-- [ ] diagnostics for motor controller
-- [ ] cooling fan
-- [ ] camera urdf overwriting robot_description: https://discuss.luxonis.com/d/2221-launching-oak-d-pro-without-overwriting-existing-robot-description/3
+- [x] diagnostics for motor controller
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
@@ -63,7 +65,8 @@ make dockersimshell
 
 ros2 launch deepdrive_gazebo deepdrive_house.launch.py
 ros2 run deepdrive_teleop teleop_keyboard
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+# ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
 
 ros2 launch deepdrive_description display.launch.py
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -110,7 +113,7 @@ DEEPDRIVE_MODEL
 
 Latest testing working:
 ```sh
-ros2 launch deepdrive_bringup launch_control.launch.py
+ros2 launch deepdrive_bringup robot.launch.py
 ros2 run deepdrive_teleop teleop_keyboard
 ```
 
@@ -123,28 +126,22 @@ ros2 run deepdrive_teleop teleop_keyboard
 
 ## LIDAR
 ```sh
-sudo chmod a+rw /dev/ttyTHS0
-screen -L /dev/ttyTHS0 230400
-ros2 run tf2_ros static_transform_publisher 0 0 0 0 3.14159 3.14159 oak-d-base-frame laser
-ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py port:=/dev/ttyTHS0
+ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
 ```
 
 ## Working Test
 ```sh
-export TURTLEBOT3_MODEL=waffle
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
 ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 ```sh
-export TURTLEBOT3_MODEL=waffle
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
 ros2 launch deepdrive_nav2_bringup tb3_simulation_launch.py headless:=False use_sim_time:=True
 ```
 
 
 ### Vizualize URDF
 ```sh
+xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 urdf-viz src/deepdrive_description/urdf/deepdrive_deepdrive.urdf
 ```
 
@@ -263,15 +260,23 @@ ros2 launch deepdrive_nav2_bringup bringup_launch.py slam:=False use_sim_time:=F
 # Electronics
 
 ## Lidar
-LDS-01
-hls_lfcd_lds_driver
+LD19
+https://github.com/Myzhar/ldrobot-lidar-ros2
+/dev/ttyUSB0 or /dev/ldlidar
+
 
 Connect 5v, gnd, pin 8 and pin 10 for serial
 
 ```sh
 sudo apt-get install -y screen
-sudo chmod a+rw /dev/ttyTHS0
-screen -L /dev/ttyTHS0 230400
+sudo chmod a+rw /dev/ttyUSB0
+screen -L /dev/ttyUSB0 230400
+
+src/ldrobot-lidar-ros2/ldlidar_node/params/ldlidar.yaml
+
+ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
+
+
 ```
 
 

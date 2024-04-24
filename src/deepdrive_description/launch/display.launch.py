@@ -105,14 +105,14 @@ def generate_launch_description():
         ]
     )
 
-    control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        # parameters=[robot_description, robot_controllers],
-        parameters=[robot_controllers],
-        output="both",
-        # remappings=[(/robot_description)],
-    )
+    # control_node = Node(
+    #     package="controller_manager",
+    #     executable="ros2_control_node",
+    #     # parameters=[robot_description, robot_controllers],
+    #     parameters=[robot_controllers],
+    #     output="both",
+    #     # remappings=[(/robot_description)],
+    # )
     #  [controller_manager]: [Deprecated] Passing the robot description parameter directly to the control_manager node is deprecated. Use '~/robot_description' topic from 'robot_state_publisher' instead.
     robot_state_pub_node = Node(
         package="robot_state_publisher",
@@ -204,9 +204,9 @@ def generate_launch_description():
             # robot_localization_node,
             # rviz_node,
             foxglove_bridge,
-            control_node,
+            # control_node,
             robot_state_publisher_node,
-            # robot_state_pub_node,
+        # robot_state_pub_node,
             joint_state_broadcaster_spawner,
             # robot_controller_spawner
             delay_rviz_after_joint_state_broadcaster_spawner,

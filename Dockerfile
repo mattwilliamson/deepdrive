@@ -99,7 +99,24 @@ RUN bash install_deps.sh \
         foxglove_msgs \
         control_toolbox \
         realtime_tools \
-        control_msgs
+        control_msgs \
+        ros2_control_demos \
+        gscam \
+        isaac_ros_common \
+        isaac_ros_argus_camera \
+        isaac_ros_image_pipeline \
+        isaac_ros_image_proc \
+        isaac_ros_stereo_image_proc \
+        isaac_ros_unet \
+        isaac_ros_pointcloud_utils \
+        isaac_ros_occupancy_grid_localizer \
+        isaac_ros_nvblox \
+        isaac_ros_detectnet \
+        isaac_ros_yolov8 \
+        isaac_ros_visual_slam \
+        isaac_ros_visual_slam_interfaces
+
+        # https://nvidia-isaac-ros.github.io/repositories_and_packages/index.html
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
@@ -177,7 +194,7 @@ RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
     ros2 run micro_ros_setup create_agent_ws.sh && \
     ros2 run micro_ros_setup build_agent.sh
 
-# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 baudrate=115200
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 
 # Compile example:
 # git clone https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git -b $ROS_DISTRO src/micro_ros_raspberrypi_pico_sdk
@@ -231,6 +248,8 @@ COPY .session.yml /root/.session.yml
 COPY .tmux.conf /root/.tmux.conf
 
 
+# For raspbery pi pico mcu
+RUN apt-get update && apt-get install -y openocd gdb-multiarch binutils-multiarch
 
 # ----------------------------------------------------------------------------
 
@@ -244,8 +263,12 @@ WORKDIR $ROS2_WS
 # COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
 # RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
+# TODO: Deprecate
 COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
 RUN pip3 install -r src/imu_bno08x/requirements.txt
+
+# COPY src/differential_drive/requirements.txt src/differential_drive/requirements.txt
+# RUN pip3 install -r src/differential_drive/requirements.txt
 
 COPY src ./src/
 
@@ -253,4 +276,10 @@ COPY src ./src/
 VOLUME /tmp
 
 
-RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
+# RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
+RUN bash -c "source $ROS_ROOT/install/setup.bash && \
+    colcon build --symlink-install --packages-skip=deepdrive_node"
+
+# RUN bash -c "source $ROS_ROOT/install/setup.bash && \
+#     xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > \
+#         src/deepdrive_description/urdf/deepdrive_deepdrive.urdf"

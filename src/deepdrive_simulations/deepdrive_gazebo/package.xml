@@ -6,14 +6,12 @@
   <description>
     Gazebo simulation package for the Deepdrive
   </description>
-  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <maintainer email="matt@aimatt.com">Matt Williamson</maintainer>
   <license>Apache 2.0</license>
-  <url type="website">http://deepdrive.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/deepdrive_simulations</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/deepdrive_simulations/issues</url>
-  <author email="thlim@robotis.com">Darby Lim</author>
-  <author email="pyo@robotis.com">Pyo</author>
-  <author>Ryan Shim</author>
+  <url type="website">http://aimatt.com</url>
+  <url type="repository">https://github.com/mattwilliamson/deepdrive</url>
+  <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
+  <author email="matt@aimatt.com">Matt Williamson</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>gazebo_ros_pkgs</depend>
   <depend>geometry_msgs</depend>

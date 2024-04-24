@@ -18,7 +18,7 @@
 
     <link name="${mount_point}_link">
       <visual>
-        <origin xyz="-0.01 0.00 0.030" rpy="${pi/2} 0 ${pi/2}"/>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
         <geometry>
           <mesh filename="package://deepdrive_description/meshes/sensors/oakdlite.stl" />
         </geometry>
@@ -33,14 +33,23 @@
       <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0 0 0" mass="${oakd_mass}" x="${oakd_length}" y="${oakd_width}" z="${oakd_depth}" />
     </link>
 
+    <joint name="${mount_point}_imu_link" type="fixed">
+      <parent link="${mount_point}_link"/>
+      <child link="${mount_point}_imu_frame"/>
+      <origin xyz="0.0 0 0.0" rpy="${-pi/2} 0 ${pi/2}"/>
+    </joint>
+  
+    <link name="${mount_point}_imu_frame"/>
+
     <!-- RGB -->
     <joint name="${mount_point}_optical_joint" type="fixed">
-      <origin xyz="0.1 0 0.2" rpy="${-pi/2} 0 ${-pi/2}"/>
+      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
       <parent link="${mount_point}"/>
       <child link="${mount_point}_optical_frame"/>
     </joint>
     <link name="${mount_point}_optical_frame"/>
 
+    <!-- Gazebo -->
     <sensor type="camera" name="${mount_point}_rgb">
       <!-- Seems to be ignored -->
       <pose>0 0 0 0 0 0</pose>
@@ -74,11 +83,36 @@
 
     <!-- Depth/Stereo -->
     <joint name="${mount_point}_depth_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="${mount_point}"/>
       <child link="${mount_point}_depth_frame"/>
     </joint>
     <link name="${mount_point}_depth_frame"/>
+
+    <!-- TODO: Not sure why these are popping up in foxglove, but just hack them for now -->
+    <joint name="${mount_point}_right_camera_optical_frame_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${mount_point}_optical_frame"/>
+      <child link="${mount_point}_right_camera_optical_frame"/>
+    </joint>
+    <link name="${mount_point}_right_camera_optical_frame"/>
+
+    <joint name="${mount_point}_left_camera_optical_frame_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${mount_point}_optical_frame"/>
+      <child link="${mount_point}_left_camera_optical_frame"/>
+    </joint>
+    <link name="${mount_point}_left_camera_optical_frame"/>
+
+    <joint name="${mount_point}_rgb_camera_optical_frame_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${mount_point}_optical_frame"/>
+      <child link="${mount_point}_rgb_camera_optical_frame"/>
+    </joint>
+    <link name="${mount_point}_rgb_camera_optical_frame"/>
+
+    
+    <!-- end hack -->
 
     <gazebo reference="${mount_point}_link">
       <material>Gazebo/Black</material>
