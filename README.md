@@ -2,6 +2,8 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
+- [ ] https://github.com/ros-perception/pointcloud_to_laserscan .git in .repos!
+- [ ] https://github.com/ros/geometry2.git add to .repos
 - [ ] IMU Frame
 - [ ] Fix transforms for oak d lite
 - [ ] lidar odom? https://github.com/PRBonn/kiss-icp
