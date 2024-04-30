@@ -43,7 +43,8 @@ def generate_launch_description():
         parameters=[
             # YAML files
             lc_mgr_config_path  # Parameters
-        ]
+        ],
+        
     )
 
     # Include LDLidar launch

@@ -10,6 +10,7 @@ ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
 ## Visualization (Mac)
 ```sh
 mamba activate ros_env
+colcon build --symlink-install
 
 rviz2 -d ~/Dropbox/Robotics/ldrobot-lidar-ros2/ldlidar_node/config/ldlidar.rviz
 ```

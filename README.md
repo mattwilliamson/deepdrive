@@ -2,30 +2,32 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
-- [ ] https://github.com/ros-perception/pointcloud_to_laserscan .git in .repos!
-- [ ] https://github.com/ros2/geometry2.git add to .repos
-- [ ] IMU Frame
-- [ ] Fix transforms for oak d lite
-- [ ] lidar odom? https://github.com/PRBonn/kiss-icp
+- [ ] /camera_depth.camera.i_restart_on_diagnostics_error
+- [ ] /camera_depth.rgb.i_enable_preview
+- [x] https://github.com/ros-perception/pointcloud_to_laserscan .git in .repos!
+- [x] https://github.com/ros2/geometry2.git add to .repos
+- [x] IMU Frame
+- [x] Fix transforms for oak d lite
+- [x] lidar odom? https://github.com/PRBonn/kiss-icp
 - [ ] m-explore
 - [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
-- [ ] ROS ISAAC VSLAM
+- [ ] ROS ISAAC VSLAM - https://github.com/luxonis/depthai-ros/commit/038f107800ef40ea1a3359bc37f13614fbd5b572
 - [ ] Run ROS ISAAC in separate container because they have all the docker images and such
-- [ ] Battery state publisher from pico
+- [x] Battery state publisher from pico
 - [x] current/volt sensor
 - [x] new custom differential drive controller
 - [x] PID controller for motor
-- [ ] depthimage-to-laserscan?
+- [x] depthimage-to-laserscan?
 - [ ] twist-mux 
 - [ ] calibrate imu covariance
-- [ ] compressed_image_transport
+- [x] compressed_image_transport
 - [ ] find_object_2d
 - [ ] how to annotate rooms?
 - [ ] behavior trees? https://py-trees-ros.readthedocs.io/en/devel/about.html https://github.com/BehaviorTree/BehaviorTree.CPP
 - [x] second IMU / compass BNO080/BNO085 9-DOF
 - [x] add second IMU to robot_localization
-- [ ] mount IMU
-- [ ] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
+- [x] mount IMU
+- [x] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
 - [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
 - [x] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU
@@ -33,7 +35,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 - [x] tighten holes (especially motor mounts)
 - [x] 2 more holes for all motor wires
 - [x] new motors
-- [ ] fuse
+- [x] fuse
 - [ ] stall detection based on rotary encoders
 - [x] cooling fan
 - [x] add power button & voltage mount
@@ -45,7 +47,7 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 - [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
 - [ ] slam 2d/3d slam-toolbox/rtabmap
-- [ ] separate workspace for depthai?
+- [x] separate workspace for depthai?
 - [x] add led ring
 - [x] cooling holes
 - [ ] param/deepdrive.yaml ros params for wheelbase, serial port, etc
@@ -66,7 +68,7 @@ Run on x86_64 linux machine
 make dockersimshell
 
 ros2 launch deepdrive_gazebo deepdrive_house.launch.py
-ros2 run deepdrive_teleop teleop_keyboard
+ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/deepdrive_micro/cmd_vel
 # ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
 
@@ -229,14 +231,24 @@ docker run -it --rm -p 8080:8080 -e DISPLAY_WIDTH=1600 -e DISPLAY_HEIGHT=900 dee
 https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html
 
 ```sh
-ros2 launch deepdrive_bringup robot.launch.xml
+ros2 launch deepdrive_bringup robot.launch.py
 
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
 
-ros2 launch slam_toolbox online_async_launch.py
+ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
 
-# This one?
-# ros2 launch deepdrive_nav2_bringup slam_launch.py
+# Start Nav2
+ros2 launch deepdrive_nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+
+# Start slam_toolbox
+ros2 launch deepdrive_nav2_bringup slam_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+
+# Start teleoperation
+ros2 run deepdrive_teleop teleop_keyboard
+# --ros-args -r /cmd_vel:=/deepdrive_micro/cmd_vel
+
+ros2 bag record -a -o src/bags/slam-2024-04-27
+ros2 bag play src/bags/slam-2024-04-27
 
 ```
 
@@ -256,6 +268,17 @@ ros2 launch nav2_bringup navigation_launch.py use_sim_time:=False params_file:=s
 ros2 launch deepdrive_nav2_bringup bringup_launch.py slam:=False use_sim_time:=False autostart:=True map:=$ROS2_WS/src/deepdrive_navigation2/map/desk.yaml params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
 
 #ros2 launch nav2_bringup bringup_launch.py use_sim_time:=False autostart:=True map:=$ROS2_WS/src/deepdrive_navigation2/map/desk.yaml params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+```
+
+## Visualize on a mac (Robostack)
+```sh
+mamba activate ros_env
+mamba install ros-humble-nav2-rviz-plugins
+mamba install ros-humble-rviz2
+
+colcon build --symlink-install --packages-select=deepdrive_description
+
+rviz2 -d src/deepdrive_nav2_bringup/rviz/nav2_default_view.rviz
 ```
 
 
@@ -297,3 +320,5 @@ pin5 - i2c2
 
 
 7 pins up from bottom
+
+

@@ -31,7 +31,7 @@ def generate_launch_description():
     depthai_prefix = get_package_share_directory("deepdrive_camera")
     declared_arguments = [
         DeclareLaunchArgument("name", default_value="oak"),
-        DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'segmentation.yaml')),
+        DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'param', 'segmentation.yaml')),
         DeclareLaunchArgument("use_rviz", default_value="False"),
     ]
 

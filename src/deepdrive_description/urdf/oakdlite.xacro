@@ -33,10 +33,22 @@
       <xacro:solid_cuboid_inertial rpy="0 0 0" xyz="0 0 0" mass="${oakd_mass}" x="${oakd_length}" y="${oakd_width}" z="${oakd_depth}" />
     </link>
 
+
+    <!-- Measure +9.81
+    meters per second squared for the Z
+    axis.
+   If the sensor is rolled +90
+    degrees (left side up), the acceleration should be +9.81
+    meters per second squared for the Y
+    axis.
+   If the sensor is pitched +90
+    degrees (front side down), it should read -9.81
+    meters per second squared for the X
+    axis. -->
     <joint name="${mount_point}_imu_link" type="fixed">
       <parent link="${mount_point}_link"/>
       <child link="${mount_point}_imu_frame"/>
-      <origin xyz="0.0 0 0.0" rpy="${-pi/2} 0 ${pi/2}"/>
+      <origin xyz="0.0 0 0.0" rpy="${-pi/2} ${pi} ${pi/2}"/>
     </joint>
   
     <link name="${mount_point}_imu_frame"/>

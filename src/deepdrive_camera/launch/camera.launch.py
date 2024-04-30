@@ -31,7 +31,7 @@ def launch_setup(context, *args, **kwargs):
     cam_roll     = LaunchConfiguration('cam_roll',      default = '0.0')
     cam_pitch    = LaunchConfiguration('cam_pitch',     default = '0.0')
     cam_yaw      = LaunchConfiguration('cam_yaw',       default = '0.0')
-    use_composition = LaunchConfiguration('rsp_use_composition', default='true')
+    use_composition = LaunchConfiguration('rsp_use_composition', default='false')
     imu_from_descr = LaunchConfiguration('imu_from_descr', default='false')
     pass_tf_args_as_params = LaunchConfiguration('pass_tf_args_as_params', default='false')
     override_cam_model = LaunchConfiguration('override_cam_model', default='false')

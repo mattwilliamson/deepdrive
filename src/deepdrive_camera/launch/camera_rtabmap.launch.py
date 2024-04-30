@@ -11,7 +11,7 @@ from launch_ros.descriptions import ComposableNode
 
 def launch_setup(context, *args, **kwargs):
     name = LaunchConfiguration('name').perform(context)
-    frame = LaunchConfiguration('frame').perform(context)
+    frame = LaunchConfiguration('parent_frame').perform(context)
     depthai_prefix = get_package_share_directory("deepdrive_camera")
 
     params_file= LaunchConfiguration("params_file")
@@ -29,20 +29,40 @@ def launch_setup(context, *args, **kwargs):
     # ]
     parameters = [
         {
-            "frame_id": frame,
+            "frame_id": name,
             "subscribe_rgb": True,
             "subscribe_depth": True,
-            "subscribe_odom_info": False,
+            "subscribe_odom_info": True,
             "approx_sync": True,
             "Rtabmap/DetectionRate": "3.5",
         }
     ]
 
+    # parameters = [
+    #     {
+    #         "frame_id": frame,
+    #         "subscribe_rgb": True,
+    #         "subscribe_depth": True,
+    #         "subscribe_odom_info": False,
+    #         "approx_sync": True,
+    #         "Rtabmap/DetectionRate": "3.5",
+    #     }
+    # ]
+
+    # remappings = [
+    #     ("rgb/image", name+"/rgb/image_rect"),
+    #     ("rgb/camera_info", name+"/rgb/camera_info"),
+    #     ("depth/image", name+"/stereo/image_raw"),
+    #     ("odom", name+"/odom"),
+    # ]
+
     remappings = [
-        ("rgb/image", name+"/rgb/image_rect"),
+        ("rgb/image", name+'/rgb/image_rect'),
+        # ("rgb/image", name+"/rgb/image_raw"),
         ("rgb/camera_info", name+"/rgb/camera_info"),
         ("depth/image", name+"/stereo/image_raw"),
-        ("odom", name+"/odom"),
+        ("odom", name+"/odom"), # For subscription
+        ("imu", name+"/imu"),
     ]
 
     return [
@@ -109,10 +129,11 @@ def generate_launch_description():
     depthai_prefix = get_package_share_directory("depthai_ros_driver")
     deepdrive_camera_prefix = get_package_share_directory("deepdrive_camera")
     declared_arguments = [
-        DeclareLaunchArgument("name", default_value="camera"),
+        DeclareLaunchArgument("name", default_value="depth_camera"),
         DeclareLaunchArgument("params_file", default_value=os.path.join(deepdrive_camera_prefix, 'param', 'rgbd.yaml')),
         # DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'rgbd.yaml')),
         DeclareLaunchArgument("rectify_rgb", default_value="True"),
+        # DeclareLaunchArgument("rectify_rgb", default_value="False"),
     ]
 
     return LaunchDescription(

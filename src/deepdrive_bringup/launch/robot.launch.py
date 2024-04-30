@@ -160,15 +160,17 @@ def generate_launch_description():
         # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )
 
-    # twist_mux_params = os.path.join(
-    #     get_package_share_directory(package_name), "config", "twist_mux.yaml"
-    # )
-    # twist_mux = Node(
-    #     package="twist_mux",
-    #     executable="twist_mux",
-    #     parameters=[twist_mux_params, {"use_sim_time": use_sim_time}],
-    #     remappings=[("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped")],
-    # )
+    twist_mux_params = PathJoinSubstitution([
+        FindPackageShare("deepdrive_bringup"),
+        "param",
+        "twist_mux.yaml",
+    ])
+    twist_mux_node = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        parameters=[twist_mux_params, {"use_sim_time": use_sim_time}],
+        remappings=[("/cmd_vel_out", "/deepdrive_micro/cmd_vel")],
+    )
 
     # <node pkg="imu_transformer" type="imu_transformer_node" name="imu_data_transformer" output="screen">
     #     <remap from="imu_in" to="imu_raw"/>
@@ -201,23 +203,12 @@ def generate_launch_description():
         ],
     )
 
-    # imu_transformer_node = Node(
-    #     package="imu_transformer",
-    #     executable="imu_transformer_node",
-    #     name="imu_transformer_node",
-    #     parameters=[{"target_frame": "base_link"}],
-    #     remappings=[
-    #         ("imu_in", "/deepdrive_micro/imu"),
-    #         ("imu_out", "/deepdrive_micro/imu/transformed"),
-    #     ],
-    # )
-
     # TODO: Params
     uros_agent_node = Node(
         package="micro_ros_agent",
         executable="micro_ros_agent",
         name="micro_ros_agent",
-        arguments=["serial", "--dev", "/dev/ttyACM0"],
+        arguments=["serial", "--dev", "/dev/ttyACM0", "-b", "921600"],
         # parameters=[{"target_frame": "imu_link"}],
         # remappings=[
             # ("imu_in", "/camera_depth/imu/data"),
@@ -232,107 +223,80 @@ def generate_launch_description():
         # launch_arguments={'use_sim_time': use_sim_time}.items()
     )
 
-    # # For use with kiss-icp
-    # lidar_to_pointcloud_node = Node(
-    #     package='pointcloud_to_laserscan',
-    #     executable='laserscan_to_pointcloud_node',
-    #     name='laserscan_to_pointcloud',
-    #     remappings=[('scan_in', [LaunchConfiguration(variable_name='scanner'), '/ldlidar_node/scan']),
-    #                 ('cloud', [LaunchConfiguration(variable_name='scanner'), '/lidar/cloud'])],
-    #     parameters=[{'target_frame': 'ldlidar_link', 'transform_tolerance': 0.01}]
-    # ),
+    # For use with kiss-icp
+    lidar_to_pointcloud_node = Node(
+        package='pointcloud_to_laserscan',
+        executable='laserscan_to_pointcloud_node',
+        name='laserscan_to_pointcloud',
+        remappings=[('scan_in', '/ldlidar_node/scan'),
+                    ('cloud', '/lidar/cloud')],
+        parameters=[{'target_frame': 'ldlidar_link', 'transform_tolerance': 0.01}]
+    )
 
-    # # KISS-ICP node
-    # kiss_icp_node = Node(
-    #     package="kiss_icp",
-    #     executable="kiss_icp_node",
-    #     name="kiss_icp_node",
-    #     output="screen",
-    #     remappings=[
-    #         ("pointcloud_topic", "/lidar/cloud"),
-    #     ],
-    #     parameters=[
-    #         {
-    #             # ROS node configuration
-    #             "base_frame": "base_frame",
-    #             "odom_frame": "odom",
-    #             "publish_odom_tf": False,
-    #             # KISS-ICP configuration
-    #             "max_range": 100.0,
-    #             "min_range": 5.0,
-    #             "deskew": False,
-    #             "max_points_per_voxel": 20,
-    #             "voxel_size": 1.0,
-    #             # Adaptive threshold
-    #             "initial_threshold": 2.0,
-    #             "min_motion_th": 0.1,
-    #             # Registration
-    #             "max_num_iterations": 500,
-    #             "convergence_criterion": 0.0001,
-    #             "max_num_threads": 0,
-    #             # Fixed covariances
-    #             "position_covariance": 0.1,
-    #             "orientation_covariance": 0.1,
-    #             # ROS CLI arguments
-    #             "publish_debug_clouds": False,
-    #             "use_sim_time": use_sim_time,
-    #         },
-    #     ],
-    # )
-
-    # # ROS 2 parameters
-    # DeclareLaunchArgument("topic", description="sensor_msg/PointCloud2 topic to process"),
-    # DeclareLaunchArgument("bagfile", default_value=""),
-    # DeclareLaunchArgument("visualize", default_value="true"),
-    # DeclareLaunchArgument("odom_frame", default_value="odom"),
-    # DeclareLaunchArgument("base_frame", default_value=""),
-    # DeclareLaunchArgument("publish_odom_tf", default_value="true"),
-    # # KISS-ICP parameters
-    # DeclareLaunchArgument("deskew", default_value="false"),
-    # DeclareLaunchArgument("max_range", default_value="100.0"),
-    # DeclareLaunchArgument("min_range", default_value="5.0"),
-    # # This thing is still not suported: https://github.com/ros2/launch/issues/290#issuecomment-1438476902
-    # #  DeclareLaunchArgument("voxel_size", default_value=None),
-    # Node(
-    #     package="kiss_icp",
-    #     executable="odometry_node",
-    #     name="odometry_node",
-    #     output="screen",
-    #     remappings=[("pointcloud_topic", LaunchConfiguration("topic"))],
-    #     parameters=[
-    #         {
-    #             "odom_frame": LaunchConfiguration("odom_frame"),
-    #             "base_frame": LaunchConfiguration("base_frame"),
-    #             "max_range": LaunchConfiguration("max_range"),
-    #             "min_range": LaunchConfiguration("min_range"),
-    #             "deskew": LaunchConfiguration("deskew"),
-    #             #  "voxel_size": LaunchConfiguration("voxel_size"),
-    #             "max_points_per_voxel": 20,
-    #             "initial_threshold": 2.0,
-    #             "min_motion_th": 0.1,
-    #             "publish_odom_tf": LaunchConfiguration("publish_odom_tf"),
-    #             "visualize": LaunchConfiguration("visualize"),
-    #         }
-    #     ],
-    # ),
+    # TODO: Upgrade kiss-icp and launch file
+    # KISS-ICP node
+    kiss_icp_node = Node(
+        package="kiss_icp",
+        executable="odometry_node",
+        name="kiss_icp_node",
+        output="screen",
+        remappings=[
+            ("pointcloud_topic", "/lidar/cloud"),
+            # ("pointcloud_topic", "/camera_depth/points"),
+        ],
+        parameters=[
+            {
+                # ROS node configuration
+                "base_frame": "base_link",
+                "child_frame": "base_link",
+                "odom_frame": "odom",
+                # "odom_frame": "ldlidar_link",
+                # "odom_frame": "camera_depth_right_camera_optical_frame",
+                "publish_odom_tf": False,
+                # KISS-ICP configuration
+                "max_range": 12.0,
+                "min_range": 1.0,
+                "deskew": False,
+                "max_points_per_voxel": 20,
+                # "voxel_size": 1.0,
+                # Adaptive threshold
+                "initial_threshold": 2.0,
+                "min_motion_th": 0.1,
+                # Registration
+                "max_num_iterations": 500,
+                "convergence_criterion": 0.0001,
+                "max_num_threads": 0,
+                # Fixed covariances
+                "position_covariance": 0.5,
+                "orientation_covariance": 0.5,
+                # ROS CLI arguments
+                "publish_debug_clouds": True,
+                "use_sim_time": use_sim_time,
+            },
+        ],
+    )
     
     # <include file="$(find-pkg-share deepdrive_bringup)/launch/localization.launch.xml">
 
     nodes = [
-        # uros_agent_node,
-        # foxglove_bridge,
+        robot_state_pub_node,
+        uros_agent_node,
+        foxglove_bridge,
         depth_camera_node,
         wide_camera_node,
-        robot_state_pub_node,
         # delay_rviz_after_joint_state_broadcaster_spawner,
         robot_localization_node,
         # imu_publisher_node,
         imu_transformer_node,
         lidar_node,
-        # lidar_to_pointcloud_node,
-        # kiss_icp_node,
+
+        # Use Lidar for odom
+        lidar_to_pointcloud_node,
+        kiss_icp_node,
+
         # teleop_node,
         # joy_node,
+        twist_mux_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

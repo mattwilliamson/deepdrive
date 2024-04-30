@@ -152,7 +152,12 @@ RUN apt-get update && \
         xtl-dev \
         gcc-arm-none-eabi \
         libnewlib-arm-none-eabi \
-        zsh && \
+        zsh \
+        build-essential \
+        libeigen3-dev \
+        libtbb-dev \
+        pybind11-dev \
+        ninja-build && \
     rm -rf /var/lib/apt/lists/
 RUN pip3 install setuptools==58.2.0 && \
     pip3 install --upgrade pip
@@ -194,7 +199,7 @@ RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
     ros2 run micro_ros_setup create_agent_ws.sh && \
     ros2 run micro_ros_setup build_agent.sh
 
-# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
 
 # Compile example:
 # git clone https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git -b $ROS_DISTRO src/micro_ros_raspberrypi_pico_sdk
@@ -278,7 +283,7 @@ VOLUME /tmp
 
 # RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
 RUN bash -c "source $ROS_ROOT/install/setup.bash && \
-    colcon build --symlink-install --packages-skip=deepdrive_node"
+    colcon build --symlink-install"
 
 # RUN bash -c "source $ROS_ROOT/install/setup.bash && \
 #     xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > \

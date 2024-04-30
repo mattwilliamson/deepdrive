@@ -21,8 +21,13 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={"name": name,
                               "params_file": params_file}.items()),
         Node(
-        package="depthai_ros_driver",
-        executable="obj_pub.py",
+            package="depthai_ros_driver",
+            executable="obj_pub.py",
+            remappings=[
+                ('/oak/nn/detections', name+'/nn/spatial_detections'),
+                ('/oak/nn/detection_markers', name+'/nn/detection_markers'),
+                ('/oak/nn/text_markers', name+'/nn/text_markers'),
+            ]
         )
     ]
 
@@ -31,8 +36,8 @@ def generate_launch_description():
     # depthai_prefix = get_package_share_directory("depthai_ros_driver")
     depthai_prefix = get_package_share_directory("deepdrive_camera")
     declared_arguments = [
-        DeclareLaunchArgument("name", default_value="oak"),
-        DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'camera.yaml')),
+        DeclareLaunchArgument("name", default_value="camera_depth"),
+        DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'param', 'detection.yaml')),
     ]
 
     return LaunchDescription(

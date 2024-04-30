@@ -39,12 +39,19 @@ repositories:
     url: https://github.com/ros-perception/image_pipeline.git
     version: humble
 
-  kiss-icp:
-    type: git
-    url: https://github.com/PRBonn/kiss-icp.git
-    version: v0.4.0
-
   pointcloud_to_laserscan:
     type: git
     url: https://github.com/ros-perception/pointcloud_to_laserscan.git
     version: humble
+
+  tbb:
+    type: git
+    url: https://github.com/oneapi-src/oneTBB.git
+    version: v2021.12.0
+
+
+  kiss-icp:
+    type: git
+    url: https://github.com/PRBonn/kiss-icp.git
+    version: main
+    # version: v0.4.0

@@ -1,0 +1,30 @@
+twist_mux:
+  ros__parameters:
+    topics:
+      navigation:
+        topic   : cmd_vel
+        timeout : 0.5
+        priority: 10
+      tracker:
+        topic   : cmd_vel_tracker
+        timeout : 0.5
+        priority: 20
+      joystick:
+        topic   : cmd_vel_joy
+        timeout : 0.5
+        priority: 100
+
+# For each lock:
+# - topic   : input topic that provides the lock; it must be of type std_msgs::Bool?!!!
+# - timeout : == 0.0 -> not used
+#              > 0.0 -> the lock is supposed to published at a certain frequency in order
+#                       to detect that the publisher is alive; the timeout in seconds allows
+#                       to detect that, and if the publisher dies we will enable the lock
+# - priority: priority in the range [0, 255], so all the topics with priority lower than it
+#             will be stopped/disabled
+
+    # locks:
+    #   e_stop:
+    #     topic   : e_stop
+    #     timeout : 0.0
+    #     priority: 255

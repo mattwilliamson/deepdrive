@@ -500,7 +500,7 @@ def generate_launch_description():
 
     ld.add_action(declare_enableRviz_cmd)
 
-    ld.add_action(urdf_launch)
+    # ld.add_action(urdf_launch)
     ld.add_action(stereo_node)
 
     # if LaunchConfigurationEquals('depth_aligned', 'True') and LaunchConfigurationEquals('rectify', 'True'):

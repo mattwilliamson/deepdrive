@@ -48,11 +48,11 @@ else:
     import termios
     import tty
 
-MAX_LIN_VEL = 0.75
-MAX_ANG_VEL = 10.82
+MAX_LIN_VEL = 2.
+MAX_ANG_VEL = 2.
 
-LIN_VEL_STEP_SIZE = 0.05
-ANG_VEL_STEP_SIZE = 1
+LIN_VEL_STEP_SIZE = 0.1
+ANG_VEL_STEP_SIZE = .1
 
 DEEPDRIVE_MODEL = os.environ['DEEPDRIVE_MODEL']
 

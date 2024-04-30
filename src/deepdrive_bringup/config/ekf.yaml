@@ -96,10 +96,16 @@ ekf_filter_node:
 # do not provide some of the state variables estimated by the filter. For example, a TwistWithCovarianceStamped message
 # has no pose information, so the first six values would be meaningless in that case. Each vector defaults to all false
 # if unspecified, effectively making this parameter required for each sensor.
-        odom0_config: [true, true, false,
+        # odom0_config: [true, true, false,
+        #                false, false, true,
+        #                true,  true, false,
+        #                false, false, false,
+        #                false, false, false]
+
+        odom0_config: [false, false, false,
                        false, false, false,
-                       true,  false, false,
-                       false, false, true,
+                       true,  true, false,
+                       false, false, false,
                        false, false, false]
 
         #        [x_pos   , y_pos    , z_pos,
@@ -139,14 +145,14 @@ ekf_filter_node:
 # required. Data is specified at the level of pose and twist variables, rather than for each variable in isolation.
 # For messages that have both pose and twist data, the parameter specifies to which part of the message we are applying
 # the thresholds.
-        odom0_pose_rejection_threshold: 5.0
-        odom0_twist_rejection_threshold: 1.0
+        # odom0_pose_rejection_threshold: 5.0
+        # odom0_twist_rejection_threshold: 1.0
 
 
 
 ##################################################################################################################
 # KISS-ICP Laser odom
-        # odom1: /deepdrive_micro/odom
+        odom1: /kiss/odometry
 
 
 # Each sensor reading updates some or all of the filter's state. These options give you greater control over which
@@ -157,9 +163,9 @@ ekf_filter_node:
 # has no pose information, so the first six values would be meaningless in that case. Each vector defaults to all false
 # if unspecified, effectively making this parameter required for each sensor.
         odom1_config: [true, true, false,
-                       false, false, false,
-                       true,  false, false,
                        false, false, true,
+                       false,  false, false,
+                       false, false, false,
                        false, false, false]
 
         #        [x_pos   , y_pos    , z_pos,
@@ -185,13 +191,13 @@ ekf_filter_node:
 # data is converted to velocity data by differentiating the absolute pose measurements. These velocities are then
 # integrated as usual. NOTE: this only applies to sensors that provide pose measurements; setting differential to true
 # for twist measurements has no effect.
-        odom1_differential: false
+        odom1_differential: true
 
 # [ADVANCED] When the node starts, if this parameter is true, then the first measurement is treated as a "zero point"
 # for all future measurements. While you can achieve the same effect with the differential paremeter, the key
 # difference is that the relative parameter doesn't cause the measurement to be converted to a velocity before
 # integrating it. If you simply want your measurements to start at 0 for a given sensor, set this to true.
-        odom1_relative: true
+        odom1_relative: false
 
 # [ADVANCED] If your data is subject to outliers, use these threshold settings, expressed as Mahalanobis distances, to
 # control how far away from the current vehicle state a sensor measurement is permitted to be. Each defaults to
@@ -199,15 +205,15 @@ ekf_filter_node:
 # required. Data is specified at the level of pose and twist variables, rather than for each variable in isolation.
 # For messages that have both pose and twist data, the parameter specifies to which part of the message we are applying
 # the thresholds.
-        odom1_pose_rejection_threshold: 5.0
-        odom1_twist_rejection_threshold: 1.0
+        # odom1_pose_rejection_threshold: 5.0
+        # odom1_twist_rejection_threshold: 1.0
 
 
 
 
 ##################################################################################################################
 # ICM20948 from micro ros
-        imu0: /deepdrive_micro/imu
+        # imu0: /deepdrive_micro/imu
         imu0_config: [false, false, false,
                       false, false, true,
                       false, false, false,
@@ -224,21 +230,21 @@ ekf_filter_node:
         imu0_differential: false
         imu0_relative: true
         imu0_queue_size: 3
-        imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
-        imu0_twist_rejection_threshold: 0.8                #
-        imu0_linear_acceleration_rejection_threshold: 0.8  #
+        # imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
+        # imu0_twist_rejection_threshold: 0.8                #
+        # imu0_linear_acceleration_rejection_threshold: 0.8  #
 
 # [ADVANCED] Some IMUs automatically remove acceleration due to gravity, and others don't. If yours doesn't, please set
 # this to true, and *make sure* your data conforms to REP-103, specifically, that the data is in ENU frame.
         imu0_remove_gravitational_acceleration: false
 
 
-        # imu1: /camera_depth/imu/transformed
+        imu1: /camera_depth/imu/transformed
         imu1_config: [false, false, false,
                       false, false, false,
                       false, false, false,
                       false, false, true,
-                      true,  false, false]
+                      true,  true, true]
         #        [x_pos   , y_pos    , z_pos,
         #         roll    , pitch    , yaw,
         #         x_vel   , y_vel    , z_vel,
@@ -249,9 +255,9 @@ ekf_filter_node:
         imu1_differential: false
         imu1_relative: true
         imu1_queue_size: 10
-        imu1_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
-        imu1_twist_rejection_threshold: 0.8                #
-        imu1_linear_acceleration_rejection_threshold: 0.8  #
+        # imu1_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
+        # imu1_twist_rejection_threshold: 0.8                #
+        # imu1_linear_acceleration_rejection_threshold: 0.8  #
 
 # [ADVANCED] Some IMUs automatically remove acceleration due to gravity, and others don't. If yours doesn't, please set
 # this to true, and *make sure* your data conforms to REP-103, specifically, that the data is in ENU frame.

@@ -68,5 +68,5 @@ ros2 run teleop_twist_joy teleop_node --ros-args --params-file src/deepdrive_bri
 ## Keyboard WASDX
 
 ```sh
-ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/diff_drive_controller/cmd_vel_unstamped
+ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/deepdrive_micro/cmd_vel
 ```

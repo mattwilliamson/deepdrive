@@ -7,11 +7,18 @@
     <!-- This one gives us a pointcloud successfully -->
     <include file="$(find-pkg-share deepdrive_camera)/launch/pointcloud.launch.py">
 
-        <!-- This one successfully publishes on odom and map topics as well as point clouds -->
-        <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
+        <!-- Does some detection but no overlay -->
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_segmentation.launch.py"> -->
 
-        <!-- Try to detect object with onboard AI model on oak d lite -->
-        <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
+    <!-- Perhaps this one can work with jetson vslam? -->
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_stereo_inertial_node.launch.py"> -->
+        
+
+    <!-- This one successfully publishes on odom and map topics as well as point clouds -->
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/camera_rtabmap.launch.py"> -->
+
+    <!-- Try to detect object with onboard AI model on oak d lite -->
+    <!-- <include file="$(find-pkg-share deepdrive_camera)/launch/example_marker_publish.launch.py"> -->
 
         <arg name="name" value="camera_depth"/>
         <arg name="parent_frame" value="base_camera_depth_joint"/>
