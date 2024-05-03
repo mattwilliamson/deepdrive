@@ -47,6 +47,11 @@ vi-output, imx219 10-0010 (platform:tegra-capture-vi:2):
 	/dev/video0
 ```
 
+## Restart service
+```sh
+sudo service nvargus-daemon restart
+```
+
 Check codecs: `gst-inspect-1.0`
 
 ### Nvidia Gstreamer docs: 

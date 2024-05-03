@@ -77,44 +77,36 @@ RUN vcs import src < deepdrive.repos
 
 RUN bash install_deps.sh \
         foxglove_bridge \
-        hls_lfcd_lds_driver \
         joint_state_publisher \
         nav2_bringup \
         navigation2 \
-        plotjuggler_ros \
         rmw_cyclonedds_cpp \
         rmw_fastrtps_cpp \
         robot_localization \
         robot_state_publisher \
         ros2bag \
         rosbag2_storage_default_plugins \
-        rqt_tf_tree \
         slam_toolbox \
         twist_mux \
-        usb_cam \
         xacro \
+        foxglove_msgs \
         gazebo_plugins \
         gazebo_ros_pkgs \
         rtabmap_ros \
-        foxglove_msgs \
-        control_toolbox \
-        realtime_tools \
-        control_msgs \
-        ros2_control_demos \
-        gscam \
-        isaac_ros_common \
-        isaac_ros_argus_camera \
-        isaac_ros_image_pipeline \
-        isaac_ros_image_proc \
-        isaac_ros_stereo_image_proc \
-        isaac_ros_unet \
-        isaac_ros_pointcloud_utils \
-        isaac_ros_occupancy_grid_localizer \
-        isaac_ros_nvblox \
-        isaac_ros_detectnet \
-        isaac_ros_yolov8 \
-        isaac_ros_visual_slam \
-        isaac_ros_visual_slam_interfaces
+        gscam 
+        # isaac_ros_common \
+        # isaac_ros_argus_camera \
+        # isaac_ros_image_pipeline \
+        # isaac_ros_image_proc \
+        # isaac_ros_stereo_image_proc \
+        # isaac_ros_unet \
+        # isaac_ros_pointcloud_utils \
+        # isaac_ros_occupancy_grid_localizer \
+        # isaac_ros_nvblox \
+        # isaac_ros_detectnet \
+        # isaac_ros_yolov8 \
+        # isaac_ros_visual_slam \
+        # isaac_ros_visual_slam_interfaces
 
         # https://nvidia-isaac-ros.github.io/repositories_and_packages/index.html
 
@@ -199,7 +191,7 @@ RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
     ros2 run micro_ros_setup create_agent_ws.sh && \
     ros2 run micro_ros_setup build_agent.sh
 
-# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 
 # Compile example:
 # git clone https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git -b $ROS_DISTRO src/micro_ros_raspberrypi_pico_sdk

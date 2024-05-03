@@ -91,7 +91,7 @@
   <joint name="ldlidar_joint" type="fixed">
     <parent link="base_link"/>
     <child link="ldlidar_base"/>
-    <origin xyz="-0.05 0.001 0.120" rpy="0 0 0"/>
+    <origin xyz="-0.05 0.001 0.150" rpy="0 0 0"/>
   </joint>
 
   <!-- <link name="imu_link"/> -->
@@ -101,6 +101,22 @@
   
 
   <xacro:include filename="$(find deepdrive_description)/urdf/camera.xacro" />
+
+
+  <!-- Ultrasonic Sonar -->
+  <joint name="sonar_front_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_front_link"/>
+    <origin xyz="0.125 0.0 0.0" rpy="0 0 0"/>
+  </joint>
+  <link name="sonar_front_link"/>
+
+  <joint name="sonar_back_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_back_link"/>
+    <origin xyz="-0.25 0.0 0.0" rpy="0 0 ${pi}"/>
+  </joint>
+  <link name="sonar_back_link"/>
 
   <xacro:if value="$(arg sim_mode)">
 

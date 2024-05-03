@@ -17,11 +17,11 @@ SKIP_KEYS="libopencv-dev libopencv-contrib-dev libopencv-imgproc-dev python-open
 SKIP_KEYS="$SKIP_KEYS rti-connext-dds-6.0.1 ignition-cmake2 ignition-math6"
 
 echo "-> Generating rosintall file..."
-rosinstall_generator --deps --rosdistro ${ROS_DISTRO} $@ > ros2.${ROS_DISTRO}.${ROS_PACKAGE}.rosinstall
-cat ros2.${ROS_DISTRO}.${ROS_PACKAGE}.rosinstall
+rosinstall_generator --deps --rosdistro ${ROS_DISTRO} $@ > ros2.${ROS_DISTRO}.rosinstall
+cat ros2.${ROS_DISTRO}.rosinstall
 
 echo "-> Cloning dependency sources..."
-vcs import src < ros2.${ROS_DISTRO}.${ROS_PACKAGE}.rosinstall
+vcs import src < ros2.${ROS_DISTRO}.rosinstall
 
 echo "-> Updating rosdep..."
 apt-get update && rosdep update

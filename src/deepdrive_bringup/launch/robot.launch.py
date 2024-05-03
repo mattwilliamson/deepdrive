@@ -208,7 +208,7 @@ def generate_launch_description():
         package="micro_ros_agent",
         executable="micro_ros_agent",
         name="micro_ros_agent",
-        arguments=["serial", "--dev", "/dev/ttyACM0", "-b", "921600"],
+        arguments=["serial", "--dev", "/dev/ttyACM0"],
         # parameters=[{"target_frame": "imu_link"}],
         # remappings=[
             # ("imu_in", "/camera_depth/imu/data"),
@@ -280,8 +280,8 @@ def generate_launch_description():
 
     nodes = [
         robot_state_pub_node,
-        uros_agent_node,
-        foxglove_bridge,
+        # uros_agent_node,
+        # foxglove_bridge,
         depth_camera_node,
         wide_camera_node,
         # delay_rviz_after_joint_state_broadcaster_spawner,
@@ -296,7 +296,7 @@ def generate_launch_description():
 
         # teleop_node,
         # joy_node,
-        twist_mux_node,
+        # twist_mux_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

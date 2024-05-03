@@ -2,6 +2,7 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
+- [ ] gazebo range simulation
 - [ ] /camera_depth.camera.i_restart_on_diagnostics_error
 - [ ] /camera_depth.rgb.i_enable_preview
 - [x] https://github.com/ros-perception/pointcloud_to_laserscan .git in .repos!
@@ -124,7 +125,7 @@ ros2 run deepdrive_teleop teleop_keyboard
 ```sh
 # ros2 run deepdrive_hardware motor_controller
 
-ros2 launch deepdrive_bringup robot.launch.xml
+ros2 launch deepdrive_bringup robot.launch.py
 ros2 run deepdrive_teleop teleop_keyboard
 ```
 
@@ -233,7 +234,7 @@ https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html
 ```sh
 ros2 launch deepdrive_bringup robot.launch.py
 
-ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600
+ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 
 ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
 
@@ -261,7 +262,7 @@ ros2 run nav2_map_server map_saver_cli -f $ROS2_WS/src/deepdrive_navigation2/map
 ### If you have a map already
 
 ```sh
-ros2 launch deepdrive_bringup robot.launch.xml
+ros2 launch deepdrive_bringup robot.launch.py
 
 ros2 launch nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml map:=$ROS2_WS/src/deepdrive_navigation2/map/desk.yaml
 

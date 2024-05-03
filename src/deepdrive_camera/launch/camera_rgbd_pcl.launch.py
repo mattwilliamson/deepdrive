@@ -82,7 +82,7 @@ def generate_launch_description():
         DeclareLaunchArgument("cam_yaw", default_value="0.0"),
         DeclareLaunchArgument("params_file", default_value=os.path.join(depthai_prefix, 'config', 'rgbd.yaml')),
         DeclareLaunchArgument("use_rviz", default_value="False"),
-        DeclareLaunchArgument("rectify_rgb", default_value="False"),
+        DeclareLaunchArgument("rectify_rgb", default_value="True"),
     ]
 
     return LaunchDescription(

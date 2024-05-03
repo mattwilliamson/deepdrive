@@ -3,8 +3,8 @@
     # camera_i_nn_type: spatial
     camera:
       i_nn_type: none
-      # camera_i_usb_speed: SUPER_PLUS
-      camera_i_usb_speed: HIGH
+      # i_usb_speed: SUPER_PLUS
+      i_usb_speed: HIGH
         # {"LOW", dai::UsbSpeed::LOW},
         # {"FULL", dai::UsbSpeed::FULL},
         # {"HIGH", dai::UsbSpeed::HIGH},

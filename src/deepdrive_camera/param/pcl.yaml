@@ -2,6 +2,13 @@
   ros__parameters:
     camera:
       i_nn_type: none
+      # i_usb_speed: SUPER_PLUS
+      # i_usb_speed: HIGH
+      # {"LOW", dai::UsbSpeed::LOW},
+      # {"FULL", dai::UsbSpeed::FULL},
+      # {"HIGH", dai::UsbSpeed::HIGH},
+      # {"SUPER", dai::UsbSpeed::SUPER},
+      # {"SUPER_PLUS", dai::UsbSpeed::SUPER_PLUS},
     stereo:
       i_align_depth: true
       i_board_socket_id: 2
@@ -10,15 +17,18 @@
     left:
       r_focus: 1
       r_set_man_focus: true
-      i_low_bandwidth: true
-      i_low_bandwidth_quality: 50
+      # i_low_bandwidth: true
+      # i_low_bandwidth_quality: 50
+      # i_fps: 15.0
     rgb:
       r_focus: 1
       r_set_man_focus: true
-      i_low_bandwidth: true
-      i_low_bandwidth_quality: 50
+      # i_low_bandwidth: true
+      # i_low_bandwidth_quality: 50
+      # i_fps: 15.0
     right:
       r_focus: 1
       r_set_man_focus: true
-      i_low_bandwidth: true
-      i_low_bandwidth_quality: 50
+      # i_low_bandwidth: true
+      # i_low_bandwidth_quality: 50
+      # i_fps: 15.0
