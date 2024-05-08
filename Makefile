@@ -18,8 +18,8 @@ docker:
 	docker build -t ${ROS_PACKAGE} .
 
 .PHONY: dockershell
-dockershell: 
-# dockershell: docker
+# dockershell: 
+dockershell: docker
 	docker run \
 		--network=host \
 		--runtime $(RUNTIME) \
@@ -35,9 +35,11 @@ dockershell:
 		-v /proc/device-tree/compatible:/proc/device-tree/compatible \
 		-v /proc/device-tree/chosen:/proc/device-tree/chosen \
 		--device /dev/gpiochip0 \
+		--device /dev/snd \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v ${PWD}/src:${ROS_ROOT}/src/ \
+		-v ${PWD}/.cache/huggingface:/root/.cache/huggingface \
 		${ROS_PACKAGE} 
 
 		# TODO: See if we need these
@@ -46,6 +48,7 @@ dockershell:
 		# -v ${PWD}/.session.yml:/root/.session.yml \
 		# -v ${PWD}/.tmux.conf:/root/.tmux.conf \
 		# -e JETSON_MODEL_NAME="JETSON_ORIN_NANO" \
+
 
 .PHONY: dockersim
 dockersim: 

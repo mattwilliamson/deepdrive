@@ -134,6 +134,7 @@ RUN bash install_deps.sh \
 RUN apt-get update && \
     apt-get install -y \
         vim \
+        portaudio19-dev \
         python3-pip \
         python3-pydantic \
         ruby-dev \
@@ -236,8 +237,8 @@ RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.ros2
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.ros2
 RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.ros2
 
-CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
-# CMD [ "bash" ]
+# CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+CMD [ "bash" ]
 
 ENV DEEPDRIVE_MODEL=deepdrive
 
@@ -268,6 +269,17 @@ RUN pip3 install -r src/imu_bno08x/requirements.txt
 # RUN pip3 install -r src/differential_drive/requirements.txt
 
 COPY src ./src/
+
+# Voice
+RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
+# RUN pip3 install -r src/chatbot_ros/tts_ros/requirements.txt
+# RUN pip3 install -r src/chatbot_ros/llama_ros/requirements.txt
+# RUN pip3 install -r src/chatbot_ros/yasmin/requirements.txt
+RUN pip3 install -r src/deepdrive_voice/src/whisper_ros/requirements.txt
+RUN pip3 install -r src/deepdrive_voice/src/tts_ros/requirements.txt
+# git@github.com:mattwilliamson/deepdrive_voice.git
+# git clone --recurse-submodules https://github.com/mattwilliamson/deepdrive_voice.git
+# RUN pip3 install -r src/deepdrive_voice/requirements.txt
 
 
 VOLUME /tmp

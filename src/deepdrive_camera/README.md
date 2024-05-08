@@ -62,6 +62,7 @@ https://github.com/ros-drivers/gscam/blob/ros2/examples/v4l.launch.xml
 
 ```sh
 ros2 launch deepdrive_camera wide_angle_camera.launch.xml
+ros2 launch deepdrive_camera camera.launch.xml
 ```
 
 ## Calibration

@@ -2,6 +2,8 @@
 Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO:
+- [ ] wide angle camera nodelet to take snapshots? https://github.com/ros-drivers/gscam/blob/master/examples/nodelet_pipeline.launch
+- [ ] wide angle camera `reopen_on_eof`
 - [ ] gazebo range simulation
 - [ ] /camera_depth.camera.i_restart_on_diagnostics_error
 - [ ] /camera_depth.rgb.i_enable_preview

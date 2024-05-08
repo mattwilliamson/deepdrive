@@ -276,7 +276,6 @@ def generate_launch_description():
         ],
     )
     
-    # <include file="$(find-pkg-share deepdrive_bringup)/launch/localization.launch.xml">
 
     nodes = [
         robot_state_pub_node,
