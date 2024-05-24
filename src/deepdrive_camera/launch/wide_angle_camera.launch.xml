@@ -7,7 +7,7 @@
   <arg name="HEIGHT" default="1080"/>
   <!-- The GStreamer framerate needs to be an integral fraction -->
   <!-- <arg name="FPS" default="30/1"/> -->
-  <arg name="FPS" default="21/1"/>
+  <arg name="FPS" default="10/1"/>
   <arg name="PUBLISH_FRAME" default="false"/>
   <arg name="CAMERA_NAME" default="narrow_stereo"/>
   <arg name="CALIBRATION" default="wide_calibrated.ini"/>
@@ -19,8 +19,12 @@
     <!-- <param name="camera_info_url" value="package://deepdrive_camera/param/uncalibrated_parameters.ini"/> -->
     <param name="camera_info_url" value="package://deepdrive_camera/param/$(var CALIBRATION)"/>
     
+    <!-- Noise Reduction -->
+    <!-- Check params: gst-inspect-1.0 nvarguscamerasrc -->
+    <param name="gscam_config" value="nvarguscamerasrc sensor-id=$(var DEVICE) tnr-strength=-1 tnr-mode=2 wbmode=0 ee-mode=2 ee-strength=0 ! video/x-raw(memory:NVMM), width=(int)$(var WIDTH), height=(int)$(var HEIGHT), format=(string)NV12, framerate=$(var FPS) ! nvvidconv ! videoconvert"/>
+
     <!-- Reference -->
-    <param name="gscam_config" value="nvarguscamerasrc sensor-id=$(var DEVICE) ! video/x-raw(memory:NVMM), width=(int)$(var WIDTH), height=(int)$(var HEIGHT), format=(string)NV12, framerate=$(var FPS) ! nvvidconv ! videoconvert"/>
+    <!-- <param name="gscam_config" value="nvarguscamerasrc sensor-id=$(var DEVICE) ! video/x-raw(memory:NVMM), width=(int)$(var WIDTH), height=(int)$(var HEIGHT), format=(string)NV12, framerate=$(var FPS) ! nvvidconv ! videoconvert"/> -->
 
     <!-- <param name="gscam_config" value="nvarguscamerasrc sensor-id=$(var DEVICE) ! video/x-raw(memory:NVMM), width=(int)$(var WIDTH), height=(int)$(var HEIGHT), format=(string)NV12, framerate=$(var FPS) ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert"/> -->
     <!-- <param name="gscam_config" value="nvarguscamerasrc sensor-id=$(var DEVICE) ! video/x-raw(memory:NVMM), width=(int)$(var WIDTH), height=(int)$(var HEIGHT), format=(string)NV12, framerate=$(var FPS) ! nvvidconv ! videoconvert"/> -->
