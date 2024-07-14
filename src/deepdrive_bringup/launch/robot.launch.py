@@ -152,12 +152,25 @@ def generate_launch_description():
         # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
     )
 
+    joy_params = PathJoinSubstitution([
+        FindPackageShare("deepdrive_bringup"),
+        "config",
+        "joystick.yaml",
+    ])
+
+    # joy_node = Node(
+    #     package="joy",
+    #     executable="joy_node",
+    #     parameters=[joy_params, {"use_sim_time": use_sim_time}],
+    #     # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+    # )
+
     teleop_node = Node(
         package="teleop_twist_joy",
         executable="teleop_node",
         name="teleop_twist_joy_node",
         parameters=[joy_params, {"use_sim_time": use_sim_time}],
-        # remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel_unstamped")],
+        remappings=[("/cmd_vel", "/cmd_vel_joy")],
     )
 
     twist_mux_params = PathJoinSubstitution([
@@ -279,10 +292,10 @@ def generate_launch_description():
 
     nodes = [
         robot_state_pub_node,
-        # uros_agent_node,
+        uros_agent_node,
         # foxglove_bridge,
         depth_camera_node,
-        wide_camera_node,
+        # wide_camera_node,
         # delay_rviz_after_joint_state_broadcaster_spawner,
         robot_localization_node,
         # imu_publisher_node,
@@ -290,12 +303,12 @@ def generate_launch_description():
         lidar_node,
 
         # Use Lidar for odom
-        lidar_to_pointcloud_node,
-        kiss_icp_node,
+        # lidar_to_pointcloud_node,
+        # kiss_icp_node,
 
-        # teleop_node,
+        teleop_node,
         # joy_node,
-        # twist_mux_node,
+        twist_mux_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

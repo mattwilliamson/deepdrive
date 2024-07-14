@@ -250,8 +250,8 @@ ros2 launch deepdrive_nav2_bringup slam_launch.py use_sim_time:=False params_fil
 ros2 run deepdrive_teleop teleop_keyboard
 # --ros-args -r /cmd_vel:=/deepdrive_micro/cmd_vel
 
-ros2 bag record -a -o src/bags/slam-2024-04-27
-ros2 bag play src/bags/slam-2024-04-27
+ros2 bag record -a -o src/bags/slam-2024-05-30
+ros2 bag play src/bags/slam-2024-04-30
 
 ```
 
