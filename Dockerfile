@@ -262,32 +262,37 @@ WORKDIR $ROS2_WS
 # RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
 # TODO: Deprecate
-COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
-RUN pip3 install -r src/imu_bno08x/requirements.txt
+# COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
+# RUN pip3 install -r src/imu_bno08x/requirements.txt
 
 # COPY src/differential_drive/requirements.txt src/differential_drive/requirements.txt
 # RUN pip3 install -r src/differential_drive/requirements.txt
-
-COPY src ./src/
 
 # Voice
 RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
 # RUN pip3 install -r src/chatbot_ros/tts_ros/requirements.txt
 # RUN pip3 install -r src/chatbot_ros/llama_ros/requirements.txt
 # RUN pip3 install -r src/chatbot_ros/yasmin/requirements.txt
-RUN pip3 install -r src/deepdrive_voice/src/whisper_ros/requirements.txt
-RUN pip3 install -r src/deepdrive_voice/src/tts_ros/requirements.txt
+# RUN pip3 install -r src/deepdrive_voice/src/whisper_ros/requirements.txt
+# RUN pip3 install -r src/deepdrive_voice/src/tts_ros/requirements.txt
 # git@github.com:mattwilliamson/deepdrive_voice.git
 # git clone --recurse-submodules https://github.com/mattwilliamson/deepdrive_voice.git
 # RUN pip3 install -r src/deepdrive_voice/requirements.txt
 
+COPY src ./src/
 
 VOLUME /tmp
+
+# RUN pip3 install -r src/deepdrive_voice/src/tts_ros/requirements.txt
+
+
 
 
 # RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
 RUN bash -c "source $ROS_ROOT/install/setup.bash && \
     colcon build --symlink-install"
+
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 
 # RUN bash -c "source $ROS_ROOT/install/setup.bash && \
 #     xacro src/deepdrive_description/urdf/deepdrive_deepdrive.xacro > \
