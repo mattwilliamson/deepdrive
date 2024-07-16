@@ -35,12 +35,9 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}_lib
-  "src/diff_drive_controller.cpp"
-  "src/odometry.cpp"
-  "src/deepdrive.cpp"
-  "src/pid.cpp"
-  "src/joint_state.cpp"
-  "src/motors.cpp"
+  "src/main.cpp"
+  "src/motor_control.cpp"
+  "src/odometry_publisher.cpp"
 )
 
 set(DEPENDENCIES
@@ -61,14 +58,14 @@ ament_target_dependencies(${PROJECT_NAME}_lib ${DEPENDENCIES})
 
 set(EXECUTABLE_NAME "deepdrive_node")
 
-add_executable(${EXECUTABLE_NAME} src/node_main.cpp)
+add_executable(${EXECUTABLE_NAME} src/main.cpp)
 target_link_libraries(${EXECUTABLE_NAME} ${PROJECT_NAME}_lib)
 ament_target_dependencies(${EXECUTABLE_NAME} ${DEPENDENCIES})
 
 ################################################################################
 # Install
 ################################################################################
-install(DIRECTORY config launch
+install(DIRECTORY param launch
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -90,10 +87,10 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)
   find_package(rclcpp REQUIRED)
 
-  ament_add_gmock(test_pid
-    test/test_pid.cpp
-  )
-  target_link_libraries(test_pid
-    ${PROJECT_NAME}_lib
-  )
+  # ament_add_gmock(test_pid
+  #   # test/test_pid.cpp
+  # )
+  # target_link_libraries(test_pid
+  #   ${PROJECT_NAME}_lib
+  # )
 endif()

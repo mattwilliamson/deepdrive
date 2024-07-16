@@ -64,10 +64,10 @@ class ImuNode(Node):
         self.calibration_status = 0
         self.saved_calibration = False
 
-        # i2c = I2C(1)
+        i2c = I2C(1)
         # self.bno = BNO08X_I2C(i2c, address=0x4a)
         # This works for the Jetson Orin Nano
-        i2c = busio.I2C(board.SCL, board.SDA)
+        # i2c = busio.I2C(board.SCL, board.SDA)
         # RuntimeWarning: I2C frequency is not settable in python, ignoring!
         # i2c = busio.I2C(board.SCL, board.SDA, frequency=self.frequency)
         self.bno = BNO08X_I2C(i2c, address=self.address)

@@ -217,23 +217,38 @@ def generate_launch_description():
     )
 
     # TODO: Params
-    uros_agent_node = Node(
-        package="micro_ros_agent",
-        executable="micro_ros_agent",
-        name="micro_ros_agent",
-        arguments=["serial", "--dev", "/dev/ttyACM0"],
-        # parameters=[{"target_frame": "imu_link"}],
-        # remappings=[
-            # ("imu_in", "/camera_depth/imu/data"),
-            # ("imu_out", "/camera_depth/imu/transformed"),
-        # ],
-    )
+    # uros_agent_node = Node(
+    #     package="micro_ros_agent",
+    #     executable="micro_ros_agent",
+    #     name="micro_ros_agent",
+    #     arguments=["serial", "--dev", "/dev/ttyACM0"],
+    #     # parameters=[{"target_frame": "imu_link"}],
+    #     # remappings=[
+    #         # ("imu_in", "/camera_depth/imu/data"),
+    #         # ("imu_out", "/camera_depth/imu/transformed"),
+    #     # ],
+    # )
 
     lidar_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory("deepdrive_lidar"), 'launch', 'ldlidar_with_mgr.launch.py')
         ),
         # launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
+
+    # ros2 launch deepdrive_node deepdrive_node.launch.py
+    deepdrive_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory("deepdrive_node"), 'launch', 'deepdrive_node.launch.py')
+        ),
+        # launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
+
+    # BNO080 IMU
+    imu_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory("imu_bno08x"), 'launch', 'imu.launch.py')
+        ),
     )
 
     # For use with kiss-icp
@@ -292,12 +307,13 @@ def generate_launch_description():
 
     nodes = [
         robot_state_pub_node,
-        uros_agent_node,
-        # foxglove_bridge,
+        # uros_agent_node,
+        foxglove_bridge,
         depth_camera_node,
         # wide_camera_node,
         # delay_rviz_after_joint_state_broadcaster_spawner,
         robot_localization_node,
+        imu_node,
         # imu_publisher_node,
         imu_transformer_node,
         lidar_node,
@@ -309,6 +325,7 @@ def generate_launch_description():
         teleop_node,
         # joy_node,
         twist_mux_node,
+        deepdrive_node,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

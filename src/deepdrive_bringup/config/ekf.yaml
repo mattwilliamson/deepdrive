@@ -86,7 +86,7 @@ ekf_filter_node:
 
 ##################################################################################################################
 # Motor encoders
-        odom0: /deepdrive_micro/odom
+        odom0: /deepdrive_node/odom
 
 
 # Each sensor reading updates some or all of the filter's state. These options give you greater control over which
@@ -102,7 +102,7 @@ ekf_filter_node:
         #                false, false, false,
         #                false, false, false]
 
-        odom0_config: [false, false, false,
+        odom0_config: [true, true, true,
                        false, false, false,
                        true,  false, false,
                        false, false, true,
@@ -212,13 +212,21 @@ ekf_filter_node:
 
 
 ##################################################################################################################
-# ICM20948 from micro ros
+# # ICM20948 from micro ros
+#         # imu0: /deepdrive_micro/imu
+#         imu0_config: [false, false, false,
+#                       false, false, true,
+#                       false, false, false,
+#                       false, false,  true,
+#                       true, true, false]
+
+# BNO080 over Jetson I2C
         # imu0: /deepdrive_micro/imu
         imu0_config: [false, false, false,
-                      false, false, true,
+                      true, true, true,
                       false, false, false,
                       false, false,  true,
-                      true, true, false]
+                      true, true, true]
 
         #        [x_pos   , y_pos    , z_pos,
         #         roll    , pitch    , yaw,
@@ -238,7 +246,7 @@ ekf_filter_node:
 # this to true, and *make sure* your data conforms to REP-103, specifically, that the data is in ENU frame.
         imu0_remove_gravitational_acceleration: false
 
-
+# From OAK D LITE
         imu1: /camera_depth/imu/transformed
         imu1_config: [false, false, false,
                       false, false, false,

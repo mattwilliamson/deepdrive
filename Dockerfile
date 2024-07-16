@@ -261,10 +261,6 @@ WORKDIR $ROS2_WS
 # COPY src/deepdrive_vision/requirements.txt src/deepdrive_vision/requirements.txt
 # RUN pip3 install -r src/deepdrive_vision/requirements.txt
 
-# TODO: Deprecate
-# COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
-# RUN pip3 install -r src/imu_bno08x/requirements.txt
-
 # COPY src/differential_drive/requirements.txt src/differential_drive/requirements.txt
 # RUN pip3 install -r src/differential_drive/requirements.txt
 
@@ -278,6 +274,9 @@ RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
 # git@github.com:mattwilliamson/deepdrive_voice.git
 # git clone --recurse-submodules https://github.com/mattwilliamson/deepdrive_voice.git
 # RUN pip3 install -r src/deepdrive_voice/requirements.txt
+
+COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
+RUN pip3 install -r src/imu_bno08x/requirements.txt
 
 COPY src ./src/
 

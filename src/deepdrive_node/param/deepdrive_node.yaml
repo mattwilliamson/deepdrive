@@ -1,0 +1,8 @@
+deepdrive_node:
+  ros__parameters:
+    wheel_diameter_left_front: 0.1
+    wheel_diameter_left_rear: 0.1
+    wheel_diameter_right_front: 0.1
+    wheel_diameter_right_rear: 0.1
+    tire_width: 0.5
+    slip_multiplier: 1.0
