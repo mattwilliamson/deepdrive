@@ -4,8 +4,8 @@
 
   <xacro:arg name="sim_mode" default="false"/>
 
-  <xacro:property name="wheel_base" value="0.24" />
-  <xacro:property name="wheel_radius" value="0.0445" />
+  <xacro:property name="wheel_base" value="0.32385" />
+  <xacro:property name="wheel_radius" value="0.08" />
   <!-- <xacro:property name="use_mock_hardware" value="true" /> -->
 
   <xacro:include filename="$(find deepdrive_description)/urdf/common_properties.xacro"/>

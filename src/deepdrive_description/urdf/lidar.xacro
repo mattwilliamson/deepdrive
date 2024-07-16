@@ -5,7 +5,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://ldlidar_node/urdf/model/LD19.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://deepdrive_description/meshes/sensors/ld19.stl" scale="0.001 0.001 0.001" />
             </geometry>
             <material name="ldlidar_mat">
                 <color rgba="0.8 0.8 0.8 0.8"/>
