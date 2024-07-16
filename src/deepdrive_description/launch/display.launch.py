@@ -1,5 +1,6 @@
 import launch
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import (
     IncludeLaunchDescription,
     DeclareLaunchArgument,
@@ -33,7 +34,10 @@ def generate_launch_description():
     #     "deepdrive_house.world",
     # )
     robot_description = {
-        "robot_description": Command(["xacro ", LaunchConfiguration("model")])
+        "robot_description": ParameterValue(
+            Command(["xacro ", LaunchConfiguration("model")]),
+            value_type=str
+        )
     }
 
     robot_state_publisher_node = Node(
@@ -43,12 +47,12 @@ def generate_launch_description():
         parameters=[robot_description],
     )
 
-    joint_state_publisher_node = Node(
-        package="joint_state_publisher",
-        executable="joint_state_publisher",
-        name="joint_state_publisher",
-        condition=launch.conditions.UnlessCondition(LaunchConfiguration("gui")),
-    )
+    # joint_state_publisher_node = Node(
+    #     package="joint_state_publisher",
+    #     executable="joint_state_publisher",
+    #     name="joint_state_publisher",
+    #     condition=launch.conditions.UnlessCondition(LaunchConfiguration("gui")),
+    # )
 
     rviz_node = Node(
         package="rviz2",
@@ -74,18 +78,18 @@ def generate_launch_description():
         output="screen",
     )
 
-    robot_localization_node = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[
-            os.path.join(
-                get_package_share_directory("deepdrive_bringup"), "config", "ekf.yaml"
-            ),
-            {"use_sim_time": LaunchConfiguration("use_sim_time")},
-        ],
-    )
+    # robot_localization_node = Node(
+    #     package="robot_localization",
+    #     executable="ekf_node",
+    #     name="ekf_filter_node",
+    #     output="screen",
+    #     parameters=[
+    #         os.path.join(
+    #             get_package_share_directory("deepdrive_bringup"), "config", "ekf.yaml"
+    #         ),
+    #         {"use_sim_time": LaunchConfiguration("use_sim_time")},
+    #     ],
+    # )
 
     foxglove_bridge = IncludeLaunchDescription(
         XMLLaunchDescriptionSource(
@@ -97,13 +101,13 @@ def generate_launch_description():
         )
     )
 
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("deepdrive_description"),
-            "config",
-            "controllers.yaml",
-        ]
-    )
+    # robot_controllers = PathJoinSubstitution(
+    #     [
+    #         FindPackageShare("deepdrive_description"),
+    #         "config",
+    #         "controllers.yaml",
+    #     ]
+    # )
 
     # control_node = Node(
     #     package="controller_manager",
@@ -114,60 +118,60 @@ def generate_launch_description():
     #     # remappings=[(/robot_description)],
     # )
     #  [controller_manager]: [Deprecated] Passing the robot description parameter directly to the control_manager node is deprecated. Use '~/robot_description' topic from 'robot_state_publisher' instead.
-    robot_state_pub_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="both",
-        parameters=[robot_description],
-        # parameters=[],
-        remappings=[
-            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
-        ],
-    )
+    # robot_state_pub_node = Node(
+    #     package="robot_state_publisher",
+    #     executable="robot_state_publisher",
+    #     output="both",
+    #     parameters=[robot_description],
+    #     # parameters=[],
+    #     remappings=[
+    #         ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
+    #     ],
+    # )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-    )
+    # joint_state_broadcaster_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=[
+    #         "joint_state_broadcaster",
+    #         "--controller-manager",
+    #         "/controller_manager",
+    #     ],
+    # )
 
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "diff_drive_controller",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-    )
+    # robot_controller_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=[
+    #         "diff_drive_controller",
+    #         "--controller-manager",
+    #         "/controller_manager",
+    #     ],
+    # )
 
-    # Delay rviz start after `joint_state_broadcaster`
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
-    )
+    # # Delay rviz start after `joint_state_broadcaster`
+    # delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+    #     event_handler=OnProcessExit(
+    #         target_action=joint_state_broadcaster_spawner,
+    #         on_exit=[rviz_node],
+    #     )
+    # )
 
-    # Delay start of robot_controller after `joint_state_broadcaster`
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = (
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=joint_state_broadcaster_spawner,
-                on_exit=[robot_controller_spawner],
-            )
-        )
-    )
+    # # Delay start of robot_controller after `joint_state_broadcaster`
+    # delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = (
+    #     RegisterEventHandler(
+    #         event_handler=OnProcessExit(
+    #             target_action=joint_state_broadcaster_spawner,
+    #             on_exit=[robot_controller_spawner],
+    #         )
+    #     )
+    # )
 
     return launch.LaunchDescription(
         [
             DeclareLaunchArgument(
                 name="gui",
-                default_value="False",
+                default_value="True",
                 description="Flag to enable joint_state_publisher_gui",
             ),
             DeclareLaunchArgument(
@@ -185,32 +189,32 @@ def generate_launch_description():
                 default_value="True",
                 description="Flag to enable use_sim_time",
             ),
-            launch.actions.ExecuteProcess(
-                cmd=[
-                    "gazebo",
-                    "--verbose",
-                    "-s",
-                    "libgazebo_ros_init.so",
-                    "-s",
-                    "libgazebo_ros_factory.so",
-                    world_path,
-                ],
-                output="screen",
-            ),
+            # launch.actions.ExecuteProcess(
+            #     cmd=[
+            #         "gazebo",
+            #         "--verbose",
+            #         "-s",
+            #         "libgazebo_ros_init.so",
+            #         "-s",
+            #         "libgazebo_ros_factory.so",
+            #         world_path,
+            #     ],
+            #     output="screen",
+            # ),
             # gzserver_cmd,
             # gzclient_cmd,
             # joint_state_publisher_node,
-            spawn_entity,
+            # spawn_entity,
             # robot_localization_node,
             # rviz_node,
             foxglove_bridge,
             # control_node,
             robot_state_publisher_node,
         # robot_state_pub_node,
-            joint_state_broadcaster_spawner,
+            # joint_state_broadcaster_spawner,
             # robot_controller_spawner
-            delay_rviz_after_joint_state_broadcaster_spawner,
-            delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+            # delay_rviz_after_joint_state_broadcaster_spawner,
+            # delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
 
         ]
     )
