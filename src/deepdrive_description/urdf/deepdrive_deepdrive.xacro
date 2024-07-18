@@ -86,13 +86,13 @@
 
 
   <!-- IMU -->
-  <joint name="imu_joint" type="fixed">
+  <joint name="imu_base_joint" type="fixed">
     <parent link="base_link" />
-    <child link="imu_link" />
+    <child link="imu_base_link" />
     <origin xyz="0.12 0 0.111" rpy="0 0 0" />
   </joint> 
 
-  <link name="imu_link">
+  <link name="imu_base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 -${pi/2}" />
       <!-- <origin xyz=".325 0 -.07" rpy="0 0 0" /> -->
@@ -103,6 +103,14 @@
       <material name="white" />
     </visual>
   </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="imu_base_link" />
+    <child link="imu_link" />
+    <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi}" />
+  </joint> 
+
+  <link name="imu_link"></link>
 
 
   <!-- LIDAR -->

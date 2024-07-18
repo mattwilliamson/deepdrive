@@ -1,10 +1,10 @@
 imu_bno08x_publisher:
   ros__parameters:
-    save_calibration: true
+    save_calibration: false
     publish_mag: false
     imu_frame: imu_base_link
     rate: 30
     address: 75
     frequency: 800000
-    ned_to_enu: false
+    ned_to_enu: true
     i2c_bus: 1

@@ -1,16 +1,16 @@
 # DeepDrive
+
 Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
-## TODO:
+## TODO
+
+- [ ] gasket for lidar
+- [ ] move bno08x to separate repo
+- [ ] matek optical flow module
 - [ ] wide angle camera nodelet to take snapshots? https://github.com/ros-drivers/gscam/blob/master/examples/nodelet_pipeline.launch
-- [ ] wide angle camera `reopen_on_eof`
 - [ ] gazebo range simulation
 - [ ] /camera_depth.camera.i_restart_on_diagnostics_error
 - [ ] /camera_depth.rgb.i_enable_preview
-- [x] https://github.com/ros-perception/pointcloud_to_laserscan .git in .repos!
-- [x] https://github.com/ros2/geometry2.git add to .repos
-- [x] IMU Frame
-- [x] Fix transforms for oak d lite
 - [x] lidar odom? https://github.com/PRBonn/kiss-icp
 - [ ] m-explore
 - [ ] visual odom: https://github.com/MIT-SPARK/Kimera-VIO
@@ -18,48 +18,23 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 - [ ] Run ROS ISAAC in separate container because they have all the docker images and such
 - [x] Battery state publisher from pico
 - [x] current/volt sensor
-- [x] new custom differential drive controller
-- [x] PID controller for motor
-- [x] depthimage-to-laserscan?
 - [ ] twist-mux 
 - [ ] calibrate imu covariance
-- [x] compressed_image_transport
 - [ ] find_object_2d
 - [ ] how to annotate rooms?
 - [ ] behavior trees? https://py-trees-ros.readthedocs.io/en/devel/about.html https://github.com/BehaviorTree/BehaviorTree.CPP
-- [x] second IMU / compass BNO080/BNO085 9-DOF
-- [x] add second IMU to robot_localization
-- [x] mount IMU
 - [x] BNO080 publisher - switch to c++ https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
 - [ ] rclcpp::NodeOptions().use_intra_process_comms(true)
-- [x] new micro-ros based differential drive controller
 - [ ] set collision detection on IMU
-- [x] add mounting holes for jetson mount
-- [x] tighten holes (especially motor mounts)
-- [x] 2 more holes for all motor wires
-- [x] new motors
-- [x] fuse
 - [ ] stall detection based on rotary encoders
-- [x] cooling fan
-- [x] add power button & voltage mount
-- [x] calibrate motor pwm speed
-- [ ] composable nodes for hardware and cameras?
-- [x] add wheel encoders to stl
-- [x] Fix mount since it covers camera cables
 - [ ] lcd display?
 - [ ] m-explore while streaming images to room inference. remember where the photos were taken
 - [ ] navigation2
 - [ ] slam 2d/3d slam-toolbox/rtabmap
-- [x] separate workspace for depthai?
-- [x] add led ring
-- [x] cooling holes
 - [ ] param/deepdrive.yaml ros params for wheelbase, serial port, etc
 - [ ] oak d lite camera simulated
-- [x] URDF deepdrive_deepdrive.urdf
 - [ ] Add depthai and cache models
-- [x] add wide angle camera
 - [ ] gps
-- [x] diagnostics for motor controller
 
 Bringup:
 https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py

@@ -24,8 +24,8 @@ def generate_launch_description():
                 parameters=[params],
                 respawn=True,
                 remappings=[
-                    ("/imu_bno08x/data", "/imu"),
-                    ("/imu_bno08x/mag", "/mag"),
+                    # ("/imu_bno08x/data", "/imu/data"),
+                    # ("/imu_bno08x/mag", "/mag"),
                     ("/imu_bno08x/status", "/diagnostics"),
                     # ("shake", "/imu_bno08x/shake"),         # NOT IMPLEMENTED - Probably bool when shake is detected
                     # ("activity", "/imu_bno08x/activity"),   # NOT IMPLEMENTED - "In-Vehicle", "On-Foot", "Still", "Tilting", "Unknown"

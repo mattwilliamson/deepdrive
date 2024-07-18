@@ -36,16 +36,16 @@ def generate_launch_description():
             description="Use simulation (Gazebo) clock if true",
         )
     )
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            "imu_target_frame",
-            default_value="imu_link",
-            # default_value="camera_depth_imu_frame",
-            description="Which frame to translate the IMU data to",
-        )
-    )
+    # declared_arguments.append(
+    #     DeclareLaunchArgument(
+    #         "imu_target_frame",
+    #         default_value="imu_link",
+    #         # default_value="camera_depth_imu_frame",
+    #         description="Which frame to translate the IMU data to",
+    #     )
+    # )
     use_sim_time = LaunchConfiguration("use_sim_time")
-    imu_target_frame = LaunchConfiguration("imu_target_frame")
+    # imu_target_frame = LaunchConfiguration("imu_target_frame")
     description_dir = os.path.join(get_package_share_directory('deepdrive_description'), 'launch')
 
     # Initialize Arguments
@@ -77,23 +77,14 @@ def generate_launch_description():
         )
     )
 
-    wide_camera_node = IncludeLaunchDescription(
-        XMLLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("deepdrive_camera"),
-                "launch",
-                "wide_angle_camera.launch.xml",
-            ),
-        )
-    )
-
-
-    # imu_node = Node(
-    #     package="imu_bno08x",
-    #     executable="imu_bno08x_publisher",
-    #     # parameters=[],
-    #     output="both",
-    #     # remappings=[("/imu_bno08x/data", "/imu/")],
+    # wide_camera_node = IncludeLaunchDescription(
+    #     XMLLaunchDescriptionSource(
+    #         os.path.join(
+    #             get_package_share_directory("deepdrive_camera"),
+    #             "launch",
+    #             "wide_angle_camera.launch.xml",
+    #         ),
+    #     )
     # )
     
     robot_state_pub_node = IncludeLaunchDescription(
@@ -205,10 +196,49 @@ def generate_launch_description():
     #     arguments=["0", "0", "0", "-1.57", "0", "1.57", "camera_depth", "camera_depth_imu_frame"],
     # )
 
-    imu_transformer_node = Node(
+    # BNO080 IMU
+    imu_params = os.path.join(
+        get_package_share_directory("deepdrive_bringup"),
+        "config",
+        "imu_bno08x.yaml",
+    )
+    imu_node = Node(
+        package="imu_bno08x",
+        executable="imu_bno08x_publisher",
+        name="imu_bno08x_publisher",
+        output="screen",
+        parameters=[imu_params],
+        respawn=True,
+        remappings=[
+            # ("/imu_bno08x/data", "/imu/data"),
+            # ("/imu_bno08x/mag", "/mag"),
+            ("/imu_bno08x/status", "/diagnostics"),
+            # ("shake", "/imu_bno08x/shake"),         # NOT IMPLEMENTED - Probably bool when shake is detected
+            # ("activity", "/imu_bno08x/activity"),   # NOT IMPLEMENTED - "In-Vehicle", "On-Foot", "Still", "Tilting", "Unknown"
+            # ("stability", "/imu_bno08x/stability"), # NOT IMPLEMENTED - "On table", "Stable", or "Motion"
+        ],
+    )
+
+    # Transform the IMU data to the correct orientation ENU, not NED
+    # Adherence to REP-103 means that you need to ensure that the signs of your data are correct. 
+    # For example, if you have a ground robot and turn it counter-clockwise, then its yaw angle should increase, 
+    #   and its yaw velocity should be positive. 
+    # If you drive it forward, its X-position should increase and its X-velocity should be positive.
+    imu_bno080_transformer_node = Node(
         package="imu_transformer",
         executable="imu_transformer_node",
-        name="imu_transformer_node",
+        name="imu_bno080_transformer_node",
+        parameters=[{"target_frame": "imu_link"}],
+        remappings=[
+            ("imu_in", "/imu_bno08x/data"),
+            ("imu_out", "/imu/transformed"),
+        ],
+    )
+
+    imu_camera_transformer_node = Node(
+        package="imu_transformer",
+        executable="imu_transformer_node",
+        name="imu_camera_transformer_node",
         parameters=[{"target_frame": "camera_depth"}],
         remappings=[
             ("imu_in", "/camera_depth/imu/data"),
@@ -245,11 +275,11 @@ def generate_launch_description():
     )
 
     # BNO080 IMU
-    imu_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("imu_bno08x"), 'launch', 'imu.launch.py')
-        ),
-    )
+    # imu_node = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(get_package_share_directory("imu_bno08x"), 'launch', 'imu.launch.py')
+    #     ),
+    # )
 
     # For use with kiss-icp
     lidar_to_pointcloud_node = Node(
@@ -315,7 +345,8 @@ def generate_launch_description():
         robot_localization_node,
         imu_node,
         # imu_publisher_node,
-        imu_transformer_node,
+        imu_camera_transformer_node,
+        # imu_bno080_transformer_node,
         lidar_node,
 
         # Use Lidar for odom

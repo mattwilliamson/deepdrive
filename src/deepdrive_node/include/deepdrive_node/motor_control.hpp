@@ -18,8 +18,9 @@ private:
     double wheelDiameterLeftRear;
     double wheelDiameterRightFront;
     double wheelDiameterRightRear;
-    double tireWidth;
+    double wheelSeparation;
     double slipMultiplier;
+    int publishRate;
 
     double vx; // Linear velocity in the x direction
     double vz; // Angular velocity around the z-axis

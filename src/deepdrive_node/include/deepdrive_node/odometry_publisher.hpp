@@ -5,6 +5,7 @@
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "std_msgs/msg/float64.hpp"
+#include <tf2/LinearMath/Quaternion.h>
 
 class OdometryPublisher : public rclcpp::Node
 {
@@ -16,13 +17,18 @@ private:
     void leftRearAngleCallback(const std_msgs::msg::Float64::SharedPtr msg);
     void rightFrontAngleCallback(const std_msgs::msg::Float64::SharedPtr msg);
     void rightRearAngleCallback(const std_msgs::msg::Float64::SharedPtr msg);
+    
     void publishOdometry();
+    void calculateOdometry();
+    void publishJointState();
 
     double wheelDiameterLeftFront;
     double wheelDiameterLeftRear;
     double wheelDiameterRightFront;
     double wheelDiameterRightRear;
-    double tireWidth;
+    double wheelSeparation;
+    int publishRate;
+    double slipMultiplier;
 
     bool invertLeftFront;
     bool invertLeftRear;

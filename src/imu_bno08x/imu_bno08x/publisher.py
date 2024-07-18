@@ -8,6 +8,7 @@ import rclpy
 import busio
 import time
 import board
+import math
 from adafruit_extended_bus import ExtendedI2C as I2C
 from adafruit_bno08x import (
     BNO_REPORT_LINEAR_ACCELERATION,
@@ -47,6 +48,7 @@ class ImuNode(Node):
     - rate (int): The publishing rate in Hz. Default is 30.
     - address (int): The I2C address of the BNO08X sensor. Default is 0x4B.
     - frequency (int): The frequency of the I2C bus. Default is 800000.
+    - ned_to_enu (bool): Flag indicating whether to convert NED to ENU. Default is False.
     
     """
 
@@ -60,11 +62,13 @@ class ImuNode(Node):
         self.rate = self.declare_parameter('rate', 30).value
         self.address = self.declare_parameter('address', 0x4B).value
         self.frequency = self.declare_parameter('frequency', 800000).value
+        self.ned_to_enu = self.declare_parameter('ned_to_enu', False).value
+        self.i2c_bus = self.declare_parameter('i2c_bus', 1).value
 
         self.calibration_status = 0
         self.saved_calibration = False
 
-        i2c = I2C(1)
+        i2c = I2C(self.i2c_bus)
         # self.bno = BNO08X_I2C(i2c, address=0x4a)
         # This works for the Jetson Orin Nano
         # i2c = busio.I2C(board.SCL, board.SDA)
@@ -145,7 +149,38 @@ class ImuNode(Node):
             msg.angular_velocity_covariance[0] = cov
             msg.angular_velocity_covariance[4] = cov
             msg.angular_velocity_covariance[8] = cov
+            
+            # Transform ENU to NED if necessary
+            # FIXME: This seems to not be working quite right yet
+            if self.ned_to_enu:
+                ## Orientation Quaternion:
+                # - swap x and y 
+                # - negate z
+                # - leave w
+                # msg.orientation.x, msg.orientation.y, msg.orientation.z = msg.orientation.y, msg.orientation.x, -msg.orientation.z
+                # Something is wrong here. For now, just swap x and z
+                x, y, z, w = msg.orientation.z, msg.orientation.y, msg.orientation.x, msg.orientation.w
+                norm = math.sqrt(w**2 + x**2 + y**2 + z**2)
+                msg.orientation.x = x / norm
+                msg.orientation.y = y / norm
+                msg.orientation.z = z / norm
+                msg.orientation.w = w / norm
+                
+                ## Accelerometer
+                # - swap x and y 
+                # - negate z
+                # msg.linear_acceleration.x, msg.linear_acceleration.y, msg.linear_acceleration.z = msg.linear_acceleration.y, msg.linear_acceleration.x, -msg.linear_acceleration.z
+                # Something is wrong here. For now, just swap x and z
+                msg.linear_acceleration.x, msg.linear_acceleration.y, msg.linear_acceleration.z = msg.linear_acceleration.z, msg.linear_acceleration.y, msg.linear_acceleration.x
 
+                ## Gyro
+                # - swap  x and y 
+                # - negate z
+                # msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z = msg.angular_velocity.y, msg.angular_velocity.x, -msg.angular_velocity.z
+                # Something is wrong here. For now, just swap x and z
+                msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z = msg.angular_velocity.z, msg.angular_velocity.y, msg.angular_velocity.x
+
+            # Publish the IMU data
             self.imu_publisher.publish(msg)
 
             # Magnetometer
@@ -160,6 +195,16 @@ class ImuNode(Node):
                 mag_msg.magnetic_field_covariance[0] = cov
                 mag_msg.magnetic_field_covariance[4] = cov
                 mag_msg.magnetic_field_covariance[8] = cov
+
+                if self.ned_to_enu:
+                    ## Magnetometer
+                    # - swap x and y 
+                    # - negate z
+                    # mag_msg.magnetic_field.x, mag_msg.magnetic_field.y, mag_msg.magnetic_field.z = mag_msg.magnetic_field.y, mag_msg.magnetic_field.x, -mag_msg.magnetic_field.z
+                    # Something is wrong here. For now, just swap x and z and negate x
+                    mag_msg.magnetic_field.x, mag_msg.magnetic_field.y, mag_msg.magnetic_field.z = mag_msg.magnetic_field.z, mag_msg.magnetic_field.y, mag_msg.magnetic_field.x
+                    
+
                 self.mag_publisher(mag_msg)
 
     def get_diagnostic_status(self):

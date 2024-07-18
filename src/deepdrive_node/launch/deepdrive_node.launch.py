@@ -36,7 +36,8 @@ def generate_launch_description():
         package="micro_ros_agent",
         executable="micro_ros_agent",
         name="micro_ros_agent",
-        arguments=["multiserial", "--devs", "/dev/ttyMotor1 /dev/ttyMotor2 /dev/ttyMotor3 /dev/ttyMotor4 /dev/ttyMotor5"],
+        # Launch on a bunch of ports, because we don't know which number it will get
+        arguments=["multiserial", "--devs", "/dev/ttyMotor1 /dev/ttyMotor2 /dev/ttyMotor3 /dev/ttyMotor4 /dev/ttyMotor5 /dev/ttyMotor6 /dev/ttyMotor7 /dev/ttyMotor8"],
         # parameters=[{"target_frame": "imu_link"}],
         remappings=[
             ("/odom", "/deepdrive_node/odom"),
@@ -58,7 +59,9 @@ def generate_launch_description():
                 package="deepdrive_node",
                 executable="deepdrive_node",
                 parameters=[param_dir],
-                output="screen",
+                output="both",
+                arguments=['--ros-args', '--log-level', 'INFO'],
+
             ),
             # IncludeLaunchDescription(
             #     PythonLaunchDescriptionSource(

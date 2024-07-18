@@ -1,8 +1,25 @@
-deepdrive_node:
+odometry_publisher:
   ros__parameters:
-    wheel_diameter_left_front: 0.1
-    wheel_diameter_left_rear: 0.1
-    wheel_diameter_right_front: 0.1
-    wheel_diameter_right_rear: 0.1
-    tire_width: 0.5
-    slip_multiplier: 1.0
+    publish_rate: 10
+    wheel_diameter_left_front: 0.1651
+    wheel_diameter_left_rear: 0.1651
+    wheel_diameter_right_front: 0.1651
+    wheel_diameter_right_rear: 0.1651
+    wheel_separation: 0.3175
+    slip_multiplier: 1.5
+    invert_left_front: false
+    invert_left_rear: false
+    invert_right_front: true
+    invert_right_rear: true
+    
+
+
+motor_control:
+  ros__parameters:
+    wheel_diameter_left_front: 0.1651
+    wheel_diameter_left_rear: 0.1651
+    wheel_diameter_right_front: 0.1651
+    wheel_diameter_right_rear: 0.1651
+    wheel_separation: 0.3175
+    slip_multiplier: 1.5
+    publish_rate: 10

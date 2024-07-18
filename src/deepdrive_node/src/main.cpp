@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     // Create a MultiThreadedExecutor
     rclcpp::executors::MultiThreadedExecutor executor;
 
+    
     auto motorControlNode = std::make_shared<MotorControl>();
     auto odometryPublisherNode = std::make_shared<OdometryPublisher>();
 
@@ -17,7 +18,12 @@ int main(int argc, char *argv[])
     executor.add_node(odometryPublisherNode);
 
     // Spin the executor
-    executor.spin();
+    try {
+        executor.spin();
+    } catch (const std::exception& e) {
+        RCLCPP_ERROR(rclcpp::get_logger("main"), "Exception caught: %s", e.what());
+        throw;
+    }
 
     rclcpp::shutdown();
     
