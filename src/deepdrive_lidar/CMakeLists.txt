@@ -21,7 +21,7 @@ find_package(urdf REQUIRED)
 ################################################################################
 # Install
 ################################################################################
-install(DIRECTORY launch params config
+install(DIRECTORY launch params
   DESTINATION share/${PROJECT_NAME}
 )
 

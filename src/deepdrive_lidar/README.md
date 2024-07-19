@@ -1,35 +1,32 @@
 # LD19 LIDAR Scanner
 
-## Running
-
-```sh
-ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
-```
-
-
-## Visualization (Mac)
-```sh
-mamba activate ros_env
-colcon build --symlink-install
-
-rviz2 -d ~/Dropbox/Robotics/ldrobot-lidar-ros2/ldlidar_node/config/ldlidar.rviz
-```
-
-## Visualization (Linux)
-```sh
-ros2 launch ldlidar_node ldlidar_rviz2.launch.py
-```
-
+https://www.waveshare.com/wiki/DTOF_LIDAR_LD19
+https://www.aliexpress.us/item/3256804109024401.html
 
 
 ## Installation
-### On Host Machine
+
+Setup device alias to `/dev/ldlidar`
 
 ```sh
 sudo apt install libudev-dev
-cd src/ldrobot-lidar-ros2/scripts/
-./create_udev_rules.sh
 
+cat << EOF | sudo tee /etc/udev/rules.d/99-ldlidar.rules
+# set the udev rule , make the device_port be fixed by ldlidar
+# CP210x USB Device
+KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0777", SYMLINK+="ldlidar"
+EOF
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
+Check it:
+```sh
 screen -L /dev/ldlidar 230400
 ```
 
+## Running
+
+```sh
+ros2 launch deepdrive_lidar ld19_lidar.launch.py
+```
