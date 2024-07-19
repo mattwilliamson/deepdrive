@@ -6,7 +6,7 @@ odometry_publisher:
     wheel_diameter_right_front: 0.1651
     wheel_diameter_right_rear: 0.1651
     wheel_separation: 0.3175
-    slip_multiplier: 1.5
+    slip_multiplier: 2.0
     invert_left_front: false
     invert_left_rear: false
     invert_right_front: true
@@ -21,5 +21,5 @@ motor_control:
     wheel_diameter_right_front: 0.1651
     wheel_diameter_right_rear: 0.1651
     wheel_separation: 0.3175
-    slip_multiplier: 1.5
+    slip_multiplier: 2.0
     publish_rate: 10

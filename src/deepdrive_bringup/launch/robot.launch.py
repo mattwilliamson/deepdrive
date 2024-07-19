@@ -261,7 +261,8 @@ def generate_launch_description():
 
     lidar_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("deepdrive_lidar"), 'launch', 'ldlidar_with_mgr.launch.py')
+            # os.path.join(get_package_share_directory("deepdrive_lidar"), 'launch', 'ldlidar_with_mgr.launch.py')
+            os.path.join(get_package_share_directory("deepdrive_lidar"), 'launch', 'ld19_lidar.launch.py')
         ),
         # launch_arguments={'use_sim_time': use_sim_time}.items()
     )
@@ -350,8 +351,8 @@ def generate_launch_description():
         lidar_node,
 
         # Use Lidar for odom
-        # lidar_to_pointcloud_node,
-        # kiss_icp_node,
+        lidar_to_pointcloud_node,
+        kiss_icp_node,
 
         teleop_node,
         # joy_node,

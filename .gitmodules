@@ -1,3 +1,6 @@
 [submodule "src/ros2_differential_drive"]
 	path = src/ros2_differential_drive
 	url = git@github.com:mattwilliamson/ros2_differential_drive.git
+[submodule "src/ld19_lidar"]
+	path = src/ld19_lidar
+	url = git@github.com:mattwilliamson/ld19_lidar.git
