@@ -1,0 +1,48 @@
+{
+    "image": "deepdrive",
+    "workspaceMount": "source=${localWorkspaceFolder}/,target=/ros_ws,type=bind",
+    "workspaceFolder": "/ros_ws",
+    "remoteUser": "root",
+    "runArgs": [
+        "--network=host",
+        "--cap-add=SYS_PTRACE",
+        "--security-opt=seccomp:unconfined",
+        "--security-opt=apparmor:unconfined",
+        "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+        "--privileged",
+        "--runtime=nvidia",
+        "--gpus=all",
+
+        "-v", "/dev/bus/usb:/dev/bus/usb",
+        "-v", "/home/matt/src/deepdrive/.cache/huggingface:/root/.cache/huggingface",
+        "-v", "/proc/device-tree/compatible:/proc/device-tree/compatible",
+        "-v", "/proc/device-tree/chosen:/proc/device-tree/chosen",
+        "-v", "/etc/timezone:/etc/timezone:ro",
+        "-v", "/etc/localtime:/etc/localtime:ro",
+
+        "--device", "/dev/gpiochip0",
+        "--device", "/dev/snd",
+
+        "--device-cgroup-rule", "c 189:* rmw"
+    ],
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}"
+    },
+    "mounts": [],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dotjoshjohnson.xml",
+                "ms-python.python"
+            ],
+            "settings": {
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bash"
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    }
+}

@@ -9,8 +9,8 @@ def generate_launch_description():
         [
             Node(
                 package="ld19_lidar",
-                executable="ld19_node",
-                name="ld19_node",
+                executable="ld19_lidar_node",
+                name="ld19_lidar_node",
                 output="screen",
                 parameters=[
                     {"port": "/dev/ldlidar"},

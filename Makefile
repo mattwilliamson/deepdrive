@@ -18,8 +18,8 @@ docker:
 	docker build -t ${ROS_PACKAGE} .
 
 .PHONY: dockershell
-dockershell: 
-# dockershell: docker
+# dockershell: 
+dockershell: docker
 	docker run \
 		--network=host \
 		--runtime $(RUNTIME) \
