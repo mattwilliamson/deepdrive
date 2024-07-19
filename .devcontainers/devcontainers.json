@@ -12,6 +12,7 @@
         "--privileged",
         "--runtime=nvidia",
         "--gpus=all",
+        "--ipc=host",
 
         "-v", "/dev/bus/usb:/dev/bus/usb",
         "-v", "/home/matt/src/deepdrive/.cache/huggingface:/root/.cache/huggingface",
@@ -25,15 +26,32 @@
 
         "--device-cgroup-rule", "c 189:* rmw"
     ],
-    "containerEnv": {
-        "DISPLAY": "${localEnv:DISPLAY}"
-    },
+	"containerEnv": {
+		"DISPLAY": "${localEnv:DISPLAY}", // Needed for GUI try ":0" for windows
+		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+		"PULSE_SERVER": "${localEnv:PULSE_SERVER}",
+		"LIBGL_ALWAYS_SOFTWARE": "1" // Needed for software rendering of opengl
+	},
     "mounts": [],
     "customizations": {
         "vscode": {
             "extensions": [
                 "dotjoshjohnson.xml",
-                "ms-python.python"
+                "ms-python.python",
+				"althack.ament-task-provider",
+				"betwo.b2-catkin-tools",
+				"DotJoshJohnson.xml",
+				"ms-azuretools.vscode-docker",
+				"ms-iot.vscode-ros",
+				"ms-python.python",
+				"ms-vscode.cpptools",
+				"redhat.vscode-yaml",
+				"smilerobotics.urdf",
+				"streetsidesoftware.code-spell-checker",
+				"twxs.cmake",
+				"yzhang.markdown-all-in-one",
+				"zachflower.uncrustify"
             ],
             "settings": {
                 "terminal.integrated.profiles.linux": {
