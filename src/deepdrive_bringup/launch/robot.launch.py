@@ -91,7 +91,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(description_dir, 'robot_state_publisher.launch.py')
         ),
-        launch_arguments={'use_sim_time': use_sim_time}.items()
+        launch_arguments={'use_sim_time': use_sim_time}.items(),
     )
 
     rviz_node = Node(
@@ -173,7 +173,10 @@ def generate_launch_description():
         package="twist_mux",
         executable="twist_mux",
         parameters=[twist_mux_params, {"use_sim_time": use_sim_time}],
-        remappings=[("/cmd_vel_out", "/deepdrive_micro/cmd_vel")],
+        remappings=[
+            # ("/cmd_vel_out", "/deepdrive_micro/cmd_vel"),
+            ("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped"),
+        ],
     )
 
     # <node pkg="imu_transformer" type="imu_transformer_node" name="imu_data_transformer" output="screen">
@@ -268,11 +271,23 @@ def generate_launch_description():
     )
 
     # ros2 launch deepdrive_node deepdrive_node.launch.py
-    deepdrive_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory("deepdrive_node"), 'launch', 'deepdrive_node.launch.py')
-        ),
-        # launch_arguments={'use_sim_time': use_sim_time}.items()
+    # deepdrive_node = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(get_package_share_directory("deepdrive_node"), 'launch', 'deepdrive_node.launch.py')
+    #     ),
+    #     # launch_arguments={'use_sim_time': use_sim_time}.items()
+    # )
+
+    uros_agent_node = Node(
+        package="micro_ros_agent",
+        executable="micro_ros_agent",
+        name="micro_ros_agent",
+        # Launch on a bunch of ports, because we don't know which number it will get
+        arguments=["multiserial", "--devs", "/dev/ttyMotor1 /dev/ttyMotor2 /dev/ttyMotor3 /dev/ttyMotor4 /dev/ttyMotor5 /dev/ttyMotor6 /dev/ttyMotor7 /dev/ttyMotor8"],
+        # parameters=[{"target_frame": "imu_link"}],
+        remappings=[
+            ("/odom", "/deepdrive_node/odom"),
+        ],
     )
 
     # BNO080 IMU
@@ -334,11 +349,19 @@ def generate_launch_description():
             },
         ],
     )
+
+
+    diff_drive_control = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory("deepdrive_control"), 'launch', 'control.launch.py')
+        ),
+        launch_arguments={'use_sim_time': use_sim_time}.items()
+    )
     
 
     nodes = [
         robot_state_pub_node,
-        # uros_agent_node,
+
         foxglove_bridge,
         depth_camera_node,
         # wide_camera_node,
@@ -356,8 +379,15 @@ def generate_launch_description():
 
         teleop_node,
         # joy_node,
+
         twist_mux_node,
-        deepdrive_node,
+
+        # Hardware interface
+        uros_agent_node,
+
+        # ros2_control
+        # deepdrive_node,
+        diff_drive_control,
     ]
 
     return LaunchDescription(declared_arguments + nodes)

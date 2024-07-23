@@ -23,8 +23,11 @@ def generate_launch_description():
         parameters=[
             {'robot_description': launch_ros.descriptions.ParameterValue(
                 launch.substitutions.Command(['xacro ', LaunchConfiguration("model")]), value_type=str) 
-            }
-        ]
+            },
+        ],
+        remappings=[
+            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
+        ],
 
     )
 

@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="optical_flow" params="name xyz rpy">
+
+        <joint name="optical_flow_${name}_joint" type="fixed">
+            <parent link="base_link" />
+            <child link="optical_flow_${name}_link" />
+            <origin xyz="${xyz}" rpy="${rpy}" />
+        </joint>
+
+        <link name="optical_flow_${name}_link">
+            <visual>
+                <origin xyz=".1 0 -.4" rpy="0 ${pi/2} -${pi}" />
+                <geometry>
+                    <mesh filename="package://deepdrive_description/meshes/sensors/optical_flow.stl"
+                        scale="0.001 0.001 0.001" />
+                </geometry>
+                <material name="optical_flow_mat">
+                    <color rgba="0.6 0.6 0.6 1.0" />
+                </material>
+            </visual>
+        </link>
+
+
+        <gazebo reference="optical_flow_${name}_link">
+            <material>Gazebo/Grey</material>
+
+            <sensor name="optical_flow_${name}_link" type="ray">
+                <pose>${xyz} ${rpy}</pose>
+                <always_on>true</always_on>
+                <visualize>true</visualize>
+                <update_rate>5</update_rate>
+                <ray>
+                    <scan>
+                        <horizontal>
+                            <samples>5</samples>
+                            <resolution>1.000000</resolution>
+                            <min_angle>-0.12</min_angle>
+                            <max_angle>0.12</max_angle>
+                        </horizontal>
+                        <vertical>
+                            <samples>5</samples>
+                            <resolution>1.000000</resolution>
+                            <min_angle>-0.01</min_angle>
+                            <max_angle>0.01</max_angle>
+                        </vertical>
+                    </scan>
+                    <range>
+                        <min>0.02</min>
+                        <max>4</max>
+                        <resolution>0.01</resolution>
+                    </range>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.01</stddev>
+                    </noise>
+                </ray>
+                <plugin name="optical_flow_${name}" filename="libgazebo_ros_ray_sensor.so">
+                    <ros>
+                        <remapping>~/out:=optical_flow_${name}</remapping>
+                    </ros>
+                    <output_type>sensor_msgs/Range</output_type>
+                    <radiation_type>ultrasound</radiation_type>
+                    <frame_name>optical_flow_${name}_link</frame_name>
+                </plugin>
+
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

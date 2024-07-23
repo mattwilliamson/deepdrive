@@ -4,3 +4,9 @@
 [submodule "src/ld19_lidar"]
 	path = src/ld19_lidar
 	url = git@github.com:mattwilliamson/ld19_lidar.git
+[submodule "src/ros_optical_flow_matek"]
+	path = src/ros_optical_flow_matek
+	url = git@github.com:mattwilliamson/ros_optical_flow_matek.git
+[submodule "src/deepdrive_control"]
+	path = src/deepdrive_control
+	url = git@github.com:mattwilliamson/deepdrive_control.git

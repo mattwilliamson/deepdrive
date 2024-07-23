@@ -93,7 +93,13 @@ RUN bash install_deps.sh \
         gazebo_plugins \
         gazebo_ros_pkgs \
         rtabmap_ros \
-        gscam 
+        gscam \
+        ros2_control \
+        ros2_controllers \
+        control_toolbox \
+        realtime_tools \
+        control_msgs \
+        ros2_control_demos
         # isaac_ros_common \
         # isaac_ros_argus_camera \
         # isaac_ros_image_pipeline \
@@ -109,6 +115,16 @@ RUN bash install_deps.sh \
         # isaac_ros_visual_slam_interfaces
 
         # https://nvidia-isaac-ros.github.io/repositories_and_packages/index.html
+
+
+# RUN bash install_deps.sh \
+#         ros2_control \
+#         ros2_controllers \
+#         control_toolbox \
+#         realtime_tools \
+#         control_msgs \
+#         ros2_control_demos
+
 
 # Install nav2
 # RUN apt-get update && mkdir -p ${ROS_ROOT}/src && cd ${ROS_ROOT}/src \
@@ -285,11 +301,9 @@ VOLUME /tmp
 # RUN pip3 install -r src/deepdrive_voice/src/tts_ros/requirements.txt
 
 
-
-
 # RUN bash -c "source $ROS_ROOT/install/setup.bash && colcon build --symlink-install"
-RUN bash -c "source $ROS_ROOT/install/setup.bash && \
-    colcon build --symlink-install"
+# RUN bash -c "source $ROS_ROOT/install/setup.bash && \
+    # colcon build --symlink-install"
 
 # ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 

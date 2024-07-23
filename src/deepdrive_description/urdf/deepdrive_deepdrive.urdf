@@ -533,7 +533,7 @@
     <child link="camera_depth_depth_frame"/>
   </joint>
   <link name="camera_depth_depth_frame"/>
-  <!-- TODO: Not sure why these are popping up in foxglove, but just hack them for now -->
+  
   <joint name="camera_depth_right_camera_optical_frame_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="camera_depth_optical_frame"/>

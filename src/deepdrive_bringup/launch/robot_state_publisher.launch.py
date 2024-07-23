@@ -2,16 +2,23 @@ import launch
 from launch.substitutions import Command, LaunchConfiguration
 import launch_ros
 import os
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
     pkg_share = launch_ros.substitutions.FindPackageShare(package='deepdrive_description').find('deepdrive_description')
     default_model_path = os.path.join(pkg_share, 'urdf/deepdrive_deepdrive.xacro')
-    
+
     robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        parameters=[{'robot_description': Command(['xacro ', LaunchConfiguration('model')])}],
+        parameters=[
+            {
+                'robot_description': ParameterValue(
+                    Command(["xacro ", LaunchConfiguration("model")]),
+                    value_type=str),
+            }
+        ],
         remappings=[
             # ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
         ],

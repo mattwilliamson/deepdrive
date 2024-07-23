@@ -86,7 +86,8 @@ ekf_filter_node:
 
 ##################################################################################################################
 # Motor encoders
-        odom0: /deepdrive_node/odom
+        # odom0: /deepdrive_node/odom
+        odom0: /diff_drive_controller/odom
 
 
 # Each sensor reading updates some or all of the filter's state. These options give you greater control over which

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>deepdrive_optical_flow</name>
+  <version>0.0.1</version>
+  <description>
+    LIDAR bringup and configs for Deepdrive
+  </description>
+  <maintainer email="matt@aimatt.com">Matt Williamson</maintainer>
+  <license>Apache 2.0</license>
+  <url type="website">http://aimatt.com</url>
+  <url type="repository">https://github.com/mattwilliamson/deepdrive</url>
+  <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
+  <author email="matt@aimatt.com">Matt Williamson</author>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>urdf</depend>
+  <depend>ros_optical_flow_matek</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

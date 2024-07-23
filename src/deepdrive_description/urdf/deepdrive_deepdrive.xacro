@@ -3,14 +3,17 @@
   xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:arg name="sim_mode" default="false" />
+  <xacro:arg name="use_ros2_control" default="true" />
 
   <xacro:property name="wheel_base" value="0.26" />
   <xacro:property name="wheel_radius" value="0.08" />
-  <!-- <xacro:property name="use_mock_hardware" value="true" /> -->
+  <xacro:property name="use_mock_hardware" value="false" />
 
   <xacro:include filename="$(find deepdrive_description)/urdf/common_properties.xacro" />
   <xacro:include filename="$(find deepdrive_description)/urdf/wheels.xacro" />
   <xacro:include filename="$(find deepdrive_description)/urdf/sonar.xacro" />
+  <xacro:include filename="$(find deepdrive_description)/urdf/optical_flow.xacro" />
+  <xacro:include filename="$(find deepdrive_description)/urdf/ros2_control.xacro" />
 
 
   <link name="base_footprint" />
@@ -26,8 +29,7 @@
     <visual>
       <origin xyz="-0.064 0 0.0" rpy="0 0 ${3*pi/2}" />
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/bases/chassis.stl"
-          scale=".001 .001 .001" />
+        <mesh filename="package://deepdrive_description/meshes/bases/chassis.stl" scale=".001 .001 .001" />
       </geometry>
       <material name="black" />
     </visual>
@@ -42,8 +44,7 @@
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="2.3729096e+00" />
-      <inertia ixx="8.7002718e-03" ixy="-4.7576583e-05" ixz="1.1160499e-04" iyy="8.6195418e-03"
-        iyz="-3.5422299e-06" izz="1.4612727e-02" />
+      <inertia ixx="8.7002718e-03" ixy="-4.7576583e-05" ixz="1.1160499e-04" iyy="8.6195418e-03" iyz="-3.5422299e-06" izz="1.4612727e-02" />
     </inertial>
   </link>
 
@@ -63,8 +64,7 @@
     <visual>
       <origin xyz="-0.064 0 0.001" rpy="0 0 ${3*pi/2}" />
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/bases/body.stl"
-          scale=".001 .001 .001" />
+        <mesh filename="package://deepdrive_description/meshes/bases/body.stl" scale=".001 .001 .001" />
       </geometry>
       <material name="red" />
     </visual>
@@ -75,14 +75,10 @@
   </gazebo>
 
   <!-- Wheels -->
-  <xacro:wheel name="front_right" lr="1" fb="1" wheel_base="${wheel_base}"
-    wheel_radius="${wheel_radius}" />
-  <xacro:wheel name="back_right" lr="1" fb="-1" wheel_base="${wheel_base}"
-    wheel_radius="${wheel_radius}" />
-  <xacro:wheel name="front_left" lr="-1" fb="1" wheel_base="${wheel_base}"
-    wheel_radius="${wheel_radius}" />
-  <xacro:wheel name="back_left" lr="-1" fb="-1" wheel_base="${wheel_base}"
-    wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="front_right" lr="1" fb="1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="back_right" lr="1" fb="-1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="front_left" lr="-1" fb="1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
+  <xacro:wheel name="back_left" lr="-1" fb="-1" wheel_base="${wheel_base}" wheel_radius="${wheel_radius}" />
 
 
   <!-- IMU -->
@@ -90,15 +86,14 @@
     <parent link="base_link" />
     <child link="imu_base_link" />
     <origin xyz="0.12 0 0.111" rpy="0 0 0" />
-  </joint> 
+  </joint>
 
   <link name="imu_base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 -${pi/2}" />
       <!-- <origin xyz=".325 0 -.07" rpy="0 0 0" /> -->
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/sensors/imu.stl"
-          scale=".001 .001 .001" />
+        <mesh filename="package://deepdrive_description/meshes/sensors/imu.stl" scale=".001 .001 .001" />
       </geometry>
       <material name="white" />
     </visual>
@@ -108,7 +103,7 @@
     <parent link="imu_base_link" />
     <child link="imu_link" />
     <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi}" />
-  </joint> 
+  </joint>
 
   <link name="imu_link"></link>
 
@@ -138,6 +133,10 @@
   <xacro:sonar name="front_right" xyz=".296 .064 .035" rpy="0 0 ${5*pi/180}" />
   <xacro:sonar name="front_left" xyz=".296 -.064 .035" rpy="0 0 -${5*pi/180}" />
 
+  <!-- Optical Flow -->
+  <!-- <xacro:optical_flow name="front" xyz=".296 -.064 .035" rpy="0 0 -${5*pi/180}" /> -->
+  <xacro:optical_flow name="front" xyz=".296 0 .005" rpy="0 ${pi/2} 0" />
+
   <!-- Speaker -->
   <joint name="speaker_joint" type="fixed">
     <parent link="base_link" />
@@ -149,20 +148,26 @@
     <visual>
       <origin xyz="0 -0.41 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://deepdrive_description/meshes/sensors/speaker.stl"
-          scale=".001 .001 .001" />
+        <mesh filename="package://deepdrive_description/meshes/sensors/speaker.stl" scale=".001 .001 .001" />
       </geometry>
       <material name="black" />
     </visual>
   </link>
-  
+
   <gazebo reference="speaker_link">
     <material>Gazebo/Black</material>
   </gazebo>
 
 
+  <!-- ros2_control-->
+  <xacro:if value="$(arg use_ros2_control)">
+    <xacro:deepdrive_ros2_control name="diff_drive_controller" use_mock_hardware="${use_mock_hardware}" />
+  </xacro:if>
 
-  <xacro:if value="$(arg sim_mode)">
+
+
+  <xacro:unless value="$(arg use_ros2_control)">
+    <!-- <xacro:if value="$(arg sim_mode)"> -->
 
 
     <!-- This one works in gazebo without ros2_control -->
@@ -198,78 +203,79 @@
         <publish_wheel_tf>true</publish_wheel_tf>
       </plugin>
     </gazebo>
+  </xacro:unless>
 
 
-    <gazebo reference="imu_link">
-      <sensor name="imu_sensor" type="imu">
-        <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-          <ros>
-            <namespace>/</namespace>
-            <remapping>~/out:=imu</remapping>
-          </ros>
-          <initial_orientation_as_reference>false</initial_orientation_as_reference>
-        </plugin>
-        <always_on>true</always_on>
-        <update_rate>50</update_rate>
-        <visualize>true</visualize>
-        <imu>
-          <angular_velocity>
-            <x>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
-                <bias_mean>0.0000075</bias_mean>
-                <bias_stddev>0.0000008</bias_stddev>
-              </noise>
-            </x>
-            <y>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
-                <bias_mean>0.0000075</bias_mean>
-                <bias_stddev>0.0000008</bias_stddev>
-              </noise>
-            </y>
-            <z>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
-                <bias_mean>0.0000075</bias_mean>
-                <bias_stddev>0.0000008</bias_stddev>
-              </noise>
-            </z>
-          </angular_velocity>
-          <linear_acceleration>
-            <x>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.7e-2</stddev>
-                <bias_mean>0.1</bias_mean>
-                <bias_stddev>0.001</bias_stddev>
-              </noise>
-            </x>
-            <y>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.7e-2</stddev>
-                <bias_mean>0.1</bias_mean>
-                <bias_stddev>0.001</bias_stddev>
-              </noise>
-            </y>
-            <z>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.7e-2</stddev>
-                <bias_mean>0.1</bias_mean>
-                <bias_stddev>0.001</bias_stddev>
-              </noise>
-            </z>
-          </linear_acceleration>
-        </imu>
-      </sensor>
-    </gazebo>
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <ros>
+          <namespace>/</namespace>
+          <remapping>~/out:=imu</remapping>
+        </ros>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+      </plugin>
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <visualize>true</visualize>
+      <imu>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+              <bias_mean>0.0000075</bias_mean>
+              <bias_stddev>0.0000008</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+              <bias_mean>0.0000075</bias_mean>
+              <bias_stddev>0.0000008</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+              <bias_mean>0.0000075</bias_mean>
+              <bias_stddev>0.0000008</bias_stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+              <bias_mean>0.1</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+              <bias_mean>0.1</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+              <bias_mean>0.1</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
 
-  </xacro:if>
+<!-- </xacro:if> -->
 
 
 </robot>
