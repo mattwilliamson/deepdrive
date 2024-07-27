@@ -6,5 +6,5 @@ imu_bno08x_publisher:
     rate: 30
     address: 75
     frequency: 800000
-    ned_to_enu: true
+    ned_to_enu: false
     i2c_bus: 1

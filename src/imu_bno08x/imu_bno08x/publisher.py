@@ -65,8 +65,18 @@ class ImuNode(Node):
         self.ned_to_enu = self.declare_parameter('ned_to_enu', False).value
         self.i2c_bus = self.declare_parameter('i2c_bus', 1).value
 
+        self.get_logger().info(f"save_calibration: {self.save_calibration}")
+        self.get_logger().info(f"publish_mag: {self.publish_mag}")
+        self.get_logger().info(f"imu_frame: {self.imu_frame}")
+        self.get_logger().info(f"rate: {self.rate}")
+        self.get_logger().info(f"address: {self.address}")
+        self.get_logger().info(f"frequency: {self.frequency}")
+        self.get_logger().info(f"ned_to_enu: {self.ned_to_enu}")
+        self.get_logger().info(f"i2c_bus: {self.i2c_bus}")
+
         self.calibration_status = 0
         self.saved_calibration = False
+        # self.started_calibration = False
 
         i2c = I2C(self.i2c_bus)
         # self.bno = BNO08X_I2C(i2c, address=0x4a)
@@ -75,15 +85,35 @@ class ImuNode(Node):
         # RuntimeWarning: I2C frequency is not settable in python, ignoring!
         # i2c = busio.I2C(board.SCL, board.SDA, frequency=self.frequency)
         self.bno = BNO08X_I2C(i2c, address=self.address)
+        self.bno.hard_reset()
+        time.sleep(.5)
+
+        # Self calibrate
+        self.get_logger().info("Calibrating IMU.")
+        self.get_logger().info("Please place the IMU on a stable surface.")
+        self.get_logger().info(f"Initial calibration status: {self.bno.calibration_status} - {REPORT_ACCURACY_STATUS[self.bno.calibration_status]}")
+        self.bno.begin_calibration()
 
         self.bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
         self.bno.enable_feature(BNO_REPORT_LINEAR_ACCELERATION)
         self.bno.enable_feature(BNO_REPORT_GYROSCOPE)
         self.bno.enable_feature(BNO_REPORT_MAGNETOMETER)
         self.bno.enable_feature(BNO_REPORT_ACCELEROMETER)
-        self.bno.enable_feature(BNO_REPORT_SHAKE_DETECTOR)
-        self.bno.enable_feature(BNO_REPORT_STABILITY_CLASSIFIER)
-        self.bno.enable_feature(BNO_REPORT_ACTIVITY_CLASSIFIER)
+
+        try:
+            self.bno.enable_feature(BNO_REPORT_SHAKE_DETECTOR)
+        except:
+            self.get_logger().info("Failed to enable shake detector. Skipping.")
+
+        try:
+            self.bno.enable_feature(BNO_REPORT_ACTIVITY_CLASSIFIER)
+        except:
+            self.get_logger().info("Failed to enable activity classifier. Skipping.")
+
+        try:
+            self.bno.enable_feature(BNO_REPORT_STABILITY_CLASSIFIER)
+        except:
+            self.get_logger().info("Failed to enable stability classifier. Skipping.")
 
         self.imu_publisher = self.create_publisher(Imu, IMU_TOPIC, 10)
         self.create_timer(1.0 / self.rate, self.publish_imu)
@@ -95,8 +125,9 @@ class ImuNode(Node):
             self.mag_publisher = self.create_publisher(MagneticField, MAG_TOPIC, 10)
 
         time.sleep(0.5)  # ensure IMU is initialized
+        self.get_logger().info(f"Calibration status: {self.bno.calibration_status} - {REPORT_ACCURACY_STATUS[self.bno.calibration_status]}")
 
-        self.get_logger().info("node is started")
+        self.get_logger().info("IMU node is started")
 
     def publish_imu(self):
             """
@@ -107,7 +138,7 @@ class ImuNode(Node):
             """
             
             self.calibration_status = self.bno.calibration_status
-            self.calibration_status = 1
+            # self.calibration_status = 1
 
             msg = Imu()
             msg.header.frame_id = self.imu_frame
@@ -124,16 +155,25 @@ class ImuNode(Node):
 
             # Orientation
             quat_i, quat_j, quat_k, quat_real = self.bno.quaternion
-            msg.orientation.w = quat_i
-            msg.orientation.x = quat_j
-            msg.orientation.y = quat_k
-            msg.orientation.z = quat_real
+            msg.orientation.w = quat_real
+            msg.orientation.x = quat_i
+            msg.orientation.y = quat_j
+            msg.orientation.z = quat_k
             msg.orientation_covariance[0] = cov
             msg.orientation_covariance[4] = cov
             msg.orientation_covariance[8] = cov
 
+            # x, y, z, w = msg.orientation.z, msg.orientation.y, msg.orientation.x, msg.orientation.w
+            # norm = math.sqrt(w**2 + x**2 + y**2 + z**2)
+            # msg.orientation.x = x / norm
+            # msg.orientation.y = y / norm
+            # msg.orientation.z = z / norm
+            # msg.orientation.w = w / norm
+
             # Linear Acceleration with gravity removed
             accel_x, accel_y, accel_z = self.bno.linear_acceleration
+            # Linear Acceleration without gravity removed
+            # accel_x, accel_y, accel_z = self.bno.acceleration
             msg.linear_acceleration.x = accel_x
             msg.linear_acceleration.y = accel_y
             msg.linear_acceleration.z = accel_z

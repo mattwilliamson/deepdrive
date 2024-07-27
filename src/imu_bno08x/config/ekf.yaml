@@ -62,3 +62,7 @@ ekf_filter_node:
         #             x_vel   , y_vel    , z_vel,
         #             roll_vel, pitch_vel, yaw_vel,
         #             x_accel , y_accel  , z_accel]
+
+# [ADVANCED] Some IMUs automatically remove acceleration due to gravity, and others don't. If yours doesn't, please set
+# this to true, and *make sure* your data conforms to REP-103, specifically, that the data is in ENU frame.
+        imu0_remove_gravitational_acceleration: false

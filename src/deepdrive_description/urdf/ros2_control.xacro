@@ -9,20 +9,10 @@
             <hardware>
                 <plugin>deepdrive_control/DeepDriveSystemHardware</plugin>
                 <param name="mock_hardware">false</param>
-                <!-- 
-      <param name="use_wheel_encoder">true</param>
-      <param name="encoder_ticks_per_rev">20</param>
-      <param name="pin_left_enable">32</param>
-      <param name="pin_left_forward">38</param>
-      <param name="pin_left_backward">37</param>
-      <param name="pin_left_encoder">11</param>
-      <param name="pin_right_enable">33</param>
-      <param name="pin_right_forward">35</param>
-      <param name="pin_right_backward">36</param>
-      <param name="pin_right_encoder">12</param>
-      <param name="pwm_hz">50</param> -->
+                <param name="left_feedback_multiplier">1.0</param>
+                <param name="right_feedback_multiplier">-1.0</param>
                 <!-- should match controller.yaml update rate -->
-                <param name="command_rate">10</param>
+                <!-- <param name="command_rate">10</param> -->
             </hardware>
             <joint name="wheel_back_right_joint">
                 <command_interface name="velocity">

@@ -117,6 +117,7 @@ def generate_launch_description():
         executable="ekf_node",
         name="ekf_filter_node",
         output="screen",
+        respawn=True,
         parameters=[
             PathJoinSubstitution([
                 FindPackageShare("deepdrive_bringup"),
@@ -302,7 +303,7 @@ def generate_launch_description():
         package='pointcloud_to_laserscan',
         executable='laserscan_to_pointcloud_node',
         name='laserscan_to_pointcloud',
-        remappings=[('scan_in', '/ldlidar_node/scan'),
+        remappings=[('scan_in', '/scan'),
                     ('cloud', '/lidar/cloud')],
         parameters=[{'target_frame': 'ldlidar_link', 'transform_tolerance': 0.01}]
     )
