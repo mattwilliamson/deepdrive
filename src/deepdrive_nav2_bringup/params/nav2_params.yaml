@@ -37,7 +37,7 @@ amcl:
     z_max: 0.05
     z_rand: 0.5
     z_short: 0.05
-    scan_topic: scan
+    scan_topic: /scan
 
 bt_navigator:
   ros__parameters:
@@ -483,3 +483,38 @@ slam_toolbox:
     minimum_angle_penalty: 0.9
     minimum_distance_penalty: 0.5
     use_response_expansion: true
+
+collision_monitor:
+  ros__parameters:
+    use_sim_time: False
+    base_frame_id: "base_footprint"
+    odom_frame_id: "odom"
+    cmd_vel_in_topic: "cmd_vel_smoothed"
+    cmd_vel_out_topic: "cmd_vel"
+    transform_tolerance: 0.5
+    source_timeout: 5.0
+    stop_pub_timeout: 2.0
+    enable_stamped_cmd_vel: False
+    polygons: ["PolygonStop", "PolygonSlow"]
+    PolygonStop:
+      type: "polygon"
+      points: [0.4, 0.3, 0.4, -0.3, -0.4, -0.3, -0.4, 0.3]
+      # points: "[[0.4, 0.3], [0.4, -0.3], [0.4, -0.3], [0.4, 0.3]]"
+      # Deepdrive is ~ 0.56m long and 0.37m wide
+      action_type: "stop"
+      min_points: 3  # max_points: 3 for Humble
+      visualize: True
+      polygon_pub_topic: "polygon_stop"
+    PolygonSlow:
+      type: "polygon"
+      points: [0.6, 0.4, 0.6, -0.4, -0.6, -0.4, -0.6, 0.4]
+      # points: [0.6, 0.4], [0.6, -0.4], [0.6, -0.4], [0.6, 0.4]
+      action_type: "slowdown"
+      min_points: 3  # max_points: 3 for Humble
+      slowdown_ratio: 0.3
+      visualize: True
+      polygon_pub_topic: "polygon_slowdown"
+    observation_sources: ["scan"]
+    scan:
+      type: "scan"
+      topic: "/scan"

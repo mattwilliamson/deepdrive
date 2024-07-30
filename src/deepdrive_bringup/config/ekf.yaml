@@ -138,7 +138,7 @@ ekf_filter_node:
 # for all future measurements. While you can achieve the same effect with the differential paremeter, the key
 # difference is that the relative parameter doesn't cause the measurement to be converted to a velocity before
 # integrating it. If you simply want your measurements to start at 0 for a given sensor, set this to true.
-        odom0_relative: false
+        odom0_relative: true
 
 # [ADVANCED] If your data is subject to outliers, use these threshold settings, expressed as Mahalanobis distances, to
 # control how far away from the current vehicle state a sensor measurement is permitted to be. Each defaults to
@@ -239,7 +239,7 @@ ekf_filter_node:
         
         imu0_nodelay: false
         imu0_differential: false
-        imu0_relative: true
+        imu0_relative: false
         imu0_queue_size: 3
         # imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
         # imu0_twist_rejection_threshold: 0.8                #
@@ -255,7 +255,7 @@ ekf_filter_node:
                       false, false, false,
                       false, false, false,
                       false, false, true,
-                      false,  false, true]
+                      false,  false, false]
         #        [x_pos   , y_pos    , z_pos,
         #         roll    , pitch    , yaw,
         #         x_vel   , y_vel    , z_vel,

@@ -17,9 +17,10 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, GroupAction, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, GroupAction, SetEnvironmentVariable, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import LoadComposableNodes
 from launch_ros.actions import Node
 from launch_ros.descriptions import ComposableNode, ParameterFile
@@ -180,7 +181,10 @@ def generate_launch_description():
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
                 remappings=remappings +
-                        [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
+                        [
+                            ('cmd_vel', 'cmd_vel_nav'), 
+                            # ('cmd_vel_smoothed', 'cmd_vel')
+                         ]),
             Node(
                 package='nav2_lifecycle_manager',
                 executable='lifecycle_manager',
@@ -190,6 +194,16 @@ def generate_launch_description():
                 parameters=[{'use_sim_time': use_sim_time},
                             {'autostart': autostart},
                             {'node_names': lifecycle_nodes}]),
+
+            # Collision monitor
+            # Maybe switch to veloicty polygon if this is too simplistic: https://docs.nav2.org/tutorials/docs/using_collision_monitor.html#configuring-collision-monitor-with-velocitypolygon
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    os.path.join(os.path.join(get_package_share_directory('nav2_collision_monitor'), 'launch'), 
+                                 'collision_monitor_node.launch.py')
+                ),
+                launch_arguments={'use_sim_time': use_sim_time}.items(),
+            )
         ]
     )
 
@@ -239,7 +253,10 @@ def generate_launch_description():
                 name='velocity_smoother',
                 parameters=[configured_params],
                 remappings=remappings +
-                           [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
+                           [
+                               ('cmd_vel', 'cmd_vel_nav'), 
+                            #    ('cmd_vel_smoothed', 'cmd_vel')
+                            ]),
             ComposableNode(
                 package='nav2_lifecycle_manager',
                 plugin='nav2_lifecycle_manager::LifecycleManager',
