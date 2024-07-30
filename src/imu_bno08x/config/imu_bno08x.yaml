@@ -1,7 +1,7 @@
 imu_bno08x_publisher:
   ros__parameters:
     save_calibration: true
-    publish_mag: false
+    publish_mag: true
     imu_frame: imu_base_link
     rate: 30
     address: 75

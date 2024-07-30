@@ -211,8 +211,6 @@ https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html
 ```sh
 ros2 launch deepdrive_bringup robot.launch.py
 
-ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
-
 ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
 
 # Start Nav2

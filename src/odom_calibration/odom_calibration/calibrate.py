@@ -46,7 +46,7 @@ class DynamicOdometryCalibrationNode(Node):
 
             for topic_type in topic_types:
                 if topic_type == 'sensor_msgs/msg/LaserScan':
-                    self.create_subscription(LaserScan, topic_name, lambda msg, tn=topic_name: self.generic_callback(msg, tn), qos)
+                    self.create_subscription(LaserScan, topic_name, lambda msg, tn=topic_name: self.generic_callback(msg, tn), 1)
                 elif topic_type == 'nav_msgs/msg/Odometry':
                     self.create_subscription(Odometry, topic_name, lambda msg, tn=topic_name: self.generic_callback(msg, tn), qos)
                 elif topic_type == 'sensor_msgs/msg/Imu':

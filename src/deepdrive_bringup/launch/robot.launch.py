@@ -127,7 +127,9 @@ def generate_launch_description():
         ],
         remappings=[
             ("/odometry/filtered", "/odom"),
-            ("/cmd_vel", "/deepdrive/cmd_vel"),
+            # ("/cmd_vel", "/deepdrive/cmd_vel"),
+            ("/cmd_vel", "/diff_drive_controller/cmd_vel_out"),
+            
         ],
     )
 
@@ -284,11 +286,24 @@ def generate_launch_description():
         executable="micro_ros_agent",
         name="micro_ros_agent",
         # Launch on a bunch of ports, because we don't know which number it will get
-        arguments=["multiserial", "--devs", "/dev/ttyMotor1 /dev/ttyMotor2 /dev/ttyMotor3 /dev/ttyMotor4 /dev/ttyMotor5 /dev/ttyMotor6 /dev/ttyMotor7 /dev/ttyMotor8"],
+        arguments=["multiserial", "--devs", 
+                   "/dev/ttyMotor1 /dev/ttyMotor2 /dev/ttyMotor3 /dev/ttyMotor4 /dev/ttyMotor5 /dev/ttyMotor6 /dev/ttyMotor7 /dev/ttyMotor8"],
         # parameters=[{"target_frame": "imu_link"}],
         remappings=[
             ("/odom", "/deepdrive_node/odom"),
         ],
+    )
+
+    uros_agent_dd_micro_node = Node(
+        package="micro_ros_agent",
+        executable="micro_ros_agent",
+        name="micro_ros_agent",
+        # Launch on a bunch of ports, because we don't know which number it will get
+        arguments=["serial", "--dev", "/dev/ttyACM0"],
+        # parameters=[{"target_frame": "imu_link"}],
+        # remappings=[
+        #     ("/odom", "/deepdrive_node/odom"),
+        # ],
     )
 
     # BNO080 IMU
@@ -345,7 +360,7 @@ def generate_launch_description():
                 "position_covariance": 0.5,
                 "orientation_covariance": 0.5,
                 # ROS CLI arguments
-                "publish_debug_clouds": True,
+                "publish_debug_clouds": False,
                 "use_sim_time": use_sim_time,
             },
         ],
@@ -375,8 +390,8 @@ def generate_launch_description():
         lidar_node,
 
         # Use Lidar for odom
-        lidar_to_pointcloud_node,
-        kiss_icp_node,
+        # lidar_to_pointcloud_node,
+        # kiss_icp_node,
 
         teleop_node,
         # joy_node,
@@ -385,6 +400,9 @@ def generate_launch_description():
 
         # Hardware interface
         uros_agent_node,
+
+        # Pico
+        uros_agent_dd_micro_node,
 
         # ros2_control
         # deepdrive_node,

@@ -57,7 +57,7 @@ class ImuNode(Node):
         self.get_logger().info("node is starting up...")
 
         self.save_calibration = self.declare_parameter('save_calibration', False).value
-        self.publish_mag = self.declare_parameter('publish_mag', False).value
+        self.publish_mag = self.declare_parameter('publish_mag', True).value
         self.imu_frame = self.declare_parameter('imu_frame', "imu_link").value
         self.rate = self.declare_parameter('rate', 30).value
         self.address = self.declare_parameter('address', 0x4B).value
@@ -174,18 +174,18 @@ class ImuNode(Node):
             accel_x, accel_y, accel_z = self.bno.linear_acceleration
             # Linear Acceleration without gravity removed
             # accel_x, accel_y, accel_z = self.bno.acceleration
-            msg.linear_acceleration.x = accel_x
-            msg.linear_acceleration.y = accel_y
-            msg.linear_acceleration.z = accel_z
+            msg.linear_acceleration.x = accel_y
+            msg.linear_acceleration.y = accel_x
+            msg.linear_acceleration.z = -accel_z
             msg.linear_acceleration_covariance[0] = cov
             msg.linear_acceleration_covariance[4] = cov
             msg.linear_acceleration_covariance[8] = cov
 
             # Gyro
             gyro_x, gyro_y, gyro_z = self.bno.gyro
-            msg.angular_velocity.x = gyro_x
-            msg.angular_velocity.y = gyro_y
-            msg.angular_velocity.z = gyro_z
+            msg.angular_velocity.x = gyro_y
+            msg.angular_velocity.y = gyro_x
+            msg.angular_velocity.z = -gyro_z
             msg.angular_velocity_covariance[0] = cov
             msg.angular_velocity_covariance[4] = cov
             msg.angular_velocity_covariance[8] = cov
@@ -229,9 +229,9 @@ class ImuNode(Node):
                 mag_msg.header.frame_id = self.imu_frame
                 mag_msg.header.stamp = self.get_clock().now().to_msg()
                 mag_x, mag_y, mag_z = self.bno.magnetic
-                mag_msg.magnetic_field.x = mag_x
-                mag_msg.magnetic_field.y = mag_y
-                mag_msg.magnetic_field.z = mag_z
+                mag_msg.magnetic_field.x = mag_y
+                mag_msg.magnetic_field.y = mag_x
+                mag_msg.magnetic_field.z = -mag_z
                 mag_msg.magnetic_field_covariance[0] = cov
                 mag_msg.magnetic_field_covariance[4] = cov
                 mag_msg.magnetic_field_covariance[8] = cov
@@ -245,7 +245,7 @@ class ImuNode(Node):
                     mag_msg.magnetic_field.x, mag_msg.magnetic_field.y, mag_msg.magnetic_field.z = mag_msg.magnetic_field.z, mag_msg.magnetic_field.y, mag_msg.magnetic_field.x
                     
 
-                self.mag_publisher(mag_msg)
+                self.mag_publisher.publish(mag_msg)
 
     def get_diagnostic_status(self):
         status_msg = DiagnosticStatus()

@@ -5,7 +5,7 @@
   <xacro:arg name="sim_mode" default="false" />
   <xacro:arg name="use_ros2_control" default="true" />
 
-  <xacro:property name="wheel_base" value="0.26" />
+  <xacro:property name="wheel_base" value="0.328" />
   <xacro:property name="wheel_radius" value="0.08" />
   <xacro:property name="use_mock_hardware" value="false" />
 

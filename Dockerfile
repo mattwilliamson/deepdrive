@@ -294,6 +294,15 @@ RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
 COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
 RUN pip3 install -r src/imu_bno08x/requirements.txt
 
+RUN echo "colcon build --symlink-install" >> ~/.bash_history && \
+    echo "source $ROS2_WS/install/setup.bash" >> ~/.bash_history && \
+    echo "ros2 launch deepdrive_bringup robot.launch.py" >> ~/.bash_history && \
+    echo "ros2 run deepdrive_teleop teleop_keyboard" >> ~/.bash_history && \
+    echo "ros2 launch deepdrive_nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml" >> ~/.bash_history && \
+    echo "ros2 launch deepdrive_nav2_bringup slam_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml" >> ~/.bash_history
+
+    
+
 COPY src ./src/
 
 VOLUME /tmp
