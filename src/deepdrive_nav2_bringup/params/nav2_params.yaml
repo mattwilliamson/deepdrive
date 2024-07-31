@@ -140,14 +140,14 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
-      min_vel_x: 0.1
+      min_vel_x: 0.3
       min_vel_y: 0.0
-      max_vel_x: 0.5
+      max_vel_x: 1.0
       max_vel_y: 0.0
-      max_vel_theta: 4.0
+      max_vel_theta: 6.0
       min_speed_xy: 0.1
-      max_speed_xy: 0.5
-      min_speed_theta: 2.0
+      max_speed_xy: 1.5
+      min_speed_theta: 4.0
       # Add high threshold velocity for turtlebot 3 issue.
       # https://github.com/ROBOTIS-GIT/deepdrive_simulations/issues/75
       acc_lim_x: 1.0
@@ -327,7 +327,7 @@ behavior_server:
     simulate_ahead_time: 2.0
     max_rotational_vel: 6.0
     min_rotational_vel: 1.0
-    rotational_acc_lim: .2
+    rotational_acc_lim: 1.0
 
 robot_state_publisher:
   ros__parameters:
@@ -349,10 +349,10 @@ velocity_smoother:
     use_sim_time: False
     smoothing_frequency: 20.0
     scale_velocities: False
-    feedback: "CLOSED_LOOP"
-    # feedback: "OPEN_LOOP"
-    max_velocity: [0.5, 0.0, 6.0]
-    min_velocity: [-0.5, 0.0, -6.0]
+    # feedback: "CLOSED_LOOP"
+    feedback: "OPEN_LOOP"
+    max_velocity: [1.0, 0.0, 6.0]
+    min_velocity: [-1.0, 0.0, -6.0]
     max_accel: [.2, 0.0, 2.0]
     max_decel: [-.2, 0.0, -2.0]
     odom_topic: "odom"
@@ -495,23 +495,32 @@ collision_monitor:
     source_timeout: 5.0
     stop_pub_timeout: 2.0
     enable_stamped_cmd_vel: False
-    polygons: ["PolygonStop", "PolygonSlow"]
+    polygons: ["PolygonStop", "PolygonVerySlow", "PolygonSlow"]
     PolygonStop:
       type: "polygon"
-      points: [0.4, 0.3, 0.4, -0.3, -0.4, -0.3, -0.4, 0.3]
+      points: [0.3, 0.2, 0.3, -0.2, -0.3, -0.2, -0.3, 0.2]
       # points: "[[0.4, 0.3], [0.4, -0.3], [0.4, -0.3], [0.4, 0.3]]"
       # Deepdrive is ~ 0.56m long and 0.37m wide
       action_type: "stop"
       min_points: 3  # max_points: 3 for Humble
       visualize: True
       polygon_pub_topic: "polygon_stop"
+    PolygonVerySlow:
+      type: "polygon"
+      points: [0.4, 0.3, 0.4, -0.3, -0.4, -0.3, -0.4, 0.3]
+      # points: [0.6, 0.4], [0.6, -0.4], [0.6, -0.4], [0.6, 0.4]
+      action_type: "slowdown"
+      min_points: 3  # max_points: 3 for Humble
+      slowdown_ratio: 0.3
+      visualize: True
+      polygon_pub_topic: "polygon_very_slowdown"
     PolygonSlow:
       type: "polygon"
       points: [0.6, 0.4, 0.6, -0.4, -0.6, -0.4, -0.6, 0.4]
       # points: [0.6, 0.4], [0.6, -0.4], [0.6, -0.4], [0.6, 0.4]
       action_type: "slowdown"
       min_points: 3  # max_points: 3 for Humble
-      slowdown_ratio: 0.3
+      slowdown_ratio: 0.7
       visualize: True
       polygon_pub_topic: "polygon_slowdown"
     observation_sources: ["scan"]

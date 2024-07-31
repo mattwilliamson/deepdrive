@@ -13,7 +13,8 @@
   <xacro:include filename="$(find deepdrive_description)/urdf/wheels.xacro" />
   <xacro:include filename="$(find deepdrive_description)/urdf/sonar.xacro" />
   <xacro:include filename="$(find deepdrive_description)/urdf/optical_flow.xacro" />
-  <xacro:include filename="$(find deepdrive_description)/urdf/ros2_control.xacro" />
+  <!-- TODO: Use flag to determine whether to use deepdrive_control -->
+  <xacro:include filename="$(find deepdrive_control)/urdf/ros2_control.xacro" />
 
 
   <link name="base_footprint" />
