@@ -351,12 +351,12 @@ velocity_smoother:
     scale_velocities: False
     # feedback: "CLOSED_LOOP"
     feedback: "OPEN_LOOP"
-    max_velocity: [1.0, 0.0, 6.0]
-    min_velocity: [-1.0, 0.0, -6.0]
+    max_velocity: [0.5, 0.0, 3.0]
+    min_velocity: [-0.5, 0.0, -3.0]
     max_accel: [.2, 0.0, 2.0]
     max_decel: [-.2, 0.0, -2.0]
-    odom_topic: "odom"
-    odom_duration: 1.0
+    odom_topic: "/odom"
+    odom_duration: .1
     deadband_velocity: [0.01, 0.0, 0.01]
     velocity_timeout: 1.0
 
