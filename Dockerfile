@@ -1,5 +1,104 @@
 # FROM dustynv/ros:humble-pytorch-l4t-r35.4.1
-FROM dustynv/ros:humble-desktop-pytorch-l4t-r35.4.1
+# FROM dustynv/ros:humble-desktop-pytorch-l4t-r35.4.1
+# FROM dustynv/ros:humble-llm-r36.3.0
+
+# jetson-containers run $(autotag ros:humble)
+# dustynv/ros:humble-llm-r36.3.0
+# https://github.com/dusty-nv/jetson-containers/tree/master
+# jetson-containers run $(autotag ros:humble-ros-base)
+FROM dustynv/ros:humble-llm-r36.3.0
+
+VOLUME /tmp
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Common dependencies & tools
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+        vim \
+        git \
+        portaudio19-dev \
+        python3-pip \
+        python3-pydantic \
+        wget \
+        curl \
+        xorg-dev \
+        xtl-dev \
+        gcc-arm-none-eabi \
+        libnewlib-arm-none-eabi \
+        zsh \
+        build-essential \
+        cmake \
+        libeigen3-dev \
+        libtbb-dev \
+        pybind11-dev \
+        net-tools \
+        ninja-build && \
+    rm -rf /var/lib/apt/lists/
+
+#  TODO: Needed this specific version for some reason?
+# RUN pip3 install setuptools==58.2.0 && \
+    # pip3 install --upgrade pip
+
+RUN pip3 install --upgrade pip setuptools
+
+# DepthAI (OAK-D LITE camera)
+# ENV DEPTHAI_SRC=/opt/depthai-core
+WORKDIR /opt/
+RUN apt-get update && \
+    apt install libpcl-dev -y && \
+    rm -rf /var/lib/apt/lists/
+RUN git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
+    cd depthai-core && \
+    git submodule update --init --recursive && \
+    cmake -S. -Bbuild -D'BUILD_SHARED_LIBS=ON' -D'CMAKE_INSTALL_PREFIX=/usr/local' && \
+    cmake --build build --target install
+
+# RUN ROS_WORKSPACE=/ros2_workspace /ros2_install.sh https://github.com/dusty-nv/ros_deep_learning
+
+# MicroROS
+ENV UROS_WS=/uros_ws
+WORKDIR $UROS_WS
+RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
+    apt-get update && \
+    rosdep update && \
+    rm -rf /opt/ros/humble/build/pluginlib/pluginlib_enable_plugin_testing && \
+    rosdep install --from-paths src --ignore-src -y && \
+    source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
+    colcon build && \
+    source $UROS_WS/install/setup.sh && \
+    ros2 run micro_ros_setup create_agent_ws.sh && \
+    ros2 run micro_ros_setup build_agent.sh
+
+ADD *.repos ./
+ADD install_deps.sh ./
+RUN chmod +x install_deps.sh
+ADD deepdrive.repos ./
+RUN vcs import src < deepdrive.repos
+RUN ./install_deps.sh foxglove_bridge foxglove_msgs \
+        joint_state_publisher \
+        nav2_bringup \
+        navigation2 \
+        rmw_cyclonedds_cpp \
+        rmw_fastrtps_cpp \
+        robot_localization \
+        robot_state_publisher \
+        ros2bag \
+        rosbag2_storage_default_plugins \
+        slam_toolbox \
+        twist_mux \
+        xacro \
+        gscam \
+        ros2_control \
+        ros2_controllers \
+        control_toolbox \
+        realtime_tools \
+        control_msgs \
+        ros2_control_demos
+
+        # rtabmap_ros \
 
 # NOVNC remote desktop Nabbed from https://github.com/theasp/docker-novnc/blob/master/Dockerfile
 
@@ -49,10 +148,11 @@ FROM dustynv/ros:humble-desktop-pytorch-l4t-r35.4.1
 
 # ----------------------------------------------------------------------------
 
+    # DISPLAY_WIDTH=1600 \
+    # DISPLAY_HEIGHT=900 \    
+
 ENV ROS2_WS=/ros_ws \
     ROS_PACKAGE=deepdrive \
-    DISPLAY_WIDTH=1600 \
-    DISPLAY_HEIGHT=900 \
     RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 WORKDIR $ROS_ROOT
@@ -62,44 +162,34 @@ RUN echo echo SOURCING ROS $ROS2_WS/install/setup.bash >> ~/.bashrc && \
     mkdir -p $ROS2_WS/src \
     mkdir -p $ROS_ROOT/src
 
-RUN cd /tmp && \
-    git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
-    cmake -Hdepthai-core -Bdepthai-core/build -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr/local && \
-    cmake --build depthai-core/build --target install && \
-    rm -rf /tmp/depthai-core
 
-# ADD *.repos ./
-ADD install_deps.sh ./
-ADD deepdrive.repos ./
-RUN vcs import src < deepdrive.repos
+# # TODO: Clean these up. Some may not be needed. Especially for the robot.
 
-# TODO: Clean these up. Some may not be needed. Especially for the robot.
-
-RUN bash install_deps.sh \
-        foxglove_bridge \
-        joint_state_publisher \
-        nav2_bringup \
-        navigation2 \
-        rmw_cyclonedds_cpp \
-        rmw_fastrtps_cpp \
-        robot_localization \
-        robot_state_publisher \
-        ros2bag \
-        rosbag2_storage_default_plugins \
-        slam_toolbox \
-        twist_mux \
-        xacro \
-        foxglove_msgs \
-        gazebo_plugins \
-        gazebo_ros_pkgs \
-        rtabmap_ros \
-        gscam \
-        ros2_control \
-        ros2_controllers \
-        control_toolbox \
-        realtime_tools \
-        control_msgs \
-        ros2_control_demos
+# RUN bash install_deps.sh \
+#         foxglove_bridge \
+#         joint_state_publisher \
+#         nav2_bringup \
+#         navigation2 \
+#         rmw_cyclonedds_cpp \
+#         rmw_fastrtps_cpp \
+#         robot_localization \
+#         robot_state_publisher \
+#         ros2bag \
+#         rosbag2_storage_default_plugins \
+#         slam_toolbox \
+#         twist_mux \
+#         xacro \
+#         foxglove_msgs \
+#         gazebo_plugins \
+#         gazebo_ros_pkgs \
+#         rtabmap_ros \
+#         gscam
+        # ros2_control \ 
+        # ros2_controllers \
+        # control_toolbox \
+        # realtime_tools \
+        # control_msgs \
+        # ros2_control_demos
         # isaac_ros_common \
         # isaac_ros_argus_camera \
         # isaac_ros_image_pipeline \
@@ -117,13 +207,6 @@ RUN bash install_deps.sh \
         # https://nvidia-isaac-ros.github.io/repositories_and_packages/index.html
 
 
-# RUN bash install_deps.sh \
-#         ros2_control \
-#         ros2_controllers \
-#         control_toolbox \
-#         realtime_tools \
-#         control_msgs \
-#         ros2_control_demos
 
 
 # Install nav2
@@ -147,29 +230,29 @@ RUN bash install_deps.sh \
 
 # ZSH and TMUX and such
 
-RUN apt-get update && \
-    apt-get install -y \
-        vim \
-        portaudio19-dev \
-        python3-pip \
-        python3-pydantic \
-        ruby-dev \
-        rviz \
-        tmux \
-        wget \
-        xorg-dev \
-        xtl-dev \
-        gcc-arm-none-eabi \
-        libnewlib-arm-none-eabi \
-        zsh \
-        build-essential \
-        libeigen3-dev \
-        libtbb-dev \
-        pybind11-dev \
-        ninja-build && \
-    rm -rf /var/lib/apt/lists/
-RUN pip3 install setuptools==58.2.0 && \
-    pip3 install --upgrade pip
+# RUN apt-get update && \
+#     apt-get install -y \
+#         vim \
+#         portaudio19-dev \
+#         python3-pip \
+#         python3-pydantic \
+#         ruby-dev \
+#         rviz \
+#         tmux \
+#         wget \
+#         xorg-dev \
+#         xtl-dev \
+#         gcc-arm-none-eabi \
+#         libnewlib-arm-none-eabi \
+#         zsh \
+#         build-essential \
+#         libeigen3-dev \
+#         libtbb-dev \
+#         pybind11-dev \
+#         ninja-build && \
+#     rm -rf /var/lib/apt/lists/
+# RUN pip3 install setuptools==58.2.0 && \
+#     pip3 install --upgrade pip
 
 # TODO: Wrong architecture
 # RUN wget https://github.com/openrr/urdf-viz/releases/download/v0.44.0/urdf-viz-x86_64-unknown-linux-gnu.tar.gz && \
@@ -177,36 +260,24 @@ RUN pip3 install setuptools==58.2.0 && \
 #     chmod +x /usr/local/bin/urdf-viz && \
 #     rm -f urdf-viz-x86_64-unknown-linux-gnu.tar.gz
 
-RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)" -- \
-    -p git \
-    -p https://github.com/zsh-users/zsh-autosuggestions \
-    -p https://github.com/zsh-users/zsh-completions
+# RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.2/zsh-in-docker.sh)" -- \
+#     -p git \
+#     -p https://github.com/zsh-users/zsh-autosuggestions \
+#     -p https://github.com/zsh-users/zsh-completions
 
-RUN gem install tmuxinator && \
-    wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O /usr/local/share/zsh/site-functions/_tmuxinator
+# RUN gem install tmuxinator && \
+#     wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O /usr/local/share/zsh/site-functions/_tmuxinator
 
-RUN apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get autoremove -y \
+#     && apt-get clean -y \
+#     && rm -rf /var/lib/apt/lists/*
 
 
 # micro ros
-RUN git clone --recurse-submodules https://github.com/raspberrypi/pico-sdk.git /usr/src/pico-sdk
-ENV PICO_SDK_PATH=/usr/src/pico-sdk
+# RUN git clone --recurse-submodules https://github.com/raspberrypi/pico-sdk.git /usr/src/pico-sdk
+# ENV PICO_SDK_PATH=/usr/src/pico-sdk
 
-ENV UROS_WS=/uros_ws
-WORKDIR $UROS_WS
-RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
-RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
-    apt-get update && \
-    rosdep update && \
-    rm -rf /opt/ros/humble/build/pluginlib/pluginlib_enable_plugin_testing && \
-    rosdep install --from-paths src --ignore-src -y 
-RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
-    colcon build && \
-    source $UROS_WS/install/setup.sh && \
-    ros2 run micro_ros_setup create_agent_ws.sh && \
-    ros2 run micro_ros_setup build_agent.sh
+
 
 # ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0
 
@@ -224,46 +295,46 @@ RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
 
 # Install JetsonGPIO
 # TODO: deprecate in favor of microcontroller
-WORKDIR /usr/src
-RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
-    cd JetsonGPIO && \
-    mkdir build && \
-    cd build && \
-    cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
-    cmake --build . --target install
+# WORKDIR /usr/src
+# RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
+#     cd JetsonGPIO && \
+#     mkdir build && \
+#     cd build && \
+#     cmake .. -DJETSON_GPIO_POST_INSTALL=OFF && \
+#     cmake --build . --target install
 
-RUN echo "source /root/.ros2" >> /root/.bashrc
-RUN echo "source /root/.ros2" >> /root/.zshrc
-RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
-RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.ros2
-RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.ros2
-RUN echo "source $UROS_WS/install/setup.sh" >> /root/.ros2
-RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.ros2
-RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.ros2
+# RUN echo "source /root/.ros2" >> /root/.bashrc
+# RUN echo "source /root/.ros2" >> /root/.zshrc
+# RUN echo "export DISABLE_AUTO_TITLE=true" >> /root/.ros2
+# RUN echo 'LC_NUMERIC="en_US.UTF-8"' >> /root/.ros2
+# RUN echo "source $ROS_ROOT/install/setup.sh" >> /root/.ros2
+# RUN echo "source $UROS_WS/install/setup.sh" >> /root/.ros2
+# RUN echo "source $ROS2_WS/install/setup.sh" >> /root/.ros2
+# RUN echo "source /usr/share/gazebo/setup.sh" >> /root/.ros2
 
-RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.ros2
-RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.ros2
-RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.ros2
-RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.ros2
-RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.ros2
-RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.ros2
+# RUN echo 'alias rosdi="rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y"' >> /root/.ros2
+# RUN echo 'alias cbuild="colcon build --symlink-install"' >> /root/.ros2
+# RUN echo 'alias ssetup="source $ROS2_WS/install/setup.sh"' >> /root/.ros2
+# RUN echo 'alias cyclone="export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"' >> /root/.ros2
+# RUN echo 'alias fastdds="export RMW_IMPLEMENTATION=rmw_fastrtps_cpp"' >> /root/.ros2
+# RUN echo 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp' >> /root/.ros2
 
-# RUN echo "autoload -U bashcompinit" >> /root/.ros2
-# RUN echo "bashcompinit" >> /root/.ros2
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.ros2
-RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.ros2
+# # RUN echo "autoload -U bashcompinit" >> /root/.ros2
+# # RUN echo "bashcompinit" >> /root/.ros2
+# RUN echo 'eval "$(register-python-argcomplete3 ros2)"' >> /root/.ros2
+# RUN echo 'eval "$(register-python-argcomplete3 colcon)"' >> /root/.ros2
 
-# CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
-CMD [ "bash" ]
+# # CMD [ "tmuxinator", "start", "-p", "/root/.session.yml" ]
+# CMD [ "bash" ]
 
-ENV DEEPDRIVE_MODEL=deepdrive
+# ENV DEEPDRIVE_MODEL=deepdrive
 
-COPY .session.yml /root/.session.yml
-COPY .tmux.conf /root/.tmux.conf
+# COPY .session.yml /root/.session.yml
+# COPY .tmux.conf /root/.tmux.conf
 
 
-# For raspbery pi pico mcu
-RUN apt-get update && apt-get install -y openocd gdb-multiarch binutils-multiarch
+# # For raspbery pi pico mcu
+# RUN apt-get update && apt-get install -y openocd gdb-multiarch binutils-multiarch
 
 # ----------------------------------------------------------------------------
 
@@ -281,7 +352,7 @@ WORKDIR $ROS2_WS
 # RUN pip3 install -r src/differential_drive/requirements.txt
 
 # Voice
-RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
+# RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
 # RUN pip3 install -r src/chatbot_ros/tts_ros/requirements.txt
 # RUN pip3 install -r src/chatbot_ros/llama_ros/requirements.txt
 # RUN pip3 install -r src/chatbot_ros/yasmin/requirements.txt
@@ -291,21 +362,24 @@ RUN pip3 install -r $ROS_ROOT/src/audio_common/requirements.txt
 # git clone --recurse-submodules https://github.com/mattwilliamson/deepdrive_voice.git
 # RUN pip3 install -r src/deepdrive_voice/requirements.txt
 
-COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
-RUN pip3 install -r src/imu_bno08x/requirements.txt
+# COPY src/imu_bno08x/requirements.txt src/imu_bno08x/requirements.txt
+# RUN pip3 install -r src/imu_bno08x/requirements.txt
 
-RUN echo "colcon build --symlink-install" >> ~/.bash_history && \
-    echo "source $ROS2_WS/install/setup.bash" >> ~/.bash_history && \
-    echo "ros2 launch deepdrive_bringup robot.launch.py" >> ~/.bash_history && \
-    echo "ros2 run deepdrive_teleop teleop_keyboard" >> ~/.bash_history && \
-    echo "ros2 launch deepdrive_nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml" >> ~/.bash_history && \
-    echo "ros2 launch deepdrive_nav2_bringup slam_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml" >> ~/.bash_history
+RUN cat <<EOF >> ~/.bash_history
+colcon build --symlink-install --packages-skip-regex '.*gazebo.*'
+source $ROS2_WS/install/setup.bash
+ros2 launch deepdrive_bringup robot.launch.py
+ros2 run deepdrive_teleop teleop_keyboard
+ros2 launch deepdrive_nav2_bringup navigation_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yaml
+ros2 launch deepdrive_nav2_bringup slam_launch.py use_sim_time:=False params_file:=src/deepdrive_nav2_bringup/params/nav2_params.yamly
+EOF
+
 
     
 
 COPY src ./src/
 
-VOLUME /tmp
+# colcon build --symlink-install --packages-skip deepdrive_gazebo
 
 # RUN pip3 install -r src/deepdrive_voice/src/tts_ros/requirements.txt
 

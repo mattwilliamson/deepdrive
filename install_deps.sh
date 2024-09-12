@@ -5,6 +5,8 @@ set -e
 echo "################################"
 echo "-> Installing dependencies for '$@'"
 
+rm -rf /opt/ros/${ROS_DISTRO}/build/pluginlib/pluginlib_enable_plugin_testing
+
 mkdir -p $ROS_ROOT/src
 cd $ROS_ROOT
 
@@ -45,3 +47,5 @@ rm -rf /var/lib/apt/lists/
 
 cd $ROS2_WS
 colcon build --symlink-install
+
+rm -rf /opt/ros/${ROS_DISTRO}/build/pluginlib/pluginlib_enable_plugin_testing
