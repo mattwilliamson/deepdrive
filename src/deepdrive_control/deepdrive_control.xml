@@ -1,0 +1,9 @@
+<library path="deepdrive_control">
+  <class name="deepdrive_control/ControllerPlugin"
+         type="deepdrive_control::ControllerPlugin"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The ros2_control Deepdrive system hardware interface-type. It uses velocity command and position state interface for each joint.
+    </description>
+  </class>
+</library>

@@ -31,7 +31,7 @@ setup(
         'Deepdrive vision controls'
     ),
     license='Apache License, Version 2.0',
-    tests_require=['pytest'],
+    # tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'vision_service = deepdrive_vision.script.vision_service:main'

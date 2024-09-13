@@ -162,9 +162,8 @@
 
   <!-- ros2_control-->
   <xacro:if value="$(arg use_ros2_control)">
-    <xacro:deepdrive_ros2_control name="diff_drive_controller" use_mock_hardware="${use_mock_hardware}" />
+    <xacro:deepdrive_ros2_control name="diff_drive_controller" sim_mode="$(arg sim_mode)" use_mock_hardware="${use_mock_hardware}" />
   </xacro:if>
-
 
 
   <xacro:unless value="$(arg use_ros2_control)">

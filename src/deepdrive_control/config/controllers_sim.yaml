@@ -1,0 +1,76 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50
+    use_sim_time: true
+
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+    
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+diff_drive_controller:
+  ros__parameters:
+    # if true This ignores the feedback from hardware and publishes odometry based on the commanded velocity.
+    open_loop: false
+    
+    # https://github.com/ros-controls/ros2_control_demos/blob/humble/example_2/bringup/config/diffbot_controllers.yaml
+    publish_rate: 50.0 # You can set this higher than the controller manager update rate, but it will be throttled
+    base_frame_id: base_footprint
+    odom_frame_id: odom
+
+    left_wheel_names: ['wheel_front_left_joint', 'wheel_back_left_joint']
+    right_wheel_names: ['wheel_front_right_joint', 'wheel_back_right_joint']
+    wheel_separation: 0.175
+    wheel_radius: 0.035
+    # wheel_radius: 0.004
+    wheel_separation_multiplier: 1.5
+    wheel_radius_multiplier: .5
+    use_stamped_vel: false
+    #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
+
+    # Odometry fused with IMU is published by robot_localization, so
+    # no need to publish a TF based on encoders alone.
+    enable_odom_tf: false
+    # enable_odom_tf: true
+
+    # pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    # twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    # pose_covariance_diagonal : [0.001, .001, 1000000., 1000000., 1000000., 1000.]
+    # twist_covariance_diagonal: [0.001, .001, 1000000., 1000000., 1000000., 1000.]
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+
+    cmd_vel_timeout: 0.5
+    #publish_limited_velocity: true
+    #velocity_rolling_window_size: 10
+
+    # Velocity and acceleration limits
+    # Whenever a min_* is unspecified, default to -max_*
+    linear.x.has_velocity_limits: true
+    linear.x.has_acceleration_limits: true
+    linear.x.has_jerk_limits: false
+    linear.x.max_velocity: 0.5
+    linear.x.min_velocity: -0.5
+    linear.x.max_acceleration: 0.25
+    linear.x.max_jerk: 0.0
+    linear.x.min_jerk: 0.0
+
+    angular.z.has_velocity_limits: true
+    angular.z.has_acceleration_limits: true
+    angular.z.has_jerk_limits: false
+    angular.z.max_velocity: 0.25
+    angular.z.min_velocity: -0.25
+    angular.z.max_acceleration: 0.5
+    angular.z.min_acceleration: -0.5
+    angular.z.max_jerk: 0.0
+    angular.z.min_jerk: 0.0
+    
+    # Available when "publish_cmd" parameter is set to True. It is the Twist after limiters have been applied on the controller input.
+    publish_cmd: true
+
+    # Preserve turning radius when limiting speed/acceleration/jerk
+    preserve_turning_radius: false
+
+    # Publish wheel data
+    publish_wheel_data: true

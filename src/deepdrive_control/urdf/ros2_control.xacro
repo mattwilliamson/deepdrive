@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="deepdrive_ros2_control" params="sim_mode use_mock_hardware name">
+
+        <xacro:unless value="${sim_mode}">
+            <ros2_control name="RealRobot" type="system">
+                <hardware>
+                    <plugin>deepdrive_control/ControllerPlugin</plugin>
+                    <param name="wheel_front_left_joint_input_multiplier">1.0</param>
+                    <param name="wheel_front_left_joint_output_multiplier">1.0</param>
+                    <param name="wheel_front_right_joint_input_multiplier">1.0</param>
+                    <param name="wheel_front_right_joint_output_multiplier">-1.0</param>
+                    <param name="wheel_back_left_joint_input_multiplier">1.0</param>
+                    <param name="wheel_back_left_joint_output_multiplier">1.0</param>
+                    <param name="wheel_back_right_joint_input_multiplier">1.0</param>
+                    <param name="wheel_back_right_joint_output_multiplier">-1.0</param>
+                </hardware>
+                <joint name="wheel_front_left_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+                <joint name="wheel_front_right_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+                <joint name="wheel_back_left_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+                <joint name="wheel_back_right_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+            </ros2_control>
+        </xacro:unless>
+
+        <xacro:if value="${sim_mode}">
+            <ros2_control name="GazeboSystem" type="system">
+                <hardware>
+                    <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+                    <param name="wheel_front_left_input_joint_multiplier">1.0</param>
+                    <param name="wheel_front_left_output_joint_multiplier">1.0</param>
+                    <param name="wheel_front_right_input_joint_multiplier">1.0</param>
+                    <param name="wheel_front_right_output_joint_multiplier">-1.0</param>
+                    <param name="wheel_back_left_input_joint_multiplier">1.0</param>
+                    <param name="wheel_back_left_output_joint_multiplier">1.0</param>
+                    <param name="wheel_back_right_input_joint_multiplier">1.0</param>
+                    <param name="wheel_back_right_output_joint_multiplier">-1.0</param>
+                </hardware>
+                <joint name="wheel_front_left_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+                <joint name="wheel_front_right_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+                <joint name="wheel_back_left_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+                <joint name="wheel_back_right_joint">
+                    <command_interface name="velocity" />
+                    <state_interface name="velocity" />
+                    <state_interface name="position" />
+                </joint>
+            </ros2_control>
+        </xacro:if>
+
+        <gazebo>
+            <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+                <parameters>$(find deepdrive_control)/config/controllers_sim.yaml</parameters>
+                <parameters>$(find deepdrive_control)/config/gaz_ros2_ctl_use_sim.yaml</parameters>
+            </plugin>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

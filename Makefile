@@ -38,7 +38,7 @@ dockershell: docker
 		--device /dev/snd \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
-		-v ${PWD}/src:${ROS_ROOT}/src/ \
+		--mount source=${PWD}/,target=/ros_ws,type=bind \
 		-v ${PWD}/.cache/huggingface:/root/.cache/huggingface \
 		${ROS_PACKAGE} 
 
@@ -63,7 +63,7 @@ dockersimshell: dockersim
 		-it \
 		--name deepdrive-sim \
 		--rm \
-		-v ${PWD}/src:${ROS_ROOT}/src/ \
+		--mount source=${PWD}/src,target=/ros_ws/src,type=bind \
 		--privileged \
 		$(GPU_FLAG) \
 		-e DISPLAY=${DISPLAY} \

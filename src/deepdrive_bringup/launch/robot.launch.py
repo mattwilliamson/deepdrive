@@ -94,14 +94,14 @@ def generate_launch_description():
         launch_arguments={'use_sim_time': use_sim_time}.items(),
     )
 
-    rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
-        output="log",
-        arguments=["-d", rviz_config_file],
-        condition=IfCondition(gui),
-    )
+    # rviz_node = Node(
+    #     package="rviz2",
+    #     executable="rviz2",
+    #     name="rviz2",
+    #     output="log",
+    #     arguments=["-d", rviz_config_file],
+    #     condition=IfCondition(gui),
+    # )
 
     # # Delay rviz start after `joint_state_broadcaster`
     # delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
@@ -383,11 +383,11 @@ def generate_launch_description():
         # wide_camera_node,
         # delay_rviz_after_joint_state_broadcaster_spawner,
         robot_localization_node,
-        imu_node,
+        # imu_node,
         # imu_publisher_node,
         imu_camera_transformer_node,
         # imu_bno080_transformer_node,
-        lidar_node,
+        # lidar_node,
 
         # Use Lidar for odom
         # lidar_to_pointcloud_node,

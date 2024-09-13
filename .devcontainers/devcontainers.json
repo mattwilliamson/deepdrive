@@ -1,31 +1,33 @@
 {
-    "image": "deepdrive",
+    "build.dockerfile": "Dockerfile",
     "workspaceMount": "source=${localWorkspaceFolder}/,target=/ros_ws,type=bind",
     "workspaceFolder": "/ros_ws",
     "remoteUser": "root",
+    "privileged": true,
     "runArgs": [
         "--network=host",
         "--cap-add=SYS_PTRACE",
         "--security-opt=seccomp:unconfined",
         "--security-opt=apparmor:unconfined",
-        "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
-        "--privileged",
+        // "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
         "--runtime=nvidia",
         "--gpus=all",
         "--ipc=host",
 
+        "-v", "${userHome}/src/deepdrive/.cache/huggingface:/root/.cache/huggingface",
+
         "-v", "/dev/bus/usb:/dev/bus/usb",
-        "-v", "/home/matt/src/deepdrive/.cache/huggingface:/root/.cache/huggingface",
         "-v", "/proc/device-tree/compatible:/proc/device-tree/compatible",
         "-v", "/proc/device-tree/chosen:/proc/device-tree/chosen",
         "-v", "/etc/timezone:/etc/timezone:ro",
         "-v", "/etc/localtime:/etc/localtime:ro",
 
-        "--device", "/dev/gpiochip0",
+        // "--device", "/dev/gpiochip0",
         "--device", "/dev/snd",
 
         "--device-cgroup-rule", "c 189:* rmw"
     ],
+    "userEnvProbe": "bash -c 'source /opt/ros/humble/setup.bash && printenv'",
 	"containerEnv": {
 		"DISPLAY": "${localEnv:DISPLAY}", // Needed for GUI try ":0" for windows
 		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",

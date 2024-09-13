@@ -13,9 +13,7 @@
   <url type="bugtracker">https://github.com/mattwilliamson/deepdrive/issues</url>
   <author email="matt@aimatt.com">Matt Williamson</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <exec_depend>hls_lfcd_lds_driver</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>rviz2</exec_depend>
   <exec_depend>deepdrive_description</exec_depend>
   <exec_depend>deepdrive_hardware</exec_depend>
   <export>

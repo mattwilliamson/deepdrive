@@ -28,7 +28,7 @@ setup(
     maintainer_email="matt@aimatt.com",
     description="ROS2 Node for interface via I2C with a IMU_BNO08X Sensor and publish the IMU msg data and the Sensor orientation (roll, pitch, yaw/heading) ",
     license="MIT",
-    tests_require=["pytest"],
+    # tests_require=["pytest"],
     entry_points={
         "console_scripts": [
             "imu_bno08x_publisher = imu_bno08x.publisher:main",

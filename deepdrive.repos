@@ -19,21 +19,20 @@ repositories:
     url: https://github.com/abseil/abseil-cpp.git
     version: 20230802.1
 
-  # oak d lite
-  depthai-ros:
-    type: git
-    url: https://github.com/luxonis/depthai-ros.git
-    version: humble
-
-  # LD19
-  ldlidar:
-    type: git
-    url: https://github.com/Myzhar/ldrobot-lidar-ros2.git
-    version: humble
+#  # oak d lite
+#  depthai-ros:
+#    type: git
+#    url: https://github.com/luxonis/depthai-ros.git
+#    version: humble
 
   pointcloud_to_laserscan:
     type: git
     url: https://github.com/ros-perception/pointcloud_to_laserscan.git
+    version: humble
+
+  ffmpeg_image_transport_msgs:
+    type: git
+    url: https://github.com/ros-misc-utilities/ffmpeg_image_transport_msgs.git
     version: humble
 
 

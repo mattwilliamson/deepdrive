@@ -22,7 +22,7 @@ setup(
     maintainer_email='matt@aimatt.com',
     description='Simple node to print out the different odom sources to track outliers',
     license='MIT',
-    tests_require=['pytest'],
+    # tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             "calibrate = odom_calibration.calibrate:main",

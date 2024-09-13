@@ -26,7 +26,7 @@ setup(
     maintainer_email='matt@aimatt.com',
     description='Basic position estimation based on RSSI of Eddystone BLE beacons',
     license='MIT',
-    tests_require=['pytest'],
+    # tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             "calibrate = ble_odom.scan:main",
