@@ -149,7 +149,7 @@ RUN git clone https://github.com/pjueon/JetsonGPIO.git && \
     cmake --build . --target install
 
 
-# ENV GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/deepdrive_gazebo/models
+# ENV GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/deepdrive_simulations/models
 
 # Add ROS2 code
 WORKDIR $ROS2_WS

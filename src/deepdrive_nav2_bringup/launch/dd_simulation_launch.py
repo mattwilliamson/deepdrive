@@ -141,7 +141,7 @@ def generate_launch_description():
         'world',
         # TODO(orduno) Switch back once ROS argument passing has been fixed upstream
         #              https://github.com/ROBOTIS-GIT/deepdrive_simulations/issues/91
-        # default_value=os.path.join(get_package_share_directory('deepdrive_gazebo'),
+        # default_value=os.path.join(get_package_share_directory('deepdrive_simulations'),
         # worlds/deepdrive_worlds/waffle.model')
         default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
         description='Full path to world model file to load')

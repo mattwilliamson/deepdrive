@@ -14,7 +14,7 @@
   <author email="matt@aimatt.com">Matt Williamson</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <exec_depend>deepdrive_fake_node</exec_depend>
-  <exec_depend>deepdrive_gazebo</exec_depend>
+  <exec_depend>deepdrive_simulations</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

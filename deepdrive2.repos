@@ -1,0 +1,28 @@
+repositories:
+  # oak d lite
+  depthai-ros:
+    type: git
+    url: https://github.com/luxonis/depthai-ros.git
+    version: humble
+
+  # micro ros
+  micro_ros_setup:
+    type: git
+    url: https://github.com/micro-ROS/micro_ros_setup.git
+    version: humble
+
+  ffmpeg_image_transport_msgs:
+    type: git
+    url: https://github.com/ros-misc-utilities/ffmpeg_image_transport_msgs.git
+    version: humble
+
+  image_pipeline:
+    type: git
+    url: https://github.com/ros-perception/image_pipeline.git
+    version: humble
+
+  # Audio/speech
+  audio_common:
+    type: git
+    url: https://github.com/mgonzs13/audio_common.git
+    version: main

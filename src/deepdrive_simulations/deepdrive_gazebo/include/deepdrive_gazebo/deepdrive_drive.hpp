@@ -14,8 +14,8 @@
 //
 // Authors: Taehun Lim (Darby), Ryan Shim
 
-#ifndef DEEPDRIVE_GAZEBO__DEEPDRIVE_DRIVE_HPP_
-#define DEEPDRIVE_GAZEBO__DEEPDRIVE_DRIVE_HPP_
+#ifndef DEEPDRIVE_SIMULATIONS__DEEPDRIVE_DRIVE_HPP_
+#define DEEPDRIVE_SIMULATIONS__DEEPDRIVE_DRIVE_HPP_
 
 #include <geometry_msgs/msg/twist.hpp>
 #include <nav_msgs/msg/odometry.hpp>
@@ -67,4 +67,4 @@ private:
   void scan_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
 };
-#endif  // DEEPDRIVE_GAZEBO__DEEPDRIVE_DRIVE_HPP_
+#endif  // DEEPDRIVE_SIMULATIONS__DEEPDRIVE_DRIVE_HPP_

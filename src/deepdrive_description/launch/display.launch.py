@@ -29,7 +29,7 @@ def generate_launch_description():
     pkg_gazebo_ros = get_package_share_directory("gazebo_ros")
     world_path=os.path.join(pkg_share, 'worlds/deepdrive_world.world')
     # world_path = os.path.join(
-    #     get_package_share_directory("deepdrive_gazebo"),
+    #     get_package_share_directory("deepdrive_simulations"),
     #     "worlds",
     #     "deepdrive_house.world",
     # )

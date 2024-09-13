@@ -14,7 +14,7 @@
 //
 // Authors: Taehun Lim (Darby), Ryan Shim
 
-#include "deepdrive_gazebo/deepdrive_drive.hpp"
+#include "deepdrive_simulations/deepdrive_drive.hpp"
 
 #include <memory>
 

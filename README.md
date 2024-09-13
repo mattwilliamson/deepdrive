@@ -1,9 +1,11 @@
 # DeepDrive
 
-Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 
 ## TODO
 
+- [ ] Move jetson again
+- [ ] Isaac ROS Simulator?
+- [ ] Use isaac ros vslam
 - [ ] gasket for lidar
 - [ ] move bno08x to separate repo
 - [ ] matek optical flow module
@@ -36,8 +38,27 @@ Heavily borrowed from https://github.com/ROBOTIS-GIT/deepdrive/tree/humble-devel
 - [ ] Add depthai and cache models
 - [ ] gps
 
-Bringup:
-https://github.com/ros-planning/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
+
+## Setup
+
+### Deepdrive motor controller
+
+Follow instructions at:
+https://github.com/mattwilliamson/deepdrive_motor_controller
+and flash your motor controllers.
+
+### Deepdrive Docker
+
+```sh
+git clone https://github.com/mattwilliamson/deepdrive.git
+cd deepdrive
+git submodule init
+git submodule update
+make dockershell
+
+colcon build...
+```
+
 
 # Simulator
 Run on x86_64 linux machine
@@ -45,7 +66,7 @@ Run on x86_64 linux machine
 ```sh
 make dockersimshell
 
-ros2 launch deepdrive_gazebo deepdrive_house.launch.py
+ros2 launch deepdrive_simulations deepdrive_house.launch.py
 ros2 run deepdrive_teleop teleop_keyboard --ros-args -r /cmd_vel:=/deepdrive_micro/cmd_vel
 # ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ros2 launch deepdrive_bringup foxglove_bridge_launch.xml
@@ -57,20 +78,20 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 
 export DEEPDRIVE_MODEL=deepdrive_deepdrive
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/ros_ws/install/deepdrive_gazebo/share/deepdrive_gazebo/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/ros_ws/install/deepdrive_simulations/share/deepdrive_simulations/models
 ros2 launch deepdrive_nav2_bringup dd_simulation_launch.py headless:=False
 
 export DEEPDRIVE_MODEL=deepdrive
 export LDS_MODEL='LDS-01'
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/ros_ws/install/deepdrive_gazebo/share/deepdrive_gazebo/models
-ros2 launch deepdrive_gazebo deepdrive_simulation_launch.py headless:=False robot_name:=deepdrive_deepdrive 
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/ros_ws/install/deepdrive_simulations/share/deepdrive_simulations/models
+ros2 launch deepdrive_simulations deepdrive_simulation_launch.py headless:=False robot_name:=deepdrive_deepdrive 
 # slam:=True
 
 
 ros2 launch deepdrive_navigation2 navigation2.launch.py
 
 ## Launch Gazebo and RVIZ
-ros2 launch deepdrive_gazebo deepdrive_dqn_stage1.launch.py
+ros2 launch deepdrive_simulations deepdrive_dqn_stage1.launch.py
 ros2 launch deepdrive_bringup rviz2.launch.py
 
 # Camera

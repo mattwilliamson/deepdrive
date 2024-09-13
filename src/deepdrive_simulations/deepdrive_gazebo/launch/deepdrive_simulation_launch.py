@@ -30,7 +30,7 @@ def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('deepdrive_bringup')
     description_dir = get_package_share_directory('deepdrive_description')
-    dd_gazebo_dir = get_package_share_directory('deepdrive_gazebo')
+    dd_gazebo_dir = get_package_share_directory('deepdrive_simulations')
     launch_dir = os.path.join(bringup_dir, 'launch')
     bringup_launch_dir = os.path.join(bringup_dir, 'launch')
 
@@ -144,7 +144,7 @@ def generate_launch_description():
         'world',
         # TODO(orduno) Switch back once ROS argument passing has been fixed upstream
         #              https://github.com/ROBOTIS-GIT/deepdrive_simulations/issues/91
-        # default_value=os.path.join(get_package_share_directory('deepdrive_gazebo'),
+        # default_value=os.path.join(get_package_share_directory('deepdrive_simulations'),
         # worlds/deepdrive_worlds/deepdrive.model')
         default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
         description='Full path to world model file to load')

@@ -26,7 +26,7 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    launch_file_dir = os.path.join(get_package_share_directory('deepdrive_gazebo'), 'launch')
+    launch_file_dir = os.path.join(get_package_share_directory('deepdrive_simulations'), 'launch')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
     description_dir = os.path.join(get_package_share_directory('deepdrive_description'), 'launch')
 
@@ -35,7 +35,7 @@ def generate_launch_description():
     y_pose = LaunchConfiguration('y_pose', default='0.0')
 
     world = os.path.join(
-        get_package_share_directory('deepdrive_gazebo'),
+        get_package_share_directory('deepdrive_simulations'),
         'worlds',
         'deepdrive_dqn_stage2.world'
     )
