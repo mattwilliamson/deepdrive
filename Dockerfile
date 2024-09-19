@@ -80,42 +80,73 @@ RUN ./install_deps.sh \
 
 
 
-# DepthAI (OAK-D LITE stereo camera)
-# ENV DEPTHAI_SRC=/opt/depthai-core
-WORKDIR /opt/
-RUN apt-get update && \
-    apt install libpcl-dev -y && \
-    rm -rf /var/lib/apt/lists/
-RUN git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
-    cd depthai-core && \
-    git submodule update --init --recursive && \
-    cmake -S. -Bbuild -D'BUILD_SHARED_LIBS=ON' -D'CMAKE_INSTALL_PREFIX=/usr/local' && \
-    cmake --build build --target install
-
-
-
-# MicroROS & other dependencies
+# MicroROS
 ENV UROS_WS=/uros_ws
 WORKDIR $UROS_WS
 
-# Other dependencies can just piggyback on the existing micro ros one
-ADD deepdrive2.repos ./
 RUN mkdir src && \
-    vcs import src < deepdrive2.repos
+    cd src && \
+    git clone https://github.com/micro-ROS/micro_ros_setup.git -b $ROS_DISTRO
 
-RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
-    apt-get update && \
-    rosdep update && \
-    rosdep install --from-paths src --ignore-src -y && \
+RUN apt-get update && \
+    apt-get install -y flex && \
     source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
     colcon build && \
     source $UROS_WS/install/setup.sh && \
     ros2 run micro_ros_setup create_agent_ws.sh && \
-    ros2 run micro_ros_setup build_agent.sh
+    ros2 run micro_ros_setup build_agent.sh && \
+    rm -rf /var/lib/apt/lists/
 
+# RUN source /opt/ros/${ROS_DISTRO}/install/setup.sh && \
+#     colcon build --packages-skip-regex '.*rviz.*' && \
+#     apt-get update && \
+#     rosdep install --from-paths src --ignore-src -r -y \
+#         --skip-keys "ogre gazebo ros-${ROS_DISTRO}-rviz-imu-plugin" && \
+#     source $UROS_WS/install/setup.sh && \
+#     ros2 run micro_ros_setup create_agent_ws.sh && \
+#     ros2 run micro_ros_setup build_agent.sh && \
+#     rm -rf /var/lib/apt/lists/
+
+
+# DepthAI (OAK-D LITE stereo camera)
+
+ENV DEPTHAI_SRC=/opt/depthai-core
+WORKDIR /opt/
+RUN apt-get update && \
+    apt install libpcl-dev -y && \
+    rm -rf /var/lib/apt/lists/ && \
+    git clone --recursive https://github.com/luxonis/depthai-core.git --branch main && \
+    cd depthai-core && \
+    git submodule update --init --recursive && \
+    cmake -S. -Bbuild -D'BUILD_SHARED_LIBS=ON' -D'CMAKE_INSTALL_PREFIX=/usr/local' && \
+    cmake --build build --target install && \
+    rm -rf /var/lib/apt/lists/
+
+ENV DEPTHAI_WS=/depthai_ws
+WORKDIR $DEPTHAI_WS
+ADD depthai.repos ./
+RUN mkdir src && \
+    vcs import src < depthai.repos
+
+RUN source $UROS_WS/install/setup.sh && \
+    colcon build
+    
+    # && \
+    # apt-get update && \
+    # rosdep install --from-paths src --ignore-src -r -y && \
+    # colcon build && \
+    # rm -rf /var/lib/apt/lists/
+
+# RUN source $UROS_WS/install/setup.sh && \
+#     colcon build --packages-skip-regex '.*rviz.*' && \
+#     apt-get update && \
+#     rosdep install --from-paths src --ignore-src -r -y \
+#         --skip-keys "ogre gazebo ros-${ROS_DISTRO}-rviz-imu-plugin" && \
+#     ros2 run micro_ros_setup create_agent_ws.sh && \
+#     ros2 run micro_ros_setup build_agent.sh && \
+#     rm -rf /var/lib/apt/lists/
+    
 # rm -rf /opt/ros/$ROS_DISTRO/build/pluginlib/pluginlib_enable_plugin_testing && \
-
-
 
 # RUN source $UROS_WS/install/setup.sh && \
 #     rosdep install --from-paths src --ignore-src -y && \
@@ -135,13 +166,22 @@ VOLUME ["${ROS2_WS}/install", "${ROS2_WS}/log", "${ROS2_WS}/build", "/tmp"]
 # source /opt/ros/${ROS_DISTRO}/install/setup.sh
 # source $UROS_WS/install/setup.sh
 RUN cat <<EOF >> ~/.bashrc
-echo echo SOURCING ROS $ROS2_WS/install/setup.bash
+echo SOURCING ROS /opt/ros/${ROS_DISTRO}/install/setup.sh
+source /opt/ros/${ROS_DISTRO}/install/setup.sh
+
+echo SOURCING ROS $UROS_WS/install/setup.bash
+source $UROS_WS/install/setup.sh
+
+echo SOURCING ROS $DEPTHAI_WS/install/setup.bash
+source $DEPTHAI_WS/install/setup.sh
+
+echo SOURCING ROS $ROS2_WS/install/setup.bash
 source $ROS2_WS/install/setup.bash
 EOF
 
 RUN cat <<EOF >> ~/.bash_history
-colcon build --symlink-install
-    --packages-skip-regex '.*gazebo.*' 
+colcon build --symlink-install \
+    --packages-skip-regex '.*gazebo.*' \
     --packages-skip deepdrive_simulations
 source $ROS2_WS/install/setup.bash
 ros2 launch deepdrive_bringup robot.launch.py
