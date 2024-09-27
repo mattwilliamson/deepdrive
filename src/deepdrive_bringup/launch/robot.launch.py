@@ -178,7 +178,8 @@ def generate_launch_description():
         parameters=[twist_mux_params, {"use_sim_time": use_sim_time}],
         remappings=[
             # ("/cmd_vel_out", "/deepdrive_micro/cmd_vel"),
-            ("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped"),
+            # ("/cmd_vel_out", "/diff_drive_controller/cmd_vel_unstamped"),
+            ("/cmd_vel_out", "/deepdrive_control/cmd_vel_unstamped"),
         ],
     )
 
@@ -281,13 +282,15 @@ def generate_launch_description():
     #     # launch_arguments={'use_sim_time': use_sim_time}.items()
     # )
 
+    motors = [os.path.join("/dev", dev) for dev in os.listdir("/dev") if dev.startswith("ttyMotor")]
+    print(f"Motors found: {motors}")
+
     uros_agent_node = Node(
         package="micro_ros_agent",
         executable="micro_ros_agent",
         name="micro_ros_agent",
         # Launch on a bunch of ports, because we don't know which number it will get
-        arguments=["multiserial", "--devs", 
-                   "/dev/ttyMotor1 /dev/ttyMotor2 /dev/ttyMotor3 /dev/ttyMotor4 /dev/ttyMotor5 /dev/ttyMotor6 /dev/ttyMotor7 /dev/ttyMotor8"],
+        arguments=["multiserial", "--devs", " ".join(motors)],
         # parameters=[{"target_frame": "imu_link"}],
         remappings=[
             ("/odom", "/deepdrive_node/odom"),
@@ -371,7 +374,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory("deepdrive_control"), 'launch', 'control.launch.py')
         ),
-        launch_arguments={'use_sim_time': use_sim_time}.items()
+        launch_arguments={'use_sim_time': use_sim_time}.items(),
     )
     
 
@@ -387,7 +390,7 @@ def generate_launch_description():
         # imu_publisher_node,
         imu_camera_transformer_node,
         # imu_bno080_transformer_node,
-        # lidar_node,
+        lidar_node,
 
         # Use Lidar for odom
         # lidar_to_pointcloud_node,

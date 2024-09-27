@@ -48,15 +48,30 @@ def generate_launch_description():
     #     "imu_bno08x.yaml",
     # )
 
+    remappings = [
+        ("~/robot_description", "/robot_description"),
+        # ("/deepdrive_control/cmd_vel_unstamped", "/cmd_vel"),
+    ]
+
+    # for fb in ("front", "back"):
+    #     for lr in ("left", "right"):
+    #         # /motor/wheel_back_left_joint/angle
+    #         # /motor/wheel_back_left_joint/vel/cmd
+    #         # /deepdrive_motor_left_back/cmd/vel
+    #         # /deepdrive_motor_left_front/angle
+    #         remappings.append((f"/deepdrive_motor_{lr}_{fb}/angle",   f"/motor/{lr}/{fb}/angle"))
+    #         remappings.append((f"/deepdrive_motor_{lr}_{fb}/cmd/vel", f"/motor/{lr}/{fb}/vel/cmd"))
+
+    print("control Remappings:")
+    for remap_from, remap_to in remappings:
+        print(f"{remap_from} -> {remap_to}")
+
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_controllers],
         output="both",
-        remappings=[
-            ("~/robot_description", "/robot_description"),
-            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
-        ],
+        remappings=remappings,
         # arguments=['--ros-args', '--log-level', 'debug']
     )
 

@@ -7,8 +7,8 @@ Motor::Motor(const std::string& motor_name, double input_multiplier, double outp
     : name_(motor_name), velocity_state_(0.0), position_state_(0.0), velocity_command_(0.0), 
       input_multiplier_(input_multiplier), output_multiplier_(output_multiplier), node_(node)
 {
-    vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>("/motor/" + motor_name + "/vel/cmd", 10);
-    angle_sub_ = node_->create_subscription<std_msgs::msg::Float64>("/motor/" + motor_name + "/angle", 10, std::bind(&Motor::angle_callback, this, std::placeholders::_1));
+    vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>("/deepdrive_motor_" + motor_name + "/cmd/vel", 10);
+    angle_sub_ = node_->create_subscription<std_msgs::msg::Float64>("/deepdrive_motor_" + motor_name + "/angle", 10, std::bind(&Motor::angle_callback, this, std::placeholders::_1));
 }
 
 void Motor::set_commanded_velocity(double velocity)

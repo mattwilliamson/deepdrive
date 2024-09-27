@@ -4,7 +4,7 @@
     <xacro:macro name="deepdrive_ros2_control" params="sim_mode use_mock_hardware name">
 
         <xacro:unless value="${sim_mode}">
-            <ros2_control name="RealRobot" type="system">
+            <ros2_control name="DeepDrive" type="system">
                 <hardware>
                     <plugin>deepdrive_control/ControllerPlugin</plugin>
                     <param name="wheel_front_left_joint_input_multiplier">1.0</param>
