@@ -393,6 +393,7 @@ def generate_launch_description():
         lidar_node,
 
         # Use Lidar for odom
+        # This takes a lot of cpu, so just use it to calibrate the odometry
         # lidar_to_pointcloud_node,
         # kiss_icp_node,
 

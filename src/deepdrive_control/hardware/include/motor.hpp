@@ -10,7 +10,7 @@ namespace deepdrive_control
 class Motor
 {
 public:
-    Motor(const std::string& motor_name, double input_multiplier, double output_multiplier, rclcpp::Node::SharedPtr node);
+    Motor(const std::string& motor_name, double input_multiplier, double output_multiplier, double min_velocity_, rclcpp::Node::SharedPtr node);
 
     void set_commanded_velocity(double velocity);
     void write_command();
@@ -29,6 +29,7 @@ private:
     double velocity_state_;
     double position_state_;
     double velocity_command_;
+    double min_velocity_;
 
     rclcpp::Node::SharedPtr node_;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr vel_pub_;
@@ -41,6 +42,11 @@ private:
 
     void angle_callback(const std_msgs::msg::Float64::SharedPtr msg);
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr angle_sub_;
+
+    void set_min_velocity(double min_velocity)
+    {
+        min_velocity_ = min_velocity;
+    }
 };
 
 }  // namespace deepdrive_control

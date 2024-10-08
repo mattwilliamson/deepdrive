@@ -22,6 +22,15 @@ hardware_interface::CallbackReturn ControllerPlugin::on_init(const hardware_inte
 
   load_motors_from_param(info);  // Load motors from hardware info
 
+  // Fetch the minimum velocity parameter
+  if (info.hardware_parameters.find("min_velocity") != info.hardware_parameters.end()) {
+    min_velocity_ = std::stod(info.hardware_parameters.at("min_velocity"));
+    RCLCPP_INFO(node_->get_logger(), "min_velocity parameter: %f", min_velocity_);
+  } else {
+    min_velocity_ = 0.05;
+    RCLCPP_INFO(node_->get_logger(), "min_velocity parameter defaulting to: %f", min_velocity_);
+  }
+
   RCLCPP_INFO(node_->get_logger(), "ControllerPlugin initialized successfully");
 
   return hardware_interface::CallbackReturn::SUCCESS;
@@ -62,7 +71,7 @@ void ControllerPlugin::load_motors_from_param(const hardware_interface::Hardware
     // double output_multiplier = std::stod(info.hardware_parameters.at(motor_name + "_output_multiplier"));
 
     // Create the motor with the multipliers and add it to the motors_ vector
-    motors_.emplace_back(std::make_shared<Motor>(motor_name, input_multiplier, output_multiplier, node_));
+    motors_.emplace_back(std::make_shared<Motor>(motor_name, input_multiplier, output_multiplier, min_velocity_, node_));
   }
 }
 
@@ -126,6 +135,7 @@ hardware_interface::CallbackReturn ControllerPlugin::on_deactivate(const rclcpp_
 }
 
 hardware_interface::return_type ControllerPlugin::read(const rclcpp::Time &time, const rclcpp::Duration &period) {
+  // TODO: Stop until all motors have sent a message again
   if (check_motor_timeout()) {
     RCLCPP_ERROR(rclcpp::get_logger("ControllerPlugin"), "Timeout occurred for one or more motors. Stopping all motors.");
     for (auto &motor : motors_) {

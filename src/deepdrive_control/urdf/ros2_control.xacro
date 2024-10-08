@@ -7,6 +7,7 @@
             <ros2_control name="DeepDrive" type="system">
                 <hardware>
                     <plugin>deepdrive_control/ControllerPlugin</plugin>
+                    <param name="min_velocity">0.05</param>
                     <param name="wheel_front_left_joint_input_multiplier">1.0</param>
                     <param name="wheel_front_left_joint_output_multiplier">1.0</param>
                     <param name="wheel_front_right_joint_input_multiplier">1.0</param>
@@ -47,9 +48,9 @@
                     <param name="wheel_front_left_output_joint_multiplier">1.0</param>
                     <param name="wheel_front_right_input_joint_multiplier">1.0</param>
                     <param name="wheel_front_right_output_joint_multiplier">-1.0</param>
-                    <param name="wheel_back_left_input_joint_multiplier">1.0</param>
+                    <param name="wheel_back_left_input_joint_multiplier">1.03</param>
                     <param name="wheel_back_left_output_joint_multiplier">1.0</param>
-                    <param name="wheel_back_right_input_joint_multiplier">1.0</param>
+                    <param name="wheel_back_right_input_joint_multiplier">1.05</param>
                     <param name="wheel_back_right_output_joint_multiplier">-1.0</param>
                 </hardware>
                 <joint name="wheel_front_left_joint">

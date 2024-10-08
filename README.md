@@ -282,30 +282,16 @@ rviz2 -d src/deepdrive_nav2_bringup/rviz/nav2_default_view.rviz
 # Electronics
 
 ## Lidar
+
 LD19
-https://github.com/Myzhar/ldrobot-lidar-ros2
-/dev/ttyUSB0 or /dev/ldlidar
 
-
-Connect 5v, gnd, pin 8 and pin 10 for serial
-
-```sh
-sudo apt-get install -y screen
-sudo chmod a+rw /dev/ttyUSB0
-screen -L /dev/ttyUSB0 230400
-
-src/ldrobot-lidar-ros2/ldlidar_node/params/ldlidar.yaml
-
-ros2 launch deepdrive_lidar ldlidar_with_mgr.launch.py
-
-
-```
-
+check [./src/deepdrive_lidar/README.md](./src/deepdrive_lidar/README.md)
 
 
 ---
 
 # IMU BNO080
+**currently deprecated in favor of ICM20948 on deepdrive_micro board
 `sudo /opt/nvidia/jetson-io/jetson-io.py`
 ```sh
 sudo apt-get install libi2c-dev

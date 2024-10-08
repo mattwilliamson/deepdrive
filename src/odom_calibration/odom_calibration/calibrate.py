@@ -62,12 +62,12 @@ class DynamicOdometryCalibrationNode(Node):
     def generic_callback(self, msg, topic_name):
         self.message_counts[topic_name] += 1
 
-        self.get_logger().info(f'Got message  on "{topic_name}" type: {type(msg)}')
+        # self.get_logger().info(f'Got message  on "{topic_name}" type: {type(msg)}')
 
         if isinstance(msg, LaserScan):
             total = len(msg.ranges)
             front_ranges = msg.ranges[4:6]  # Assuming front beams are the first 3 measurements
-            self.get_logger().info(f'Got LaserScan  on "{topic_name}" front_ranges: {front_ranges}')
+            # self.get_logger().info(f'Got LaserScan  on "{topic_name}" front_ranges: {front_ranges}')
             if front_ranges:
                 self.data[topic_name] = {
                     'x': float(np.mean(front_ranges)),
@@ -129,8 +129,8 @@ class DynamicOdometryCalibrationNode(Node):
                 diff_x = current_value['x'] - initial_value['x']
                 diff_yaw = current_value['yaw'] - initial_value['yaw']
                 differences[topic] = {
-                    'x': diff_x,
-                    'yaw': diff_yaw
+                    'x': round(diff_x, 4),
+                    'yaw': round(diff_yaw, 4),
                 }
             except:
                 self.get_logger().info(f"initial_value['x']: {initial_value['x']} type={type(initial_value['x'])}")

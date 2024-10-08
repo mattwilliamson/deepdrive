@@ -53,6 +53,7 @@ private:
     rclcpp::Duration timeout_;
     rclcpp::Node::SharedPtr node_;  // Shared node for all motors
     std::thread spin_thread_;  // Separate thread for spinning the node
+    double min_velocity_; // Minimum velocity for the motors
 
     void load_motors_from_param(const hardware_interface::HardwareInfo & info);
     bool check_motor_timeout();

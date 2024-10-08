@@ -3,9 +3,9 @@
 namespace deepdrive_control
 {
 
-Motor::Motor(const std::string& motor_name, double input_multiplier, double output_multiplier, rclcpp::Node::SharedPtr node)
+Motor::Motor(const std::string& motor_name, double input_multiplier, double output_multiplier, double min_velocity, rclcpp::Node::SharedPtr node)
     : name_(motor_name), velocity_state_(0.0), position_state_(0.0), velocity_command_(0.0), 
-      input_multiplier_(input_multiplier), output_multiplier_(output_multiplier), node_(node)
+      input_multiplier_(input_multiplier), output_multiplier_(output_multiplier), min_velocity_(min_velocity), node_(node)
 {
     vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>("/deepdrive_motor_" + motor_name + "/cmd/vel", 10);
     angle_sub_ = node_->create_subscription<std_msgs::msg::Float64>("/deepdrive_motor_" + motor_name + "/angle", 10, std::bind(&Motor::angle_callback, this, std::placeholders::_1));
@@ -13,7 +13,13 @@ Motor::Motor(const std::string& motor_name, double input_multiplier, double outp
 
 void Motor::set_commanded_velocity(double velocity)
 {
-    velocity_command_ = velocity * output_multiplier_;
+    if (velocity == 0) {
+        velocity_command_ = 0;
+    } else if (velocity < 0) {
+        velocity_command_ = std::min(velocity * output_multiplier_, -min_velocity_);
+    } else {
+        velocity_command_ = std::max(velocity * output_multiplier_, min_velocity_);
+    }
 }
 
 void Motor::write_command()

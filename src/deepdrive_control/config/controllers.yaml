@@ -22,11 +22,11 @@ deepdrive_control:
 
     left_wheel_names: ['wheel_front_left_joint', 'wheel_back_left_joint']
     right_wheel_names: ['wheel_front_right_joint', 'wheel_back_right_joint']
-    wheel_separation: 0.175
-    wheel_radius: 0.035
+    wheel_separation: 0.328
+    wheel_radius: 0.082225
     
     # These two multipliers compensate for skid-steer slippage
-    wheel_separation_multiplier: 1.5
+    wheel_separation_multiplier: 1.67
     wheel_radius_multiplier: .5
 
     use_stamped_vel: false
